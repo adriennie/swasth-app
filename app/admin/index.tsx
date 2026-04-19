@@ -1,0 +1,680 @@
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
+import { Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+const { width } = Dimensions.get('window');
+
+interface DashboardStats {
+  totalRevenue: number;
+  totalOrders: number;
+  totalDistributors: number;
+  totalPharmacies: number;
+  pendingApprovals: number;
+  activeProducts: number;
+  pendingDistributors: number;
+  pendingPharmacies: number;
+  approvedDistributors: number;
+  approvedPharmacies: number;
+}
+
+export default function AdminDashboard() {
+  const { auth, logout } = useAuth();
+  const router = useRouter();
+  const [stats, setStats] = useState<DashboardStats>({
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalDistributors: 0,
+    totalPharmacies: 0,
+    pendingApprovals: 0,
+    activeProducts: 0,
+    pendingDistributors: 0,
+    pendingPharmacies: 0,
+    approvedDistributors: 0,
+    approvedPharmacies: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
+
+  const fetchDashboardStats = async () => {
+    try {
+      // Fetch all stats in parallel
+      const [
+        ordersResult,
+        distributorsResult,
+        pharmaciesResult,
+        productsResult,
+      ] = await Promise.all([
+        supabase.from('distributor_admin_orders').select('total_amount, status'),
+        supabase.from('distributor_profiles').select('status'),
+        supabase.from('pharmacy_profiles').select('status'),
+        supabase.from('products').select('id', { count: 'exact', head: true }),
+      ]);
+
+      // Calculate total revenue
+      const totalRevenue = (ordersResult.data || [])
+        .filter((o) => o.status !== 'Cancelled')
+        .reduce((sum, order) => sum + (Number(order.total_amount) || 0), 0);
+
+      // Count statuses
+      const distributors = distributorsResult.data || [];
+      const pharmacies = pharmaciesResult.data || [];
+
+      const pendingDistCount = distributors.filter((d) => d.status === 'pending').length;
+      const approvedDistCount = distributors.filter((d) => d.status === 'approved').length;
+      const pendingPharmCount = pharmacies.filter((p) => p.status === 'pending').length;
+      const approvedPharmCount = pharmacies.filter((p) => p.status === 'approved').length;
+
+      setStats({
+        totalRevenue,
+        totalOrders: ordersResult.data?.length || 0,
+        totalDistributors: distributors.length,
+        totalPharmacies: pharmacies.length,
+        pendingApprovals: pendingDistCount + pendingPharmCount,
+        activeProducts: productsResult.count || 0,
+        pendingDistributors: pendingDistCount,
+        pendingPharmacies: pendingPharmCount,
+        approvedDistributors: approvedDistCount,
+        approvedPharmacies: approvedPharmCount,
+      });
+
+      // Fetch recent orders with distributor info
+      const { data: orders } = await supabase
+        .from('distributor_admin_orders')
+        .select(`
+          *,
+          distributor_profiles!distributor_admin_orders_distributor_id_fkey (
+            display_name,
+            contact_name,
+            email
+          )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      setRecentOrders(orders || []);
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchDashboardStats();
+  }, []);
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'pending': return '#F59E0B';
+      case 'completed': return '#10B981';
+      case 'processing': return '#3B82F6';
+      case 'shipped': return '#8B5CF6';
+      case 'cancelled': return '#EF4444';
+      default: return '#6B7280';
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#4F46E5" />
+          <Text style={styles.loadingText}>Loading Dashboard...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Premium Header */}
+      <LinearGradient
+        colors={['#4F46E5', '#6366F1', '#818CF8']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}>
+        <View>
+          <Text style={styles.headerGreeting}>Welcome back,</Text>
+          <Text style={styles.headerTitle}>Admin Dashboard</Text>
+        </View>
+        <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
+          <Feather name="log-out" size={20} color="#fff" />
+        </TouchableOpacity>
+      </LinearGradient>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#4F46E5" />
+        }>
+
+        {/* Stats Grid */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statRow}>
+            <TouchableOpacity style={styles.statCardSimple}>
+              <View style={[styles.statIconCircle, { backgroundColor: '#D1FAE5' }]}>
+                <Feather name="dollar-sign" size={24} color="#10B981" />
+              </View>
+              <View style={styles.statContentSimple}>
+                <Text
+                  style={styles.statValueSimple}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit>
+                  ₹{(stats.totalRevenue / 1000).toFixed(1)}K
+                </Text>
+                <Text style={styles.statLabelSimple}>Total Revenue</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.statCardSimple}
+              onPress={() => router.push('/admin/orders')}>
+              <View style={[styles.statIconCircle, { backgroundColor: '#DBEAFE' }]}>
+                <Feather name="shopping-bag" size={24} color="#3B82F6" />
+              </View>
+              <View style={styles.statContentSimple}>
+                <Text
+                  style={styles.statValueSimple}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit>
+                  {stats.totalOrders}
+                </Text>
+                <Text style={styles.statLabelSimple}>Total Orders</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.statRow}>
+            <TouchableOpacity
+              style={styles.statCardSmall}
+              onPress={() => router.push('/admin/distributors')}>
+              <View style={[styles.statIconSmall, { backgroundColor: '#EDE9FE' }]}>
+                <Feather name="truck" size={20} color="#7C3AED" />
+              </View>
+              <Text style={styles.statValueSmall}>{stats.totalDistributors}</Text>
+              <Text style={styles.statLabelSmall} numberOfLines={1} adjustsFontSizeToFit>Distributors</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.statCardSmall}
+              onPress={() => router.push('/admin/pharmacies')}>
+              <View style={[styles.statIconSmall, { backgroundColor: '#DBEAFE' }]}>
+                <Feather name="home" size={20} color="#3B82F6" />
+              </View>
+              <Text style={styles.statValueSmall}>{stats.totalPharmacies}</Text>
+              <Text style={styles.statLabelSmall} numberOfLines={1} adjustsFontSizeToFit>Pharmacies</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.statCardSmall}>
+              <View style={[styles.statIconSmall, { backgroundColor: '#FEF3C7' }]}>
+                <Feather name="alert-circle" size={20} color="#D97706" />
+              </View>
+              <Text style={styles.statValueSmall}>{stats.pendingApprovals}</Text>
+              <Text style={styles.statLabelSmall} numberOfLines={1} adjustsFontSizeToFit>Pending</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Quick Actions */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <View style={styles.actionsGrid}>
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => router.push('/admin/management/products')}>
+              <LinearGradient
+                colors={['#F59E0B', '#D97706']}
+                style={styles.actionGradient}>
+                <Feather name="box" size={24} color="#fff" />
+                <Text style={styles.actionText}>Products</Text>
+                <Text style={styles.actionSubtext}>{stats.activeProducts} active</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => router.push('/admin/distributors')}>
+              <LinearGradient
+                colors={['#8B5CF6', '#7C3AED']}
+                style={styles.actionGradient}>
+                <Feather name="users" size={24} color="#fff" />
+                <Text style={styles.actionText}>Distributors</Text>
+                <Text style={styles.actionSubtext}>{stats.pendingDistributors} pending</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => router.push('/admin/pharmacies')}>
+              <LinearGradient
+                colors={['#10B981', '#059669']}
+                style={styles.actionGradient}>
+                <Feather name="map-pin" size={24} color="#fff" />
+                <Text style={styles.actionText}>Pharmacies</Text>
+                <Text style={styles.actionSubtext}>{stats.pendingPharmacies} pending</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => router.push('/admin/management/mapping')}>
+              <LinearGradient
+                colors={['#EC4899', '#DB2777']}
+                style={styles.actionGradient}>
+                <Feather name="link" size={24} color="#fff" />
+                <Text style={styles.actionText}>Mapping</Text>
+                <Text style={styles.actionSubtext}>Assign distributors</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* ✅ ML TEST BUTTON ADDED */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>ML Testing</Text>
+
+          <TouchableOpacity
+           style={{
+            padding: 20,
+            backgroundColor: 'red',
+            marginTop: 20,
+          }}
+          onPress={() => {
+           console.log("CLICKED");
+           router.push('/ml-test');
+        }}
+      >
+          <Text style={{ color: 'white' }}>TEST ML</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Recent Orders */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recent Orders</Text>
+            <TouchableOpacity onPress={() => router.push('/admin/orders')}>
+              <Text style={styles.seeAll}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          {recentOrders.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Feather name="inbox" size={48} color="#D1D5DB" />
+              <Text style={styles.emptyText}>No recent orders</Text>
+            </View>
+          ) : (
+            recentOrders.map((order) => (
+              <TouchableOpacity
+                key={order.id}
+                style={styles.orderCard}
+                onPress={() => router.push(`/admin/orders`)}>
+                <View style={styles.orderHeader}>
+                  <View>
+                    <Text style={styles.orderNumber}>#{order.id.slice(0, 8).toUpperCase()}</Text>
+                    <Text style={styles.orderDistributor}>
+                      {order.distributor_profiles?.display_name ||
+                        order.distributor_profiles?.contact_name ||
+                        'Unknown Distributor'}
+                    </Text>
+                  </View>
+                  <View style={[styles.statusBadge, { backgroundColor: getStatusColor(order.status) + '20' }]}>
+                    <Text style={[styles.statusText, { color: getStatusColor(order.status) }]}>
+                      {order.status}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.orderFooter}>
+                  <Text style={styles.orderDate}>
+                    {new Date(order.order_date).toLocaleDateString()}
+                  </Text>
+                  <Text style={styles.orderAmount}>₹{Number(order.total_amount || 0).toFixed(2)}</Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          )}
+        </View>
+
+        {/* Network Overview */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Network Overview</Text>
+          <View style={styles.performanceCard}>
+            <View style={styles.performanceRow}>
+              <View style={styles.performanceItem}>
+                <View style={[styles.performanceIcon, { backgroundColor: '#DBEAFE' }]}>
+                  <Feather name="truck" size={20} color="#3B82F6" />
+                </View>
+                <View style={styles.performanceContent}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={styles.performanceValue}>{stats.approvedDistributors}</Text>
+                    <Text style={{ fontSize: 12, color: '#F59E0B', fontWeight: '600' }}>{stats.pendingDistributors} Pending</Text>
+                  </View>
+                  <Text style={styles.performanceLabel}>Distributors (Approved vs Pending)</Text>
+                </View>
+              </View>
+
+              <View style={styles.performanceItem}>
+                <View style={[styles.performanceIcon, { backgroundColor: '#D1FAE5' }]}>
+                  <Feather name="home" size={20} color="#10B981" />
+                </View>
+                <View style={styles.performanceContent}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={styles.performanceValue}>{stats.approvedPharmacies}</Text>
+                    <Text style={{ fontSize: 12, color: '#F59E0B', fontWeight: '600' }}>{stats.pendingPharmacies} Pending</Text>
+                  </View>
+                  <Text style={styles.performanceLabel}>Pharmacies (Approved vs Pending)</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#6B7280',
+    fontWeight: '600',
+  },
+  header: {
+    paddingTop: 60,
+    paddingBottom: 24,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  headerGreeting: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.9)',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#fff',
+  },
+  logoutBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 100,
+  },
+  statsContainer: {
+    marginBottom: 24,
+  },
+  statRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 12,
+  },
+  statCardSimple: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+  statIconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statContentSimple: {
+    flex: 1,
+  },
+  statValueSimple: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  statLabelSimple: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  statCardSmall: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  statIconSmall: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  statValueSmall: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  statLabelSmall: {
+    fontSize: 11,
+    color: '#6B7280',
+    marginTop: 2,
+    textAlign: 'center',
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  seeAll: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4F46E5',
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  actionCard: {
+    width: (width - 52) / 2,
+    height: 120,
+    borderRadius: 16,
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+  actionGradient: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
+  },
+  actionText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#fff',
+    marginTop: 4,
+  },
+  actionSubtext: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.9)',
+    fontWeight: '600',
+  },
+  orderCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  orderHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  orderNumber: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  orderDistributor: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  orderFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  orderDate: {
+    fontSize: 12,
+    color: '#9CA3AF',
+  },
+  orderAmount: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#4F46E5',
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  performanceCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  performanceRow: {
+    gap: 16,
+  },
+  performanceItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    gap: 12,
+  },
+  performanceIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  performanceContent: {
+    flex: 1,
+  },
+  performanceValue: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  performanceLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+});
