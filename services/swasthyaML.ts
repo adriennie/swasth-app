@@ -1,8 +1,88 @@
 // services/swasthyaML.ts
-// Swasthya ML API — connects your Expo app to your AWS Lambda model
-// API: https://074hc0y3ta.execute-api.ap-south-1.amazonaws.com/default
+// FIXED: UUID → ML ID mapping so real pharmacy logins work with the model
+
+import { supabase } from '@/lib/supabase';
 
 const ML_API = 'https://074hc0y3ta.execute-api.ap-south-1.amazonaws.com/default';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UUID → ML ID MAPPING
+// Problem: ML model trained on PH_01–PH_15 / SKU_001–SKU_020
+// Problem: Supabase uses UUIDs like cd68f3f3-4786-41e5-81e7-45b3bd5981fc
+// Fix:     Map UUIDs → ML format IDs before every API call
+// ─────────────────────────────────────────────────────────────────────────────
+
+// In-memory cache so we don't hit Supabase on every call
+const mlPharmacyCache: Record<string, string> = {};
+const mlSkuCache:      Record<string, string> = {};
+
+/**
+ * Gets ML-format pharmacy ID (e.g. "PH_01") for a Supabase user UUID.
+ * First tries ml_id column in pharmacy_profiles (Option 1 from your friend).
+ * Falls back to deterministic mapping if column doesn't exist yet (Option 2).
+ */
+export async function getMLPharmacyId(supabaseUserId: string): Promise<string> {
+  if (!supabaseUserId) return 'PH_01';
+  if (mlPharmacyCache[supabaseUserId]) return mlPharmacyCache[supabaseUserId];
+
+  try {
+    const { data } = await supabase
+      .from('pharmacy_profiles')
+      .select('id, ml_id')
+      .eq('user_id', supabaseUserId)
+      .single();
+
+    // If ml_id column exists and has a value — use it directly
+    if (data?.ml_id) {
+      mlPharmacyCache[supabaseUserId] = data.ml_id;
+      return data.ml_id;
+    }
+
+    // Otherwise — deterministic fallback using profile row hash → PH_01 to PH_15
+    if (data?.id) {
+      const num  = (parseInt(data.id.replace(/-/g, '').slice(-4), 16) % 15) + 1;
+      const mlId = `PH_${String(num).padStart(2, '0')}`;
+      mlPharmacyCache[supabaseUserId] = mlId;
+      return mlId;
+    }
+  } catch (_) {}
+
+  mlPharmacyCache[supabaseUserId] = 'PH_01';
+  return 'PH_01';
+}
+
+/**
+ * Gets ML-format SKU ID (e.g. "SKU_004") for a product UUID.
+ * If the SKU is already in SKU_XXX format, use it directly.
+ * Otherwise maps product position to SKU_001–SKU_020.
+ */
+export async function getMLSkuId(productId: string, sku?: string): Promise<string> {
+  if (!productId) return 'SKU_001';
+  if (mlSkuCache[productId]) return mlSkuCache[productId];
+
+  // Already in correct format
+  if (sku && /^SKU_\d+$/.test(sku)) {
+    mlSkuCache[productId] = sku;
+    return sku;
+  }
+
+  try {
+    const { data } = await supabase
+      .from('products')
+      .select('id')
+      .order('created_at', { ascending: true });
+
+    if (data) {
+      const idx   = data.findIndex(p => p.id === productId);
+      const mlSku = `SKU_${String(((idx < 0 ? 0 : idx) % 20) + 1).padStart(3, '0')}`;
+      mlSkuCache[productId] = mlSku;
+      return mlSku;
+    }
+  } catch (_) {}
+
+  mlSkuCache[productId] = 'SKU_001';
+  return 'SKU_001';
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -35,172 +115,146 @@ export interface AnomalyResult {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HELPER — builds ML features from your Supabase inventory data
-// Call this instead of computing features manually everywhere
-// ─────────────────────────────────────────────────────────────────────────────
-
-export function buildForecastFeatures(item: {
-  pharmacy_id: string;
-  sku_id: string;
-  stock_quantity: number;
-  unit_price: number;
-  ph_code: number;      // pharmacy number e.g. PH_01 → 1
-  sku_code: number;     // SKU number e.g. SKU_004 → 4
-  city_tier: number;    // 1, 2, or 3
-  city_code: number;    // city category code
-  cat_code: number;     // category code
-  // Sales history (fetch from your sales/orders table)
-  sales_last_1d: number;
-  sales_last_7d: number;
-  sales_last_14d: number;
-  sales_last_28d: number;
-  sales_last_91d: number;
-}) {
-  const now = new Date();
-  const dayOfWeek  = now.getDay();         // 0=Sun, 6=Sat
-  const dayOfYear  = getDayOfYear(now);
-  const month      = now.getMonth() + 1;
-  const quarter    = Math.ceil(month / 3);
-  const isWeekend  = dayOfWeek === 0 || dayOfWeek === 6 ? 1 : 0;
-
-  // Rolling averages from sales history
-  const roll7Mean  = item.sales_last_7d  / 7;
-  const roll14Mean = item.sales_last_14d / 14;
-  const roll30Mean = (item.sales_last_28d / 28) || roll7Mean;
-  const roll60Mean = roll30Mean * 0.95;
-  const roll90Mean = roll30Mean * 0.90;
-  const roll7Std   = roll7Mean * 0.2;  // estimate: 20% of mean
-
-  return {
-    pharmacy_id:   item.pharmacy_id,
-    sku_id:        item.sku_id,
-    current_stock: item.stock_quantity,
-    unit_price:    item.unit_price,
-
-    // Lag features
-    lag_1:   item.sales_last_1d,
-    lag_7:   item.sales_last_7d  / 7,
-    lag_14:  item.sales_last_14d / 14,
-    lag_28:  item.sales_last_28d / 28,
-    lag_91:  item.sales_last_91d / 91,
-
-    // Rolling stats
-    roll_7_mean:  roll7Mean,
-    roll_7_std:   roll7Std,
-    roll_14_mean: roll14Mean,
-    roll_30_mean: roll30Mean,
-    roll_60_mean: roll60Mean,
-    roll_90_mean: roll90Mean,
-
-    // Trend ratios
-    trend_7_vs_30:  roll7Mean  / (roll30Mean  + 1e-6),
-    trend_14_vs_60: roll14Mean / (roll60Mean  + 1e-6),
-    trend_30_vs_90: roll30Mean / (roll90Mean  + 1e-6),
-
-    // Cyclical time encoding
-    sin_dow:   Math.sin(2 * Math.PI * dayOfWeek / 7),
-    cos_dow:   Math.cos(2 * Math.PI * dayOfWeek / 7),
-    sin_doy:   Math.sin(2 * Math.PI * dayOfYear / 365),
-    cos_doy:   Math.cos(2 * Math.PI * dayOfYear / 365),
-    sin_month: Math.sin(2 * Math.PI * month / 12),
-    cos_month: Math.cos(2 * Math.PI * month / 12),
-
-    // Calendar
-    month,
-    quarter,
-    city_tier:    item.city_tier,
-    is_weekend:   isWeekend,
-    is_mhd_window: isInMHDWindow(now) ? 1 : 0,  // May 21–June 7
-    is_ngo_season: month === 1 || month === 8 ? 1 : 0,
-    is_monsoon:    month >= 6 && month <= 9 ? 1 : 0,
-
-    // Entity codes
-    sku_code:  item.sku_code,
-    ph_code:   item.ph_code,
-    city_code: item.city_code,
-    cat_code:  item.cat_code,
-  };
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // FEATURE 1 — Demand Forecast + Reorder Suggestion
-// Use in: pharmacy/dashboard.tsx and pharmacy/inventory.tsx
+// Usage: pharmacy/dashboard.tsx, pharmacy/inventory.tsx
 // ─────────────────────────────────────────────────────────────────────────────
 
-export async function getDemandForecast(features: ReturnType<typeof buildForecastFeatures>): Promise<ForecastResult | null> {
+export async function getDemandForecast(params: {
+  supabaseUserId: string;  // auth.id from AuthContext — UUID
+  productId: string;       // product row UUID
+  productSku?: string;     // e.g. "SP-RP-001" or "SKU_004"
+  currentStock: number;
+  unitPrice: number;
+  salesLast1d:  number;
+  salesLast7d:  number;
+  salesLast14d: number;
+  salesLast28d: number;
+  salesLast91d: number;
+  cityTier?: number;
+}): Promise<ForecastResult | null> {
   try {
-    const response = await fetch(`${ML_API}/forecast`, {
-      method: 'POST',
+    // ✅ KEY FIX: convert UUIDs to ML training format BEFORE calling API
+    const mlPharmacyId = await getMLPharmacyId(params.supabaseUserId);
+    const mlSkuId      = await getMLSkuId(params.productId, params.productSku);
+
+    const now        = new Date();
+    const dow        = now.getDay();
+    const doy        = getDayOfYear(now);
+    const month      = now.getMonth() + 1;
+    const quarter    = Math.ceil(month / 3);
+    const roll7Mean  = params.salesLast7d  / 7  || 1;
+    const roll14Mean = params.salesLast14d / 14 || 1;
+    const roll30Mean = params.salesLast28d / 28 || 1;
+    const roll90Mean = params.salesLast91d / 91 || 1;
+    const roll60Mean = roll30Mean * 0.95;
+
+    const res = await fetch(`${ML_API}/forecast`, {
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(features),
+      body: JSON.stringify({
+        pharmacy_id:   mlPharmacyId,  // "PH_01" ✅
+        sku_id:        mlSkuId,       // "SKU_004" ✅
+        current_stock: params.currentStock,
+        unit_price:    params.unitPrice,
+
+        lag_1:  params.salesLast1d,
+        lag_7:  roll7Mean,
+        lag_14: roll14Mean,
+        lag_28: roll30Mean,
+        lag_91: roll90Mean,
+
+        roll_7_mean:  roll7Mean,
+        roll_7_std:   roll7Mean * 0.2,
+        roll_14_mean: roll14Mean,
+        roll_30_mean: roll30Mean,
+        roll_60_mean: roll60Mean,
+        roll_90_mean: roll90Mean,
+
+        trend_7_vs_30:  roll7Mean  / (roll30Mean + 1e-6),
+        trend_14_vs_60: roll14Mean / (roll60Mean + 1e-6),
+        trend_30_vs_90: roll30Mean / (roll90Mean + 1e-6),
+
+        sin_dow:   Math.sin(2 * Math.PI * dow   / 7),
+        cos_dow:   Math.cos(2 * Math.PI * dow   / 7),
+        sin_doy:   Math.sin(2 * Math.PI * doy   / 365),
+        cos_doy:   Math.cos(2 * Math.PI * doy   / 365),
+        sin_month: Math.sin(2 * Math.PI * month / 12),
+        cos_month: Math.cos(2 * Math.PI * month / 12),
+
+        month,   quarter,
+        city_tier:    params.cityTier ?? 1,
+        is_weekend:   dow === 0 || dow === 6 ? 1 : 0,
+        is_mhd_window: isInMHDWindow(now) ? 1 : 0,
+        is_ngo_season: month === 1 || month === 8 ? 1 : 0,
+        is_monsoon:    month >= 6 && month <= 9 ? 1 : 0,
+
+        // Numeric codes derived from ML IDs
+        ph_code:  parseInt(mlPharmacyId.replace('PH_', ''))  || 1,
+        sku_code: parseInt(mlSkuId.replace('SKU_', ''))       || 1,
+        city_code: 0,
+        cat_code:  0,
+      }),
     });
-    const data = await response.json();
-    if (data.error) {
-      console.error('Forecast API error:', data.error);
-      return null;
-    }
+
+    const data = await res.json();
+    if (data.error) { console.error('Forecast API:', data.error); return null; }
     return data as ForecastResult;
-  } catch (error) {
-    console.error('getDemandForecast failed:', error);
+
+  } catch (e) {
+    console.error('getDemandForecast:', e);
     return null;
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FEATURE 2 — Anomaly Detection
-// Use in: admin/management/orders.tsx — when admin views a new order
+// Usage: admin/orders.tsx — when admin reviews a pending order
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function detectOrderAnomaly(order: {
-  pharmacy_id: string;
-  sku_id: string;
-  order_qty: number;
+  supabasePharmacyId: string;  // pharmacy user_id UUID from orders table
+  productId: string;           // product UUID from order_items
+  productSku?: string;
+  order_qty:   number;
   order_value: number;
 }): Promise<AnomalyResult | null> {
   try {
-    const now = new Date();
+    // ✅ KEY FIX: convert UUIDs to ML training format BEFORE calling API
+    const mlPharmacyId = await getMLPharmacyId(order.supabasePharmacyId);
+    const mlSkuId      = await getMLSkuId(order.productId, order.productSku);
+
+    const now   = new Date();
     const month = now.getMonth() + 1;
 
-    const response = await fetch(`${ML_API}/detect-anomaly`, {
-      method: 'POST',
+    const res = await fetch(`${ML_API}/detect-anomaly`, {
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        ...order,
+        pharmacy_id: mlPharmacyId,  // "PH_01" ✅
+        sku_id:      mlSkuId,       // "SKU_004" ✅
+        order_qty:      order.order_qty,
+        order_value:    order.order_value,
         order_month:    month,
         order_dow:      now.getDay(),
         is_month_start: now.getDate() <= 7 ? 1 : 0,
         is_quarter_end: [3, 6, 9, 12].includes(month) ? 1 : 0,
       }),
     });
-    const data = await response.json();
-    if (data.error) {
-      console.error('Anomaly API error:', data.error);
-      return null;
-    }
+
+    const data = await res.json();
+    if (data.error) { console.error('Anomaly API:', data.error); return null; }
     return data as AnomalyResult;
-  } catch (error) {
-    console.error('detectOrderAnomaly failed:', error);
+
+  } catch (e) {
+    console.error('detectOrderAnomaly:', e);
     return null;
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HELPERS
+// UI COLOR HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
 
-function getDayOfYear(date: Date): number {
-  const start = new Date(date.getFullYear(), 0, 0);
-  const diff  = date.getTime() - start.getTime();
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-}
-
-function isInMHDWindow(date: Date): boolean {
-  const month = date.getMonth() + 1;
-  const day   = date.getDate();
-  return (month === 5 && day >= 21) || (month === 6 && day <= 7);
-}
-
-// Urgency color helper — use in UI
 export function getUrgencyColor(urgency: ForecastResult['urgency']): string {
   switch (urgency) {
     case 'CRITICAL — Out of Stock': return '#B91C1C';
@@ -218,4 +272,17 @@ export function getSeverityColor(severity: AnomalyResult['severity']): string {
     case 'MEDIUM':   return '#F59E0B';
     default:         return '#10B981';
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PRIVATE HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+
+function getDayOfYear(d: Date): number {
+  return Math.floor((d.getTime() - new Date(d.getFullYear(), 0, 0).getTime()) / 86400000);
+}
+
+function isInMHDWindow(d: Date): boolean {
+  const m = d.getMonth() + 1, day = d.getDate();
+  return (m === 5 && day >= 21) || (m === 6 && day <= 7);
 }

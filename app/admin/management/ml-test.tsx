@@ -145,49 +145,44 @@ export default function MLTestScreen() {
     setT3({ status: 'loading', data: null });
     const t = Date.now();
     try {
+      // PH_01 + SKU_001 exist in training data
+      // Their normal avg = 52.7 units, range = 25–504
+      // Sending 50 units = perfectly normal, should NOT be flagged
       const res = await fetch(`${ML_API}/detect-anomaly`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          pharmacy_id: realPharmacyId || 'PH_01',
-          sku_id:      realSkuId      || 'SKU_001',
-          order_qty:   10,
-          order_value: 5600,
-          order_month: new Date().getMonth() + 1,
-          order_dow:   new Date().getDay(),
+          pharmacy_id:    'PH_01',
+          sku_id:         'SKU_001',
+          order_qty:      50,       // within normal range — avg is 52.7
+          order_value:    21500,    // 50 x 430 (unit price from training data)
+          order_month:    new Date().getMonth() + 1,
+          order_dow:      new Date().getDay(),
           is_month_start: new Date().getDate() <= 7 ? 1 : 0,
           is_quarter_end: [3,6,9,12].includes(new Date().getMonth()+1) ? 1 : 0,
         }),
       });
       const d  = await res.json();
       const ms = Date.now() - t;
-      // If normal_avg is undefined → pharmacy not in training data (expected)
-      if (d.normal_avg === undefined || d.normal_avg === null) {
-        setT3({ status: 'pass', duration: ms, data: {
-          'Note':           '⚠️ Pharmacy not in ML training data',
-          'Why':            'Training used PH_01–PH_15 IDs, your DB uses UUID format',
-          'API response':   '✅ Returned correctly (manual review flag)',
-          'Is anomaly?':    String(d.is_anomaly),
-          'Severity':       d.severity || 'NONE',
-          'Fix for prod':   'Map your pharmacy UUIDs to PH_01 format in ML service',
-        }});
-      } else {
-        const correct = d.is_anomaly === false;
-        setT3({ status: correct ? 'pass' : 'fail', duration: ms, data: {
-          'Order qty':       '10 units (small order)',
-          'Normal avg':      `${d.normal_avg} units`,
-          'Ratio vs normal': `${d.qty_vs_mean}x`,
-          'Is anomaly?':     correct ? '✅ false (correct!)' : '❌ true (wrong flag)',
-          'Severity':        d.severity,
-          'Result':          correct ? '✅ Correctly identified as NORMAL' : '❌ Incorrectly flagged',
-        }});
-      }
+      const correct = d.is_anomaly === false;
+      setT3({ status: correct ? 'pass' : 'fail', duration: ms, data: {
+        'Pharmacy':        'PH_01 (training data)',
+        'SKU':             'SKU_001',
+        'Order qty sent':  '50 units',
+        'Training avg':    '52.7 units (from CSV)',
+        'Normal range':    '25 – 504 units',
+        'Model avg':       d.normal_avg !== undefined ? `${d.normal_avg} units` : 'N/A',
+        'Ratio vs normal': d.qty_vs_mean ? `${d.qty_vs_mean}x` : 'N/A',
+        'Is anomaly?':     correct ? '✅ false — correctly NOT flagged' : '❌ true — wrongly flagged',
+        'Severity':        d.severity || 'NONE',
+        'Result':          correct ? '✅ Normal order correctly identified' : '❌ Normal order incorrectly flagged',
+      }});
     } catch (e: any) {
       setT3({ status: 'fail', data: { error: `❌ ${e.message}` }, duration: Date.now() - t });
     }
   };
 
-  const test4 = async () => {
+    const test4 = async () => {
     setT4({ status: 'loading', data: null });
     const t = Date.now();
     try {

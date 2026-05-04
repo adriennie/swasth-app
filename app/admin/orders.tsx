@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { detectOrderAnomaly, getSeverityColor, AnomalyResult } from '@/services/swasthyaML';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -64,11 +65,40 @@ export default function OrdersTab() {
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [loadingItems, setLoadingItems] = useState(false);
 
+    // ML Anomaly state — maps order.id → result
+    const [anomalyMap, setAnomalyMap] = useState<Record<string, AnomalyResult>>({});
+
     // Delivery Modal
     const [otpModalVisible, setOtpModalVisible] = useState(false);
     const [otpInput, setOtpInput] = useState('');
     const [verifyingOtp, setVerifyingOtp] = useState(false);
     const [currentDeliveryOrder, setCurrentDeliveryOrder] = useState<AdminOrder | null>(null);
+
+    const checkAnomaliesInBackground = async (orderList: AdminOrder[]) => {
+        const pending = orderList.filter(o => o.status.toLowerCase() === 'pending').slice(0, 8);
+        const newMap: Record<string, AnomalyResult> = {};
+        for (const order of pending) {
+            try {
+                const { data: items } = await supabase
+                    .from('order_items')
+                    .select('quantity, price, product_id, products(id, sku)')
+                    .eq('order_id', order.id)
+                    .limit(1);
+                if (!items || items.length === 0) continue;
+                const item = items[0];
+                const product = (item as any).products;
+                const result = await detectOrderAnomaly({
+                    supabasePharmacyId: order.pharmacy_id ?? '',
+                    productId:          product?.id || item.product_id,
+                    productSku:         product?.sku,
+                    order_qty:          item.quantity,
+                    order_value:        Math.round(item.quantity * item.price),
+                });
+                if (result) newMap[order.id] = result;
+            } catch (_) {}
+        }
+        setAnomalyMap(prev => ({ ...prev, ...newMap }));
+    };
 
     const fetchOrders = async () => {
         try {
@@ -127,6 +157,8 @@ export default function OrdersTab() {
             }
 
             setOrders(finalData);
+            // Run anomaly detection on pending pharmacy orders in background
+            if (orderSource === 'pharmacy') checkAnomaliesInBackground(finalData);
         } catch (error) {
             console.error('Error fetching orders:', error);
         } finally {
@@ -372,6 +404,13 @@ export default function OrdersTab() {
                                         </Text>
                                     </View>
                                 </View>
+                                {anomalyMap[order.id]?.is_anomaly && (
+                                    <View style={[styles.anomalyBadge, { backgroundColor: getSeverityColor(anomalyMap[order.id].severity) + '15', borderColor: getSeverityColor(anomalyMap[order.id].severity) }]}>
+                                        <Text style={[styles.anomalyBadgeText, { color: getSeverityColor(anomalyMap[order.id].severity) }]}>
+                                            ⚠️ {anomalyMap[order.id].severity} — Suspicious Order
+                                        </Text>
+                                    </View>
+                                )}
 
                                 <View style={styles.cardDetails}>
                                     <View style={styles.detailItem}>
@@ -450,6 +489,20 @@ export default function OrdersTab() {
                                     {selectedOrder.status.toUpperCase()}
                                 </Text>
                             </View>
+                            {anomalyMap[selectedOrder.id] && (
+                                <View style={[styles.anomalyBox, { borderColor: anomalyMap[selectedOrder.id].is_anomaly ? getSeverityColor(anomalyMap[selectedOrder.id].severity) : '#10B981' }]}>
+                                    <Text style={[styles.anomalyBoxTitle, { color: anomalyMap[selectedOrder.id].is_anomaly ? getSeverityColor(anomalyMap[selectedOrder.id].severity) : '#10B981' }]}>
+                                        {anomalyMap[selectedOrder.id].is_anomaly
+                                            ? `⚠️ AI Flag: ${anomalyMap[selectedOrder.id].severity} — Suspicious Order`
+                                            : '✅ AI Check: Order looks normal'}
+                                    </Text>
+                                    {anomalyMap[selectedOrder.id].is_anomaly && (
+                                        <Text style={styles.anomalyDetail}>
+                                            This order is {anomalyMap[selectedOrder.id].qty_vs_mean?.toFixed(1)}x their normal size (avg: {anomalyMap[selectedOrder.id].normal_avg} units)
+                                        </Text>
+                                    )}
+                                </View>
+                            )}
                         </View>
                     )}
 
@@ -822,5 +875,12 @@ const styles = StyleSheet.create({
     otpInput: { width: '100%', height: 50, borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 12, fontSize: 24, fontWeight: 'bold', color: '#1F2937', marginBottom: 24, letterSpacing: 8 },
     verifyButton: { width: '100%', height: 48, backgroundColor: '#10B981', borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
     disabledButton: { opacity: 0.5 },
-    verifyButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' }
+    verifyButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+
+    // ML Anomaly styles
+    anomalyBadge:     { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, marginTop: 8, alignSelf: 'flex-start' },
+    anomalyBadgeText: { fontSize: 11, fontWeight: '700' },
+    anomalyBox:       { marginTop: 12, borderWidth: 1.5, borderRadius: 10, padding: 12, gap: 6 },
+    anomalyBoxTitle:  { fontSize: 13, fontWeight: '700' },
+    anomalyDetail:    { fontSize: 12, color: '#374151' },
 });

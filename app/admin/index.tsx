@@ -296,18 +296,31 @@ export default function AdminDashboard() {
           <Text style={styles.sectionTitle}>ML Testing</Text>
 
           <TouchableOpacity
-           style={{
-            padding: 20,
-            backgroundColor: 'red',
-            marginTop: 20,
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+            padding: 16,
+            backgroundColor: '#7C3AED',
+            borderRadius: 14,
+            marginTop: 8,
+            elevation: 3,
+            shadowColor: '#7C3AED',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
           }}
-          onPress={() => {
-           console.log("CLICKED");
-           router.push('/ml-test');
-        }}
-      >
-          <Text style={{ color: 'white' }}>TEST ML</Text>
-          </TouchableOpacity>
+          onPress={() => router.push('/admin/management/ml-test')}
+        >
+          <Feather name="cpu" size={20} color="#fff" />
+          <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>
+            Test ML Models
+          </Text>
+          <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12 }}>
+            4 checks
+          </Text>
+        </TouchableOpacity>
         </View>
 
         {/* Recent Orders */}

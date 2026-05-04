@@ -98,6 +98,10 @@ export default function AdminLayout() {
         name="management/brochures"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="management/ml-test"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

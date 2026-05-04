@@ -4,7 +4,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import {
-  buildForecastFeatures,
   ForecastResult,
   getDemandForecast,
   getUrgencyColor,
@@ -129,10 +128,16 @@ export default function PharmacyDashboard() {
   };
 
   // ─── NEW: Call ML API for each low-stock item ────────────────────────────
+  // app/pharmacy/dashboard.tsx  — ML section only
+// Replace ONLY the fetchMLSuggestions function in your dashboard
+// The rest of your dashboard stays exactly the same
+
+// ─── FIND THIS FUNCTION in your dashboard.tsx and REPLACE IT ─────────────────
+
   const fetchMLSuggestions = async (pharmacyProfileId: string) => {
     setMlLoading(true);
     try {
-      // Get inventory items that are low or out of stock
+      // Get low-stock items with product details
       const { data: invItems } = await supabase
         .from('pharmacy_inventory')
         .select(`
@@ -140,48 +145,37 @@ export default function PharmacyDashboard() {
           products(id, name, sku, price)
         `)
         .eq('pharmacy_id', pharmacyProfileId)
-        .lte('stock_quantity', 50); // fetch items with stock <= 50
+        .lte('stock_quantity', 50);
 
-      if (!invItems || invItems.length === 0) {
-        setMlLoading(false);
-        return;
-      }
+      if (!invItems || invItems.length === 0) { setMlLoading(false); return; }
 
       const suggestions: (ForecastResult & { product_name: string })[] = [];
 
-      for (const item of invItems.slice(0, 5)) { // max 5 to avoid too many API calls
+      for (const item of invItems.slice(0, 5)) {
         const product = (item as any).products;
         if (!product) continue;
 
-        // Build features with available data
-        // For sales history, use a simple estimate based on reorder_level
-        // In production, query your orders/sales table for actual history
-        const avgDailySales = item.reorder_level / 7; // estimate
+        const avgDailySales = Math.max(item.reorder_level / 7, 1);
 
-        const features = buildForecastFeatures({
-          pharmacy_id:    pharmacyProfileId,
-          sku_id:         product.sku || `SKU_${product.id}`,
-          stock_quantity: item.stock_quantity,
-          unit_price:     product.price || 0,
-          ph_code:        1,
-          sku_code:       1,
-          city_tier:      1,
-          city_code:      0,
-          cat_code:       0,
-          sales_last_1d:  avgDailySales,
-          sales_last_7d:  avgDailySales * 7,
-          sales_last_14d: avgDailySales * 14,
-          sales_last_28d: avgDailySales * 28,
-          sales_last_91d: avgDailySales * 91,
+        const result = await getDemandForecast({
+          // ✅ Pass auth.id UUID — the function handles conversion to PH_01 format
+          supabaseUserId: auth?.id ?? '',
+          productId:      product.id,
+          productSku:     product.sku,
+          currentStock:   item.stock_quantity,
+          unitPrice:      product.price || 0,
+          salesLast1d:    avgDailySales,
+          salesLast7d:    avgDailySales * 7,
+          salesLast14d:   avgDailySales * 14,
+          salesLast28d:   avgDailySales * 28,
+          salesLast91d:   avgDailySales * 91,
         });
 
-        const result = await getDemandForecast(features);
         if (result && result.should_order) {
           suggestions.push({ ...result, product_name: product.name });
         }
       }
 
-      // Sort by urgency — most critical first
       const urgencyOrder = [
         'CRITICAL — Out of Stock',
         'URGENT — < 2 days',
@@ -198,6 +192,14 @@ export default function PharmacyDashboard() {
       setMlLoading(false);
     }
   };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Also update your import at the top of dashboard.tsx:
+// REMOVE: import { buildForecastFeatures, ... } from '@/services/swasthyaML';
+// ADD:
+// import { getDemandForecast, ForecastResult, getUrgencyColor } from '@/services/swasthyaML';
+// ─────────────────────────────────────────────────────────────────────────────
+
 
   if (loading) {
     return (
