@@ -336,20 +336,87 @@ Contributions are welcome! Please follow these guidelines:
    npm install -g eas-cli
    ```
 
-2. **Configure builds**
+2. **Login to your Expo account**
+
+   ```bash
+   eas login
+   ```
+
+   (If you don't have an account, create one at [expo.dev](https://expo.dev))
+
+3. **Configure EAS Build** (one-time setup)
 
    ```bash
    eas build:configure
    ```
 
-3. **Build APK or IPA**
+   This generates `eas.json` in your project root with build profiles.
+
+4. **Build APK for Android**
 
    ```bash
    eas build -p android --profile production
-   eas build -p ios --profile production
    ```
 
-For detailed build instructions, see [EAS Build Guide](https://docs.expo.dev/build/setup/).
+   The build will:
+   - Compile your React Native code into an APK
+   - Sign it with your credentials
+   - Store it on EAS servers (accessible from dashboard)
+
+5. **Download Your APK**
+
+   After the build completes:
+   - **Option A (via CLI):**
+
+     ```bash
+     eas build:list
+     eas build:download <build-id>
+     ```
+
+   - **Option B (via Web Dashboard):**
+     1. Visit [expo.dev](https://expo.dev) → Your Project → Builds
+     2. Find your completed build
+     3. Click the download icon to get the `.apk` file
+
+6. **Release to GitHub Releases** (Optional)
+
+   Once you have the APK:
+
+   ```bash
+   # Create a GitHub release
+   gh release create v1.0.0 swasthya-v1.0.0.apk --title "Swasthya v1.0.0" --notes "First stable release"
+   ```
+
+   Or manually:
+   1. Go to your GitHub repo → Releases → "Draft a new release"
+   2. Create a tag (e.g., `v1.0.0`)
+   3. Upload the `.apk` file
+   4. Add release notes and publish
+
+### Build Configuration (eas.json)
+
+Your `eas.json` should look like:
+
+```json
+{
+  "build": {
+    "production": {
+      "android": {
+        "release_channel": "production",
+        "buildType": "apk"
+      },
+      "ios": {
+        "buildType": "ipa"
+      }
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  }
+}
+```
 
 ### Deploy Backend (Supabase)
 
@@ -359,7 +426,38 @@ For detailed build instructions, see [EAS Build Guide](https://docs.expo.dev/bui
 
 ---
 
-## 📈 Metrics & Monitoring
+## � Installing from APK
+
+To install Swasthya on an Android device using the APK file:
+
+1. **Download the APK** — Get the latest `.apk` file from:
+   - **EAS Dashboard:** [expo.dev](https://expo.dev) → Your Project → Builds
+   - **GitHub Releases:** [Releases page](https://github.com/yourusername/swasthya/releases)
+
+2. **Enable Unknown Sources** (if needed)
+   - Go to `Settings → Security → Unknown Sources`
+   - Toggle on "Allow installation from unknown sources"
+
+3. **Install the APK**
+   - Transfer the `.apk` file to your Android device
+   - Open the file with your file manager or directly from Downloads
+   - Tap "Install" and wait for the installation to complete
+
+4. **Launch the App**
+   - Once installation finishes, tap "Open" or find Swasthya in your app drawer
+   - On first launch, grant necessary permissions (camera, location, contacts as needed)
+
+### APK Release Versions
+
+| Version | Date     | Status | Download                                                                                          |
+| ------- | -------- | ------ | ------------------------------------------------------------------------------------------------- |
+| v1.0.0  | May 2026 | Latest | [Download](https://github.com/yourusername/swasthya/releases/download/v1.0.0/swasthya-v1.0.0.apk) |
+
+**Note:** APK files will be uploaded to the GitHub Releases page. Check back for the latest stable build.
+
+---
+
+## �📈 Metrics & Monitoring
 
 ### Key Metrics to Track
 

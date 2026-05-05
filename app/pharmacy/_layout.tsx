@@ -7,6 +7,9 @@ export default function PharmacyLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        sceneStyle: {
+          paddingTop: 10,
+        },
         tabBarStyle: {
           backgroundColor: '#fff',
           borderTopWidth: 1,

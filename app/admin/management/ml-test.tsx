@@ -74,7 +74,7 @@ export default function MLTestScreen() {
       if (order?.pharmacy_id) setRealPharmacyId(order.pharmacy_id);
       if (product?.sku)       setRealSkuId(product.sku);
       if (inv?.stock_quantity !== undefined) setRealStock(inv.stock_quantity);
-    } catch (e) {
+    } catch {
       setRealPharmacyId('PH_01');
       setRealSkuId('SKU_001');
     } finally {
@@ -248,19 +248,6 @@ export default function MLTestScreen() {
       </View>
 
       <ScrollView contentContainerStyle={s.scroll}>
-
-        {/* Real IDs box */}
-        <View style={s.idBox}>
-          <Text style={s.idTitle}>
-            {loadingIds ? '⏳ Fetching IDs from Supabase...' : '📋 IDs loaded from your database'}
-          </Text>
-          {!loadingIds && <>
-            <Text style={s.idText}>Pharmacy: <Text style={s.idVal}>{realPharmacyId || 'not found'}</Text></Text>
-            <Text style={s.idText}>SKU: <Text style={s.idVal}>{realSkuId || 'not found'}</Text></Text>
-            <Text style={s.idText}>Stock: <Text style={s.idVal}>{realStock} units</Text></Text>
-            <Text style={s.idNote}>Tests 1–3 use your real IDs. Test 4 uses PH_01+SKU_004 (ML training IDs) to guarantee anomaly detection.</Text>
-          </>}
-        </View>
 
         {/* Run all */}
         <TouchableOpacity

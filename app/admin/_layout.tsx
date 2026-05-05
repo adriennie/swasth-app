@@ -7,6 +7,9 @@ export default function AdminLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        sceneStyle: {
+          paddingTop: 10,
+        },
         tabBarStyle: {
           backgroundColor: '#fff',
           borderTopWidth: 1,
@@ -100,6 +103,18 @@ export default function AdminLayout() {
       />
       <Tabs.Screen
         name="management/ml-test"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="about"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="contact-support"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="privacy-policy"
         options={{ href: null }}
       />
     </Tabs>

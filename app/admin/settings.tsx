@@ -40,9 +40,9 @@ export default function SettingsTab() {
         {
             title: 'Support & Help',
             items: [
-                { id: 'help', title: 'Help Center', icon: 'help-circle', route: null },
-                { id: 'contact', title: 'Contact Support', icon: 'mail', route: null },
-                { id: 'privacy', title: 'Privacy Policy', icon: 'shield', route: null },
+                { id: 'about', title: 'About Us', icon: 'info', route: '/admin/about' },
+                { id: 'contact', title: 'Contact Support', icon: 'mail', route: '/admin/contact-support' },
+                { id: 'privacy', title: 'Privacy Policy', icon: 'shield', route: '/admin/privacy-policy' },
             ]
         }
     ];

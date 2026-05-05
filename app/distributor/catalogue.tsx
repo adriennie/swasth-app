@@ -147,7 +147,10 @@ export default function DistributorCatalogue() {
                 <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
                     <Feather name="chevron-left" size={24} color="#1F2937" />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Master Catalogue</Text>
+                <View style={styles.headerTextWrap}>
+                    <Text style={styles.headerTitle}>Master Catalogue</Text>
+                    <Text style={styles.headerSubtitle}>Browse products, pricing, and margin at a glance</Text>
+                </View>
                 <TouchableOpacity onPress={() => router.push('/distributor/cart')} style={styles.cartBtn}>
                     <Feather name="shopping-cart" size={24} color="#1F2937" />
                 </TouchableOpacity>
@@ -163,6 +166,12 @@ export default function DistributorCatalogue() {
                         onChangeText={setSearch}
                         placeholderTextColor="#9CA3AF"
                     />
+                </View>
+
+                <View style={styles.metaRow}>
+                    <Text style={styles.metaText}>Total: {products.length}</Text>
+                    <Text style={styles.metaDivider}>•</Text>
+                    <Text style={styles.metaText}>Showing: {filtered.length}</Text>
                 </View>
             </View>
 
@@ -187,26 +196,28 @@ export default function DistributorCatalogue() {
                                         <Feather name="box" size={32} color="#D1D5DB" />
                                     </View>
                                 )}
-                                {item.moq && item.moq > 1 && (
-                                    <View style={styles.moqFloatBadge}>
-                                        <Text style={styles.moqFloatText}>MOQ: {item.moq}</Text>
-                                    </View>
-                                )}
                             </View>
 
                             <View style={styles.cardInfo}>
                                 <View style={styles.cardHeader}>
                                     <View style={{ flex: 1 }}>
-                                        <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
+                                        <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
                                         <Text style={styles.sku}>SKU: {item.sku || 'N/A'}</Text>
                                     </View>
                                     <TouchableOpacity style={styles.addBtn} onPress={() => addToCart(item)}>
-                                        <Feather name="plus" size={20} color="#fff" />
+                                        <Feather name="plus" size={18} color="#fff" />
                                     </TouchableOpacity>
                                 </View>
 
                                 {item.description && (
                                     <Text style={styles.desc} numberOfLines={2}>{item.description}</Text>
+                                )}
+
+                                {item.moq && item.moq > 1 && (
+                                    <View style={styles.moqInlineBadge}>
+                                        <Feather name="alert-circle" size={12} color="#4338CA" />
+                                        <Text style={styles.moqInlineText}>MOQ {item.moq} units</Text>
+                                    </View>
                                 )}
 
                                 <View style={styles.priceContainer}>
@@ -241,110 +252,155 @@ export default function DistributorCatalogue() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F8FAFC' },
+    container: { flex: 1, backgroundColor: '#F3F4F6' },
     header: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 14,
         backgroundColor: '#fff',
         borderBottomWidth: 1,
         borderBottomColor: '#E5E7EB',
     },
+    headerTextWrap: {
+        flex: 1,
+        marginHorizontal: 10,
+        paddingTop: 6,
+    },
     backBtn: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 38,
+        height: 38,
+        borderRadius: 19,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F3F4F6',
+        backgroundColor: '#F9FAFB',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
     },
     cartBtn: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 38,
+        height: 38,
+        borderRadius: 19,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F3F4F6',
+        backgroundColor: '#F9FAFB',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
     },
-    headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: '800',
+        color: '#111827',
+    },
+    headerSubtitle: {
+        marginTop: 2,
+        fontSize: 12,
+        color: '#6B7280',
+    },
     searchContainer: {
-        padding: 16,
-        backgroundColor: '#fff',
+        paddingHorizontal: 16,
+        paddingTop: 12,
+        paddingBottom: 8,
+        backgroundColor: '#F3F4F6',
     },
     searchRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F3F4F6',
+        backgroundColor: '#fff',
         borderRadius: 12,
         paddingHorizontal: 12,
         height: 48,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
     },
     searchInput: { flex: 1, marginLeft: 8, fontSize: 15, color: '#1F2937' },
+    metaRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    metaText: {
+        fontSize: 12,
+        color: '#6B7280',
+        fontWeight: '600',
+    },
+    metaDivider: {
+        marginHorizontal: 8,
+        color: '#9CA3AF',
+        fontSize: 12,
+    },
     center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     loadingText: { marginTop: 12, color: '#6B7280', fontWeight: '600' },
-    list: { padding: 16, paddingBottom: 40 },
+    list: { paddingHorizontal: 16, paddingBottom: 32, paddingTop: 4 },
     card: {
         backgroundColor: '#fff',
-        borderRadius: 20,
-        marginBottom: 20,
-        elevation: 3,
+        borderRadius: 16,
+        marginBottom: 12,
+        elevation: 1,
         shadowColor: '#000',
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
+        shadowOpacity: 0.05,
+        shadowRadius: 6,
         overflow: 'hidden',
         borderWidth: 1,
-        borderColor: '#F3F4F6',
+        borderColor: '#E5E7EB',
+        flexDirection: 'row',
     },
     imageContainer: {
-        width: '100%',
-        height: 180,
+        width: 104,
+        minHeight: 132,
         backgroundColor: '#F9FAFB',
-        position: 'relative',
+        borderRightWidth: 1,
+        borderRightColor: '#F3F4F6',
     },
     productImage: { width: '100%', height: '100%', resizeMode: 'cover' },
     placeholderImage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-    moqFloatBadge: {
-        position: 'absolute',
-        top: 12,
-        right: 12,
-        backgroundColor: 'rgba(79, 70, 229, 0.9)',
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 8,
-    },
-    moqFloatText: { color: '#fff', fontSize: 11, fontWeight: '800' },
-    cardInfo: { padding: 16 },
-    cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
-    name: { fontSize: 18, fontWeight: '800', color: '#111827', flex: 1 },
-    sku: { fontSize: 12, color: '#9CA3AF', fontWeight: '600', marginTop: 2 },
+    cardInfo: { flex: 1, padding: 12 },
+    cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6, gap: 8 },
+    name: { fontSize: 15, fontWeight: '700', color: '#111827', flex: 1, lineHeight: 20 },
+    sku: { fontSize: 11, color: '#9CA3AF', fontWeight: '600', marginTop: 2 },
     addBtn: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 34,
+        height: 34,
+        borderRadius: 17,
         backgroundColor: '#4F46E5',
         alignItems: 'center',
         justifyContent: 'center',
-        elevation: 4,
+        elevation: 2,
         shadowColor: '#4F46E5',
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
     },
-    desc: { fontSize: 13, color: '#6B7280', lineHeight: 18, marginBottom: 16 },
+    desc: { fontSize: 12, color: '#6B7280', lineHeight: 17, marginBottom: 8 },
+    moqInlineBadge: {
+        alignSelf: 'flex-start',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        backgroundColor: '#EEF2FF',
+        borderRadius: 999,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        marginBottom: 8,
+    },
+    moqInlineText: {
+        fontSize: 11,
+        color: '#4338CA',
+        fontWeight: '700',
+    },
     priceContainer: {
         flexDirection: 'row',
         backgroundColor: '#F9FAFB',
-        borderRadius: 12,
-        padding: 12,
-        gap: 12,
+        borderRadius: 10,
+        padding: 10,
+        gap: 8,
     },
     priceItem: { flex: 1 },
     marginItem: { flex: 1, alignItems: 'flex-end' },
-    priceLabel: { fontSize: 10, color: '#9CA3AF', fontWeight: '700', textTransform: 'uppercase', marginBottom: 4 },
-    costPrice: { fontSize: 16, fontWeight: '800', color: '#111827' },
-    retailPrice: { fontSize: 16, fontWeight: '800', color: '#4F46E5' },
-    marginText: { fontSize: 16, fontWeight: '800', color: '#10B981' },
+    priceLabel: { fontSize: 9, color: '#9CA3AF', fontWeight: '700', textTransform: 'uppercase', marginBottom: 3 },
+    costPrice: { fontSize: 13, fontWeight: '800', color: '#111827' },
+    retailPrice: { fontSize: 13, fontWeight: '800', color: '#4F46E5' },
+    marginText: { fontSize: 13, fontWeight: '800', color: '#10B981' },
     emptyState: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
     emptyText: { marginTop: 12, color: '#9CA3AF', fontSize: 16 },
 });

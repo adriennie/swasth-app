@@ -1,135 +1,65 @@
-import { useAuth } from '@/context/AuthContext';
-import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  Alert,
-  Dimensions,
-  KeyboardAvoidingView,
-  Platform,
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 
-const { height } = Dimensions.get('window');
-
 export default function LoginScreen() {
-  const [showSplash, setShowSplash] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
-
-  const handleCustomerLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Missing Info', 'Please enter both email and password.');
-      return;
-    }
-    login({ email, role: 'customer', loggedInAt: Date.now() });
-  };
-
-  const Splash = () => (
-    <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#3B82F6', '#1D4ED8']} style={styles.gradient} />
-
-      <View style={[styles.content, { justifyContent: 'flex-start' }]}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Welcome to HerCircle</Text>
-          <Text style={styles.subtitle}>Connect with pharmacies, distributors and manage health.</Text>
-        </View>
-
-        <View style={styles.formContainer}>
-          <Text style={{fontSize:16, color:'#6B7280', textAlign:'center', marginBottom:16}}>Get started by signing in or continue to the Supplier Portal.</Text>
-
-          <TouchableOpacity
-            style={[styles.primaryButton, { backgroundColor: '#059669' }]}
-            onPress={() => router.push('/(auth)/supplier-login')}>
-            <Text style={styles.primaryButtonText}>Supplier Portal</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.secondaryButton, { marginTop: 16 }]}
-            onPress={() => setShowSplash(false)}>
-            <Text style={styles.secondaryButtonText}>Continue to Sign In</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-
-  if (showSplash) return <Splash />;
-
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#3B82F6', '#1D4ED8']} style={styles.gradient} />
+      <LinearGradient colors={['#2563EB', '#1E40AF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gradient}>
+        <View style={styles.content}>
+          {/* App Logo / Icon */}
+          <View style={styles.logoContainer}>
+            <View style={styles.logoPlaceholder}>
+              <Image
+                source={require('/Users/adrikapradhan/Desktop/hercircle/assets/images/splash-icon.png')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Your health journey continues here. Sign in to proceed.</Text>
+          {/* App Name */}
+          <Text style={styles.appName}>Swasthya</Text>
+
+          {/* Subtitle */}
+          <Text style={styles.subtitle}>Intelligent Pharmacy Network</Text>
+
+          {/* Description */}
+          <Text style={styles.description}>
+            Swasthya is a mobile‑first pharmacy supply chain platform that streamlines inventory management, procurement, and distributor coordination for Indian pharmacies, with offline‑first capabilities and AI‑driven demand forecasting.
+          </Text>
+
+          {/* Progress Dots */}
+          <View style={styles.dotsContainer}>
+            <View style={[styles.dot, styles.dotActive]} />
+            <View style={styles.dot} />
+            <View style={styles.dot} />
+          </View>
         </View>
 
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <Feather name="mail" size={20} color="#6B7280" style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Email or Phone"
-              placeholderTextColor="#9CA3AF"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Feather name="lock" size={20} color="#6B7280" style={styles.inputIcon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#9CA3AF"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-              autoComplete="password"
-            />
-            <TouchableOpacity style={styles.eyeButton} onPress={() => setShowPassword(!showPassword)}>
-              <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#6B7280" />
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity style={styles.primaryButton} onPress={handleCustomerLogin}>
-            <Text style={styles.primaryButtonText}>Sign In</Text>
+        {/* Buttons at bottom */}
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={() => router.push('/(auth)/supplier-login')}>
+            <Text style={styles.primaryButtonText}>Login</Text>
           </TouchableOpacity>
-
-          <View style={styles.dividerContainer}>
-            <View style={styles.divider} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.divider} />
-          </View>
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={() => router.push('/(auth)/customer-signup')}>
-            <Text style={styles.secondaryButtonText}>Create Customer Account</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.tertiaryButton}
-            onPress={() => router.push('/(auth)/supplier-login')}>
-            <Text style={styles.tertiaryButtonText}>Login as a Supplier or Admin</Text>
+            onPress={() => router.push('/(auth)/supplier-signup')}>
+            <Text style={styles.secondaryButtonText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
+      </LinearGradient>
     </SafeAreaView>
   );
 }
@@ -137,79 +67,90 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#2563EB',
   },
   gradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: height * 0.4,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 60,
   },
   content: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    alignItems: 'center',
   },
-  header: {
+  logoContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 32,
   },
-  title: {
-    fontSize: 36,
+  logoPlaceholder: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoImage: {
+    width: 36,
+    height: 36,
+  },
+  appName: {
+    fontSize: 40,
     fontWeight: 'bold',
     color: '#fff',
+    marginBottom: 12,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.95)',
+    marginBottom: 20,
     textAlign: 'center',
-    marginTop: 8,
-    paddingHorizontal: 20,
   },
-  formContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 24,
-    elevation: 12,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12,
-    marginBottom: 16,
+  description: {
+    fontSize: 15,
+    color: 'rgba(255, 255, 255, 0.85)',
+    lineHeight: 22,
+    textAlign: 'center',
+    marginBottom: 40,
     paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
   },
-  inputIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    height: 52,
-    fontSize: 16,
-    color: '#1F2937',
-  },
-  eyeButton: {
-    padding: 8,
-  },
-  primaryButton: {
-    backgroundColor: '#2563EB',
-    borderRadius: 12,
-    height: 52,
+  dotsContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
-    shadowColor: '#2563EB',
+    gap: 8,
+    marginTop: 20,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  dotActive: {
+    backgroundColor: '#3B82F6',
+    width: 24,
+  },
+  buttonsContainer: {
+    gap: 16,
+  },
+  primaryButton: {
+    backgroundColor: '#3B82F6',
+    borderRadius: 12,
+    height: 54,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -218,45 +159,20 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 24,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#E5E7EB',
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    color: '#6B7280',
-    fontSize: 14,
+    fontWeight: '700',
   },
   secondaryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F9FAFB',
-    height: 52,
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#fff',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    height: 54,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   secondaryButtonText: {
+    color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1D4ED8',
-  },
-  tertiaryButton: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  tertiaryButtonText: {
-    fontSize: 14,
-    color: '#3B82F6',
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

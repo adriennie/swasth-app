@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
-import { Stack } from 'expo-router';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import ProtectedRoute from '@/context/ProtectedRoute';
+import { Stack } from 'expo-router';
+import React from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
   constructor(props: { children: React.ReactNode }) {
@@ -43,13 +43,18 @@ function LoadingGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export default function RootLayout(): JSX.Element {
+export default function RootLayout() {
   return (
     <AuthProvider>
       <ErrorBoundary>
         <LoadingGate>
           {/** Let Expo Router auto-register routes from the filesystem */}
-          <Stack screenOptions={{ headerShown: false }} />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { paddingTop: 10 },
+            }}
+          />
           {/** Keep the guard close to the navigator but mount it only after loading */}
           <ProtectedRoute />
         </LoadingGate>
