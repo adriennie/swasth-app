@@ -11,17 +11,19 @@ Successfully implemented **Minimum Order Quantity (MOQ) enforcement** for distri
 ### ✅ MOQ Validation When Adding to Cart
 
 **What Changed:**
+
 - Modified `addToCart()` function to validate MOQ before adding items
 - For items with MOQ > 1, displays a confirmation dialog showing the minimum requirement
 - Automatically suggests adding the MOQ quantity
 - For existing cart items, increments quantity normally
 
 **User Experience:**
-```
+
+```markdown
 User clicks "Add to Cart" on a product with MOQ of 100
 ↓
-Alert appears: "This product requires a minimum order of 100 units. 
-               Would you like to add 100 units to your cart?"
+Alert appears: "This product requires a minimum order of 100 units.
+Would you like to add 100 units to your cart?"
 ↓
 User confirms → 100 units added to cart
 User cancels → Nothing added
@@ -30,12 +32,14 @@ User cancels → Nothing added
 ### ✅ MOQ Display in Product Cards
 
 **What Changed:**
+
 - Added MOQ badge to each product card
 - Badge only shows when MOQ > 1
 - Styled with purple theme matching the app design
 - Displays as: "📦 MOQ: [quantity]"
 
 **Visual Design:**
+
 - Purple badge (`#7C3AED`) with light purple background
 - Package icon for visual clarity
 - Positioned next to the price
@@ -47,19 +51,22 @@ User cancels → Nothing added
 ### ✅ MOQ Warning for Items Below Minimum
 
 **What Changed:**
+
 - Added real-time MOQ validation in cart display
 - Red warning badge appears for items below MOQ
 - Shows required quantity clearly
 - Warning updates as user adjusts quantities
 
 **Visual Design:**
-```
+
+```markdown
 Product Name
 $XX.XX / unit
-[⚠️ MOQ: 100 units required]  ← Red warning badge
+[⚠️ MOQ: 100 units required] ← Red warning badge
 ```
 
 **Styling:**
+
 - Red background (`#FEE2E2`)
 - Alert circle icon
 - Clear messaging: "MOQ: X units required"
@@ -67,13 +74,15 @@ $XX.XX / unit
 ### ✅ Checkout Prevention
 
 **What Changed:**
+
 - Added MOQ validation in `placeOrder()` function
 - Prevents checkout if ANY cart item is below MOQ
 - Shows detailed error message listing all non-compliant items
 - User must fix quantities before proceeding
 
 **Error Message Example:**
-```
+
+```markdown
 ❌ Minimum Order Quantity Not Met
 
 The following items do not meet the minimum order quantity:
@@ -89,6 +98,7 @@ Please update quantities to proceed.
 ## Technical Implementation Details
 
 ### Database Changes
+
 - ✅ No schema changes needed (MOQ already exists in products table)
 - ✅ Added `moq` field to cart query to fetch MOQ data
 - ✅ Interface updated to include MOQ in CartItem type
@@ -96,11 +106,13 @@ Please update quantities to proceed.
 ### Code Changes Summary
 
 #### `app/distributor/catalogue.tsx`
+
 1. **Line 59-132**: Enhanced `addToCart()` with MOQ validation
 2. **Line 130-152**: Added MOQ badge to product card UI
 3. **Line 236-253**: Added styles for MOQ badge and price row
 
 #### `app/distributor/cart.tsx`
+
 1. **Line 17-28**: Added `moq` field to CartItem interface
 2. **Line 42-71**: Updated `fetchCart()` to include MOQ from products
 3. **Line 113-189**: Added MOQ validation in `placeOrder()`
@@ -112,7 +124,8 @@ Please update quantities to proceed.
 ## User Flow Examples
 
 ### Scenario 1: Adding Product with MOQ
-```
+
+```markdown
 1. Distributor browses catalogue
 2. Sees "Aspirin 500mg - $50.00 [MOQ: 100]"
 3. Clicks add to cart
@@ -122,7 +135,8 @@ Please update quantities to proceed.
 ```
 
 ### Scenario 2: Cart with Mixed MOQ Status
-```
+
+```markdown
 Cart Contents:
 ✓ Product A: 100 units (MOQ: 100) ← Compliant
 ⚠️ Product B: 25 units (MOQ: 50) ← Warning shown
@@ -138,7 +152,8 @@ Checkout proceeds successfully
 ```
 
 ### Scenario 3: Incrementing Cart Items
-```
+
+```markdown
 Product already in cart with 50 units (MOQ: 100)
 ↓
 [⚠️ MOQ: 100 units required] warning shown
@@ -155,6 +170,7 @@ Can now proceed to checkout
 ## Validation Logic
 
 ### Add to Cart
+
 ```typescript
 if (moq > 1) {
   // Show confirmation dialog
@@ -166,6 +182,7 @@ if (moq > 1) {
 ```
 
 ### Cart Display
+
 ```typescript
 const isBelowMoq = item.quantity < moq;
 if (isBelowMoq) {
@@ -174,9 +191,10 @@ if (isBelowMoq) {
 ```
 
 ### Checkout
+
 ```typescript
 const itemsBelowMoq = cartItems.filter(
-  item => item.quantity < (item.products?.moq || 1)
+  (item) => item.quantity < (item.products?.moq || 1),
 );
 
 if (itemsBelowMoq.length > 0) {
@@ -192,16 +210,19 @@ if (itemsBelowMoq.length > 0) {
 ## Design Decisions
 
 ### Why Suggest MOQ Quantity?
+
 - Reduces friction for distributors
 - Ensures compliance automatically
 - Clear communication of requirements
 
 ### Why Block Checkout?
+
 - Prevents invalid orders reaching the admin
 - Protects company profit margins
 - Enforces business rules at the critical moment
 
 ### Why Show Warnings in Cart?
+
 - Gives users time to adjust before checkout
 - Visual feedback prevents surprises
 - Encourages compliance proactively
@@ -211,16 +232,19 @@ if (itemsBelowMoq.length > 0) {
 ## Benefits
 
 ### For Company/Admin
+
 - ✅ Ensures minimum profitable order sizes
 - ✅ Reduces handling of small orders
 - ✅ Protects wholesale pricing structure
 
 ### For Distributors
+
 - ✅ Clear visibility of MOQ requirements
 - ✅ Guided experience when adding products
 - ✅ Prevents order rejection due to MOQ
 
 ### For System
+
 - ✅ Data integrity maintained
 - ✅ Business rules enforced consistently
 - ✅ User-friendly error handling
@@ -243,11 +267,13 @@ if (itemsBelowMoq.length > 0) {
 ## Next Steps (Optional Enhancements)
 
 ### Priority 1 (Nice to Have)
+
 - 📋 Add "Set to MOQ" quick button in cart
 - 📊 Show savings when ordering at MOQ multiples
 - 🔔 Notification when approaching distributor stock reorder level
 
 ### Priority 2 (Future)
+
 - 📈 Analytics: Track MOQ compliance rates
 - 💡 Suggest bundled orders to meet MOQ
 - 🎯 Bulk pricing tiers beyond MOQ
@@ -269,8 +295,9 @@ if (itemsBelowMoq.length > 0) {
 ✅ **Complete Implementation** of MOQ enforcement for Company → Distributor flow
 
 All three required touchpoints implemented:
+
 1. ✅ Catalogue: Validation when adding to cart
-2. ✅ Cart: Visual warnings for non-compliant items  
+2. ✅ Cart: Visual warnings for non-compliant items
 3. ✅ Checkout: Hard block preventing order placement
 
 The system now enforces wholesale minimum order quantities while maintaining excellent UX through clear messaging and helpful suggestions.
