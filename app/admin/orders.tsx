@@ -75,16 +75,24 @@ export default function OrdersTab() {
     const [currentDeliveryOrder, setCurrentDeliveryOrder] = useState<AdminOrder | null>(null);
 
     const checkAnomaliesInBackground = async (orderList: AdminOrder[]) => {
-        const pending = orderList.filter(o => o.status.toLowerCase() === 'pending').slice(0, 8);
+        // Check pending + confirmed orders (not just pending)
+        const pending = orderList
+            .filter(o => ['pending','confirmed','processing'].includes(o.status.toLowerCase()))
+            .slice(0, 10);
+        console.log('[ML] Starting anomaly check for', pending.length, 'orders');
         const newMap: Record<string, AnomalyResult> = {};
         for (const order of pending) {
             try {
                 const { data: items } = await supabase
                     .from('order_items')
-                    .select('quantity, price, product_id, products(id, sku)')
+                    .select('quantity, unit_price, product_id, products(id, sku)')
                     .eq('order_id', order.id)
                     .limit(1);
-                if (!items || items.length === 0) continue;
+                console.log('[ML] order_items for', order.id, ':', items?.length, 'items');
+                if (!items || items.length === 0) {
+                    console.warn('[ML] No items found for order', order.id, '— check order_items table');
+                    continue;
+                }
                 const item = items[0];
                 const product = (item as any).products;
                 const result = await detectOrderAnomaly({
@@ -92,11 +100,15 @@ export default function OrdersTab() {
                     productId:          product?.id || item.product_id,
                     productSku:         product?.sku,
                     order_qty:          item.quantity,
-                    order_value:        Math.round(item.quantity * item.price),
+                    order_value:        Math.round(item.quantity * (item.unit_price || item.price || 0)),
                 });
+                console.log('[ML] Anomaly result for', order.id, ':', result?.is_anomaly, result?.severity);
                 if (result) newMap[order.id] = result;
-            } catch (_) {}
+            } catch (err) {
+                console.error('Anomaly check failed for order', order.id, err);
+            }
         }
+        console.log('[ML] Anomaly check complete. Flagged:', Object.values(newMap).filter((r: any) => r.is_anomaly).length, '/', Object.keys(newMap).length);
         setAnomalyMap(prev => ({ ...prev, ...newMap }));
     };
 
@@ -158,6 +170,7 @@ export default function OrdersTab() {
 
             setOrders(finalData);
             // Run anomaly detection on pending pharmacy orders in background
+            // Run anomaly check on pharmacy orders
             if (orderSource === 'pharmacy') checkAnomaliesInBackground(finalData);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -260,7 +273,7 @@ export default function OrdersTab() {
                 const { data, error } = await supabase
                     .from('distributor_admin_order_items')
                     .select(`
-                        id, quantity, price,
+                        id, quantity, unit_price,
                         products ( name, sku, image_url )
                     `)
                     .eq('order_id', order.id);
@@ -270,7 +283,7 @@ export default function OrdersTab() {
                 const { data, error } = await supabase
                     .from('order_items')
                     .select(`
-                        id, quantity, price,
+                        id, quantity, unit_price,
                         products ( name, sku, image_url )
                     `)
                     .eq('order_id', order.id);
@@ -323,6 +336,16 @@ export default function OrdersTab() {
                 style={styles.header}>
                 <Text style={styles.headerTitle}>Order Management</Text>
                 <Text style={styles.headerSubtitle}>₹{stats.revenue.toLocaleString()} Total Revenue</Text>
+            {orderSource === 'pharmacy' && Object.keys(anomalyMap).length === 0 && !loading && (
+                <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 4 }}>
+                    🤖 AI scanning pending orders...
+                </Text>
+            )}
+            {orderSource === 'pharmacy' && Object.keys(anomalyMap).length > 0 && (
+                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 11, marginTop: 4 }}>
+                    🤖 AI checked {Object.keys(anomalyMap).length} order(s) · {Object.values(anomalyMap).filter((a:any) => a.is_anomaly).length} flagged
+                </Text>
+            )}
             </LinearGradient>
 
             {/* Source Segment Control */}
@@ -529,10 +552,10 @@ export default function OrdersTab() {
                                         <Text style={styles.itemSku}>SKU: {item.products?.sku || 'N/A'}</Text>
                                         <View style={styles.itemMeta}>
                                             <Text style={styles.itemQty}>x{item.quantity}</Text>
-                                            <Text style={styles.itemPrice}>₹{item.price.toFixed(2)}</Text>
+                                            <Text style={styles.itemPrice}>₹{(item.unit_price || item.price || 0).toFixed(2)}</Text>
                                         </View>
                                     </View>
-                                    <Text style={styles.itemTotal}>₹{(item.quantity * item.price).toFixed(2)}</Text>
+                                    <Text style={styles.itemTotal}>₹{(item.quantity * (item.unit_price || item.price || 0)).toFixed(2)}</Text>
                                 </View>
                             )}
                         />

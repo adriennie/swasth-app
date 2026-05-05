@@ -255,23 +255,32 @@ export async function detectOrderAnomaly(order: {
 // UI COLOR HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function getUrgencyColor(urgency: ForecastResult['urgency']): string {
-  switch (urgency) {
-    case 'CRITICAL — Out of Stock': return '#B91C1C';
-    case 'URGENT — < 2 days':       return '#DC2626';
-    case 'HIGH — < 5 days':         return '#F59E0B';
-    case 'MEDIUM — Order Soon':     return '#7C3AED';
-    default:                        return '#10B981';
-  }
+export function getUrgencyColor(urgency: string): string {
+  // Handle both short ('CRITICAL') and long ('CRITICAL — Out of Stock') formats
+  const u = urgency?.toUpperCase() || '';
+  if (u.startsWith('CRITICAL')) return '#B91C1C';
+  if (u.startsWith('URGENT'))   return '#DC2626';
+  if (u.startsWith('HIGH'))     return '#F59E0B';
+  if (u.startsWith('MEDIUM'))   return '#7C3AED';
+  return '#10B981'; // OK
 }
 
-export function getSeverityColor(severity: AnomalyResult['severity']): string {
-  switch (severity) {
-    case 'CRITICAL': return '#B91C1C';
-    case 'HIGH':     return '#EF4444';
-    case 'MEDIUM':   return '#F59E0B';
-    default:         return '#10B981';
-  }
+export function getSeverityColor(severity: string): string {
+  const s = severity?.toUpperCase() || '';
+  if (s === 'CRITICAL') return '#B91C1C';
+  if (s === 'HIGH')     return '#EF4444';
+  if (s === 'MEDIUM')   return '#F59E0B';
+  return '#10B981';
+}
+
+// Converts short urgency ('CRITICAL') → readable label ('CRITICAL — Out of Stock')
+export function getUrgencyLabel(urgency: string): string {
+  const u = urgency?.toUpperCase() || '';
+  if (u.startsWith('CRITICAL')) return 'CRITICAL — Out of Stock';
+  if (u.startsWith('URGENT'))   return 'URGENT — < 2 days';
+  if (u.startsWith('HIGH'))     return 'HIGH — < 5 days';
+  if (u.startsWith('MEDIUM'))   return 'MEDIUM — Order Soon';
+  return 'OK';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

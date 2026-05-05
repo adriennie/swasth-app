@@ -145,7 +145,7 @@ export default function PharmacyDashboard() {
           products(id, name, sku, price)
         `)
         .eq('pharmacy_id', pharmacyProfileId)
-        .lte('stock_quantity', 50);
+        .lte('stock_quantity', 200);  // check more items
 
       if (!invItems || invItems.length === 0) { setMlLoading(false); return; }
 
@@ -171,7 +171,8 @@ export default function PharmacyDashboard() {
           salesLast91d:   avgDailySales * 91,
         });
 
-        if (result && result.should_order) {
+        if (result) {
+          // Show all predictions — let pharmacy see forecast even if stock seems OK
           suggestions.push({ ...result, product_name: product.name });
         }
       }
