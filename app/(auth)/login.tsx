@@ -19,6 +19,7 @@ import {
 const { height } = Dimensions.get('window');
 
 export default function LoginScreen() {
+  const [showSplash, setShowSplash] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,6 +32,37 @@ export default function LoginScreen() {
     }
     login({ email, role: 'customer', loggedInAt: Date.now() });
   };
+
+  const Splash = () => (
+    <SafeAreaView style={styles.container}>
+      <LinearGradient colors={['#3B82F6', '#1D4ED8']} style={styles.gradient} />
+
+      <View style={[styles.content, { justifyContent: 'flex-start' }]}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Welcome to HerCircle</Text>
+          <Text style={styles.subtitle}>Connect with pharmacies, distributors and manage health.</Text>
+        </View>
+
+        <View style={styles.formContainer}>
+          <Text style={{fontSize:16, color:'#6B7280', textAlign:'center', marginBottom:16}}>Get started by signing in or continue to the Supplier Portal.</Text>
+
+          <TouchableOpacity
+            style={[styles.primaryButton, { backgroundColor: '#059669' }]}
+            onPress={() => router.push('/(auth)/supplier-login')}>
+            <Text style={styles.primaryButtonText}>Supplier Portal</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.secondaryButton, { marginTop: 16 }]}
+            onPress={() => setShowSplash(false)}>
+            <Text style={styles.secondaryButtonText}>Continue to Sign In</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+
+  if (showSplash) return <Splash />;
 
   return (
     <SafeAreaView style={styles.container}>

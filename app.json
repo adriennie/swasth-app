@@ -34,7 +34,9 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
@@ -42,8 +44,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "48417c0f-0741-4972-bb54-64d8ba074878"
+        "projectId": "995f60a2-42ee-46f2-94b5-95b3d534f4f0"
       }
-    }
+    },
+    "owner": "adrika-pradhan"
   }
 }

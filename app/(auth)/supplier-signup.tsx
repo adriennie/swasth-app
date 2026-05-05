@@ -2,7 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { router as appRouter, router } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -18,9 +18,8 @@ import {
   View,
 } from 'react-native';
 
-const { height } = Dimensions.get('window');
 
-import { router as appRouter } from 'expo-router';
+const { height } = Dimensions.get('window');
 
 type Role = 'distributor' | 'pharmacy';
 
