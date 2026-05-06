@@ -4,8 +4,7 @@
 
 Swasthya is a comprehensive mobile and web application that combines consumer health tracking and education with B2B supply-chain operations for menstrual-wellness products. The platform serves four distinct user roles—**customers**, **pharmacies**, **distributors**, and **admins**—through a unified codebase with role-based navigation and tailored workflows.
 
-[⬇️ Download APK](https://github.com/adriennie/swasth-app/raw/main/apk/swasthya.apk)
-
+[⬇️ Download APK](app/raw/main/apk/application-49bc7b2a-e7a0-44ea-b885-2a6cdc579551.apk)
 [Link to the app](https://expo.dev/accounts/adrika-pradhan/projects/hercircle/builds/49bc7b2a-e7a0-44ea-b885-2a6cdc579551)
 
 ---
