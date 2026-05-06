@@ -4,6 +4,8 @@
 
 Swasthya is a comprehensive mobile and web application that combines consumer health tracking and education with B2B supply-chain operations for menstrual-wellness products. The platform serves four distinct user roles—**customers**, **pharmacies**, **distributors**, and **admins**—through a unified codebase with role-based navigation and tailored workflows.
 
+Download from here : <https://expo.dev/artifacts/eas/uNoer4HGb5hiM79WuLmrzx.aab>
+
 ---
 
 ## 🌟 Key Features

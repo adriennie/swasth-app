@@ -2,12 +2,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React from 'react';
 import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function LoginScreen() {
@@ -19,7 +19,7 @@ export default function LoginScreen() {
           <View style={styles.logoContainer}>
             <View style={styles.logoPlaceholder}>
               <Image
-                source={require('/Users/adrikapradhan/Desktop/hercircle/assets/images/splash-icon.png')}
+                source={require('../../assets/images/splash-icon.png')}
                 style={styles.logoImage}
                 resizeMode="contain"
               />
