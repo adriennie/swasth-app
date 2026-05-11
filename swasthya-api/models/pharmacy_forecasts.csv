@@ -1,0 +1,106 @@
+pharmacy_id,sku_id,product_name,category,unit_price,daily_pred,forecast_7d,ci_lower_7d,ci_upper_7d,pharmacy_name,city,tier,distributor_id,distributor_name,lead_time_days
+PH_01,SKU_001,Starter Pack with Wet Bag,Starter,430,2.005,14.0,0.0,28.5,Apollo Pharmacy - Connaught Place,Delhi,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_01,SKU_002,Sampler Pack with Pads,Sampler,450,2.136,15.0,7.0,22.9,Apollo Pharmacy - Connaught Place,Delhi,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_01,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.774,19.4,6.7,32.2,Apollo Pharmacy - Connaught Place,Delhi,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_01,SKU_004,Day Pads - Pack of 6,Day Pad,560,3.56,24.9,5.3,44.5,Apollo Pharmacy - Connaught Place,Delhi,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_01,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.584,18.1,0.0,44.4,Apollo Pharmacy - Connaught Place,Delhi,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_01,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.942,13.6,0.0,31.5,Apollo Pharmacy - Connaught Place,Delhi,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_01,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.347,9.4,0.0,18.9,Apollo Pharmacy - Connaught Place,Delhi,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_02,SKU_001,Starter Pack with Wet Bag,Starter,430,2.246,15.7,5.2,26.2,MedPlus - Andheri West,Mumbai,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_02,SKU_002,Sampler Pack with Pads,Sampler,450,2.625,18.4,0.0,41.9,MedPlus - Andheri West,Mumbai,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_02,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,3.629,25.4,1.6,49.2,MedPlus - Andheri West,Mumbai,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_02,SKU_004,Day Pads - Pack of 6,Day Pad,560,4.166,29.2,3.9,54.5,MedPlus - Andheri West,Mumbai,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_02,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.838,19.9,0.0,40.0,MedPlus - Andheri West,Mumbai,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_02,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.994,14.0,0.0,28.5,MedPlus - Andheri West,Mumbai,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_02,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.459,10.2,0.8,19.7,MedPlus - Andheri West,Mumbai,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_03,SKU_001,Starter Pack with Wet Bag,Starter,430,2.1,14.7,1.3,28.1,Wellness Forever - Koramangala,Bangalore,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_03,SKU_002,Sampler Pack with Pads,Sampler,450,2.337,16.4,0.0,34.4,Wellness Forever - Koramangala,Bangalore,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_03,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.899,20.3,13.0,27.5,Wellness Forever - Koramangala,Bangalore,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_03,SKU_004,Day Pads - Pack of 6,Day Pad,560,3.508,24.6,9.7,39.4,Wellness Forever - Koramangala,Bangalore,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_03,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.36,16.5,0.0,34.7,Wellness Forever - Koramangala,Bangalore,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_03,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.971,13.8,4.3,23.2,Wellness Forever - Koramangala,Bangalore,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_03,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.108,7.8,0.0,19.0,Wellness Forever - Koramangala,Bangalore,1,DIST_02,Western India MedSupply Pvt Ltd,2
+PH_04,SKU_001,Starter Pack with Wet Bag,Starter,430,2.239,15.7,6.2,25.1,Medline Pharmacy - Banjara Hills,Hyderabad,1,DIST_03,Deccan Healthcare Network,2
+PH_04,SKU_002,Sampler Pack with Pads,Sampler,450,2.329,16.3,1.6,31.0,Medline Pharmacy - Banjara Hills,Hyderabad,1,DIST_03,Deccan Healthcare Network,2
+PH_04,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.48,17.4,5.5,29.3,Medline Pharmacy - Banjara Hills,Hyderabad,1,DIST_03,Deccan Healthcare Network,2
+PH_04,SKU_004,Day Pads - Pack of 6,Day Pad,560,3.815,26.7,16.7,36.7,Medline Pharmacy - Banjara Hills,Hyderabad,1,DIST_03,Deccan Healthcare Network,2
+PH_04,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.352,16.5,7.9,25.0,Medline Pharmacy - Banjara Hills,Hyderabad,1,DIST_03,Deccan Healthcare Network,2
+PH_04,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.814,12.7,4.1,21.3,Medline Pharmacy - Banjara Hills,Hyderabad,1,DIST_03,Deccan Healthcare Network,2
+PH_04,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.172,8.2,0.0,26.1,Medline Pharmacy - Banjara Hills,Hyderabad,1,DIST_03,Deccan Healthcare Network,2
+PH_05,SKU_001,Starter Pack with Wet Bag,Starter,430,2.386,16.7,5.0,28.4,Sahyadri Medical - FC Road,Pune,2,DIST_03,Deccan Healthcare Network,2
+PH_05,SKU_002,Sampler Pack with Pads,Sampler,450,2.157,15.1,1.0,29.2,Sahyadri Medical - FC Road,Pune,2,DIST_03,Deccan Healthcare Network,2
+PH_05,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.815,19.7,8.5,30.9,Sahyadri Medical - FC Road,Pune,2,DIST_03,Deccan Healthcare Network,2
+PH_05,SKU_004,Day Pads - Pack of 6,Day Pad,560,3.854,27.0,15.8,38.2,Sahyadri Medical - FC Road,Pune,2,DIST_03,Deccan Healthcare Network,2
+PH_05,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.447,17.1,0.0,35.2,Sahyadri Medical - FC Road,Pune,2,DIST_03,Deccan Healthcare Network,2
+PH_05,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.749,12.2,0.0,29.4,Sahyadri Medical - FC Road,Pune,2,DIST_03,Deccan Healthcare Network,2
+PH_05,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.244,8.7,0.1,17.3,Sahyadri Medical - FC Road,Pune,2,DIST_03,Deccan Healthcare Network,2
+PH_06,SKU_001,Starter Pack with Wet Bag,Starter,430,1.946,13.6,0.0,36.9,Jaipur Medicos - MI Road,Jaipur,2,DIST_04,Rajputana Health Distributors,3
+PH_06,SKU_002,Sampler Pack with Pads,Sampler,450,1.876,13.1,0.0,29.0,Jaipur Medicos - MI Road,Jaipur,2,DIST_04,Rajputana Health Distributors,3
+PH_06,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.307,16.1,4.5,27.8,Jaipur Medicos - MI Road,Jaipur,2,DIST_04,Rajputana Health Distributors,3
+PH_06,SKU_004,Day Pads - Pack of 6,Day Pad,560,3.242,22.7,9.5,35.9,Jaipur Medicos - MI Road,Jaipur,2,DIST_04,Rajputana Health Distributors,3
+PH_06,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.37,16.6,7.1,26.0,Jaipur Medicos - MI Road,Jaipur,2,DIST_04,Rajputana Health Distributors,3
+PH_06,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.559,10.9,0.0,27.0,Jaipur Medicos - MI Road,Jaipur,2,DIST_04,Rajputana Health Distributors,3
+PH_06,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.203,8.4,0.0,17.9,Jaipur Medicos - MI Road,Jaipur,2,DIST_04,Rajputana Health Distributors,3
+PH_07,SKU_001,Starter Pack with Wet Bag,Starter,430,1.99,13.9,0.0,36.4,Sanjeevani Pharmacy - Hazratganj,Lucknow,2,DIST_04,Rajputana Health Distributors,3
+PH_07,SKU_002,Sampler Pack with Pads,Sampler,450,1.832,12.8,0.9,24.7,Sanjeevani Pharmacy - Hazratganj,Lucknow,2,DIST_04,Rajputana Health Distributors,3
+PH_07,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.522,17.7,4.3,31.0,Sanjeevani Pharmacy - Hazratganj,Lucknow,2,DIST_04,Rajputana Health Distributors,3
+PH_07,SKU_004,Day Pads - Pack of 6,Day Pad,560,2.778,19.4,2.3,36.6,Sanjeevani Pharmacy - Hazratganj,Lucknow,2,DIST_04,Rajputana Health Distributors,3
+PH_07,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,1.901,13.3,3.3,23.3,Sanjeevani Pharmacy - Hazratganj,Lucknow,2,DIST_04,Rajputana Health Distributors,3
+PH_07,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.691,11.8,4.6,19.1,Sanjeevani Pharmacy - Hazratganj,Lucknow,2,DIST_04,Rajputana Health Distributors,3
+PH_07,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.237,8.7,1.4,15.9,Sanjeevani Pharmacy - Hazratganj,Lucknow,2,DIST_04,Rajputana Health Distributors,3
+PH_08,SKU_001,Starter Pack with Wet Bag,Starter,430,1.72,12.0,2.6,21.5,Himalayan Medicals - Rajpur Road,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_08,SKU_002,Sampler Pack with Pads,Sampler,450,1.572,11.0,3.8,18.2,Himalayan Medicals - Rajpur Road,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_08,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.076,14.5,4.3,24.8,Himalayan Medicals - Rajpur Road,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_08,SKU_004,Day Pads - Pack of 6,Day Pad,560,2.774,19.4,0.0,39.9,Himalayan Medicals - Rajpur Road,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_08,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.028,14.2,0.0,29.0,Himalayan Medicals - Rajpur Road,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_08,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.64,11.5,5.9,17.1,Himalayan Medicals - Rajpur Road,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_08,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,0.978,6.8,0.0,15.4,Himalayan Medicals - Rajpur Road,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_09,SKU_001,Starter Pack with Wet Bag,Starter,430,1.63,11.4,0.0,23.3,Jan Aushadhi - Civil Lines,Kanpur,3,DIST_05,Himalayan Pharma Agency,2
+PH_09,SKU_002,Sampler Pack with Pads,Sampler,450,1.436,10.0,0.0,21.3,Jan Aushadhi - Civil Lines,Kanpur,3,DIST_05,Himalayan Pharma Agency,2
+PH_09,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,1.871,13.1,0.0,28.8,Jan Aushadhi - Civil Lines,Kanpur,3,DIST_05,Himalayan Pharma Agency,2
+PH_09,SKU_004,Day Pads - Pack of 6,Day Pad,560,2.396,16.8,5.1,28.5,Jan Aushadhi - Civil Lines,Kanpur,3,DIST_05,Himalayan Pharma Agency,2
+PH_09,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,1.898,13.3,0.0,33.3,Jan Aushadhi - Civil Lines,Kanpur,3,DIST_05,Himalayan Pharma Agency,2
+PH_09,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.535,10.7,3.5,18.0,Jan Aushadhi - Civil Lines,Kanpur,3,DIST_05,Himalayan Pharma Agency,2
+PH_09,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,0.94,6.6,0.0,17.8,Jan Aushadhi - Civil Lines,Kanpur,3,DIST_05,Himalayan Pharma Agency,2
+PH_10,SKU_001,Starter Pack with Wet Bag,Starter,430,1.703,11.9,2.5,21.4,Sharma Medical Hall - Sadar Bazar,Meerut,3,DIST_04,Rajputana Health Distributors,3
+PH_10,SKU_002,Sampler Pack with Pads,Sampler,450,1.426,10.0,0.0,20.2,Sharma Medical Hall - Sadar Bazar,Meerut,3,DIST_04,Rajputana Health Distributors,3
+PH_10,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,1.806,12.6,0.0,26.0,Sharma Medical Hall - Sadar Bazar,Meerut,3,DIST_04,Rajputana Health Distributors,3
+PH_10,SKU_004,Day Pads - Pack of 6,Day Pad,560,2.281,16.0,0.0,33.9,Sharma Medical Hall - Sadar Bazar,Meerut,3,DIST_04,Rajputana Health Distributors,3
+PH_10,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,1.558,10.9,0.7,21.2,Sharma Medical Hall - Sadar Bazar,Meerut,3,DIST_04,Rajputana Health Distributors,3
+PH_10,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.271,8.9,1.0,16.8,Sharma Medical Hall - Sadar Bazar,Meerut,3,DIST_04,Rajputana Health Distributors,3
+PH_10,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,0.854,6.0,0.0,13.9,Sharma Medical Hall - Sadar Bazar,Meerut,3,DIST_04,Rajputana Health Distributors,3
+PH_11,SKU_001,Starter Pack with Wet Bag,Starter,430,1.458,10.2,0.0,21.4,Ganesh Medicos - Sanjay Place,Agra,3,DIST_04,Rajputana Health Distributors,3
+PH_11,SKU_002,Sampler Pack with Pads,Sampler,450,1.569,11.0,0.0,26.7,Ganesh Medicos - Sanjay Place,Agra,3,DIST_04,Rajputana Health Distributors,3
+PH_11,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,1.689,11.8,0.0,25.0,Ganesh Medicos - Sanjay Place,Agra,3,DIST_04,Rajputana Health Distributors,3
+PH_11,SKU_004,Day Pads - Pack of 6,Day Pad,560,2.408,16.9,8.9,24.8,Ganesh Medicos - Sanjay Place,Agra,3,DIST_04,Rajputana Health Distributors,3
+PH_11,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,1.764,12.4,0.0,27.7,Ganesh Medicos - Sanjay Place,Agra,3,DIST_04,Rajputana Health Distributors,3
+PH_11,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.333,9.3,0.0,19.3,Ganesh Medicos - Sanjay Place,Agra,3,DIST_04,Rajputana Health Distributors,3
+PH_11,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,0.748,5.2,0.0,16.9,Ganesh Medicos - Sanjay Place,Agra,3,DIST_04,Rajputana Health Distributors,3
+PH_12,SKU_001,Starter Pack with Wet Bag,Starter,430,1.727,12.1,8.1,16.1,Rishikesh Pharma - Haridwar Road,Haridwar,3,DIST_05,Himalayan Pharma Agency,2
+PH_12,SKU_002,Sampler Pack with Pads,Sampler,450,1.456,10.2,0.7,19.6,Rishikesh Pharma - Haridwar Road,Haridwar,3,DIST_05,Himalayan Pharma Agency,2
+PH_12,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,1.567,11.0,1.0,21.0,Rishikesh Pharma - Haridwar Road,Haridwar,3,DIST_05,Himalayan Pharma Agency,2
+PH_12,SKU_004,Day Pads - Pack of 6,Day Pad,560,2.323,16.3,8.0,24.5,Rishikesh Pharma - Haridwar Road,Haridwar,3,DIST_05,Himalayan Pharma Agency,2
+PH_12,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,1.632,11.4,5.8,17.0,Rishikesh Pharma - Haridwar Road,Haridwar,3,DIST_05,Himalayan Pharma Agency,2
+PH_12,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.349,9.4,1.2,17.7,Rishikesh Pharma - Haridwar Road,Haridwar,3,DIST_05,Himalayan Pharma Agency,2
+PH_12,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,0.889,6.2,6.2,6.2,Rishikesh Pharma - Haridwar Road,Haridwar,3,DIST_05,Himalayan Pharma Agency,2
+PH_13,SKU_001,Starter Pack with Wet Bag,Starter,430,1.763,12.3,5.1,19.6,Lifeline Pharmacy - Paltan Bazar,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_13,SKU_002,Sampler Pack with Pads,Sampler,450,1.572,11.0,3.1,18.9,Lifeline Pharmacy - Paltan Bazar,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_13,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.142,15.0,4.7,25.2,Lifeline Pharmacy - Paltan Bazar,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_13,SKU_004,Day Pads - Pack of 6,Day Pad,560,2.794,19.6,3.8,35.3,Lifeline Pharmacy - Paltan Bazar,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_13,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.161,15.1,5.7,24.6,Lifeline Pharmacy - Paltan Bazar,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_13,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.363,9.5,0.1,19.0,Lifeline Pharmacy - Paltan Bazar,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_13,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,0.932,6.5,0.0,16.5,Lifeline Pharmacy - Paltan Bazar,Dehradun,2,DIST_05,Himalayan Pharma Agency,2
+PH_14,SKU_001,Starter Pack with Wet Bag,Starter,430,2.424,17.0,3.6,30.3,Sunrise Medical - Salt Lake,Kolkata,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_14,SKU_002,Sampler Pack with Pads,Sampler,450,2.261,15.8,0.0,34.7,Sunrise Medical - Salt Lake,Kolkata,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_14,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.985,20.9,0.8,41.0,Sunrise Medical - Salt Lake,Kolkata,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_14,SKU_004,Day Pads - Pack of 6,Day Pad,560,3.465,24.3,10.1,38.4,Sunrise Medical - Salt Lake,Kolkata,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_14,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.447,17.1,0.0,49.1,Sunrise Medical - Salt Lake,Kolkata,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_14,SKU_006,Heavy Flow Pack,Heavy Flow,699,2.098,14.7,0.0,39.3,Sunrise Medical - Salt Lake,Kolkata,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_14,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.1,7.7,0.0,19.4,Sunrise Medical - Salt Lake,Kolkata,1,DIST_01,NorthEast Hygiene Distributors,1
+PH_15,SKU_001,Starter Pack with Wet Bag,Starter,430,2.273,15.9,0.0,33.8,Care Pharmacy - T Nagar,Chennai,1,DIST_03,Deccan Healthcare Network,2
+PH_15,SKU_002,Sampler Pack with Pads,Sampler,450,2.132,14.9,6.7,23.2,Care Pharmacy - T Nagar,Chennai,1,DIST_03,Deccan Healthcare Network,2
+PH_15,SKU_003,Reusable Pantyliners for Daily Use,Pantyliner,480,2.826,19.8,2.6,36.9,Care Pharmacy - T Nagar,Chennai,1,DIST_03,Deccan Healthcare Network,2
+PH_15,SKU_004,Day Pads - Pack of 6,Day Pad,560,3.791,26.5,13.8,39.3,Care Pharmacy - T Nagar,Chennai,1,DIST_03,Deccan Healthcare Network,2
+PH_15,SKU_005,Value Pack with Wet Bag and Pouch,Value Pack,690,2.429,17.0,1.3,32.7,Care Pharmacy - T Nagar,Chennai,1,DIST_03,Deccan Healthcare Network,2
+PH_15,SKU_006,Heavy Flow Pack,Heavy Flow,699,1.912,13.4,1.3,25.5,Care Pharmacy - T Nagar,Chennai,1,DIST_03,Deccan Healthcare Network,2
+PH_15,SKU_007,Super Pack with Wet Bag and Pouch,Super Pack,1100,1.276,8.9,0.0,18.4,Care Pharmacy - T Nagar,Chennai,1,DIST_03,Deccan Healthcare Network,2

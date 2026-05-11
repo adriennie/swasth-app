@@ -1,0 +1,16 @@
+pharmacy_id,name,city,tier,pop_factor,dist_id
+PH_01,Apollo Pharmacy - Connaught Place,Delhi,1,1.8,DIST_01
+PH_02,MedPlus - Andheri West,Mumbai,1,1.9,DIST_02
+PH_03,Wellness Forever - Koramangala,Bangalore,1,1.7,DIST_02
+PH_04,Medline Pharmacy - Banjara Hills,Hyderabad,1,1.6,DIST_03
+PH_05,Sahyadri Medical - FC Road,Pune,2,1.4,DIST_03
+PH_06,Jaipur Medicos - MI Road,Jaipur,2,1.3,DIST_04
+PH_07,Sanjeevani Pharmacy - Hazratganj,Lucknow,2,1.2,DIST_04
+PH_08,Himalayan Medicals - Rajpur Road,Dehradun,2,1.1,DIST_05
+PH_09,Jan Aushadhi - Civil Lines,Kanpur,3,1.0,DIST_05
+PH_10,Sharma Medical Hall - Sadar Bazar,Meerut,3,0.9,DIST_04
+PH_11,Ganesh Medicos - Sanjay Place,Agra,3,0.95,DIST_04
+PH_12,Rishikesh Pharma - Haridwar Road,Haridwar,3,0.85,DIST_05
+PH_13,Lifeline Pharmacy - Paltan Bazar,Dehradun,2,1.1,DIST_05
+PH_14,Sunrise Medical - Salt Lake,Kolkata,1,1.65,DIST_01
+PH_15,Care Pharmacy - T Nagar,Chennai,1,1.7,DIST_03

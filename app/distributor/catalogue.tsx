@@ -57,7 +57,10 @@ export default function DistributorCatalogue() {
     };
 
     const addToCart = async (product: Product) => {
-        if (!auth?.id) return;
+        if (!auth?.id) {
+            Alert.alert('Error', 'You must be logged in to add products to cart.');
+            return;
+        }
 
         const moq = product.moq || 1;
 
@@ -147,10 +150,7 @@ export default function DistributorCatalogue() {
                 <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
                     <Feather name="chevron-left" size={24} color="#1F2937" />
                 </TouchableOpacity>
-                <View style={styles.headerTextWrap}>
-                    <Text style={styles.headerTitle}>Master Catalogue</Text>
-                    <Text style={styles.headerSubtitle}>Browse products, pricing, and margin at a glance</Text>
-                </View>
+                <Text style={styles.headerTitle}>Master Catalogue</Text>
                 <TouchableOpacity onPress={() => router.push('/distributor/cart')} style={styles.cartBtn}>
                     <Feather name="shopping-cart" size={24} color="#1F2937" />
                 </TouchableOpacity>
@@ -168,11 +168,6 @@ export default function DistributorCatalogue() {
                     />
                 </View>
 
-                <View style={styles.metaRow}>
-                    <Text style={styles.metaText}>Total: {products.length}</Text>
-                    <Text style={styles.metaDivider}>•</Text>
-                    <Text style={styles.metaText}>Showing: {filtered.length}</Text>
-                </View>
             </View>
 
             {loading ? (
@@ -184,10 +179,12 @@ export default function DistributorCatalogue() {
                 <FlatList
                     data={filtered}
                     keyExtractor={item => item.id}
-                    contentContainerStyle={styles.list}
+                    numColumns={2}
+                    columnWrapperStyle={filtered.length > 0 ? styles.cardRow : undefined}
+                    contentContainerStyle={[styles.list, filtered.length === 0 && styles.emptyList]}
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => (
-                        <View style={styles.card}>
+                        <View style={styles.productCard}>
                             <View style={styles.imageContainer}>
                                 {item.image_url ? (
                                     <Image source={{ uri: item.image_url }} style={styles.productImage} />
@@ -198,45 +195,20 @@ export default function DistributorCatalogue() {
                                 )}
                             </View>
 
-                            <View style={styles.cardInfo}>
-                                <View style={styles.cardHeader}>
-                                    <View style={{ flex: 1 }}>
-                                        <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
-                                        <Text style={styles.sku}>SKU: {item.sku || 'N/A'}</Text>
-                                    </View>
-                                    <TouchableOpacity style={styles.addBtn} onPress={() => addToCart(item)}>
-                                        <Feather name="plus" size={18} color="#fff" />
-                                    </TouchableOpacity>
+                            <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
+                            <Text style={styles.price}>₹{(item.distributor_price || 0).toLocaleString('en-IN')}</Text>
+
+                            {item.moq && item.moq > 1 && (
+                                <View style={styles.moqBadge}>
+                                    <Feather name="info" size={11} color="#4338CA" />
+                                    <Text style={styles.moqText}>MOQ {item.moq}</Text>
                                 </View>
+                            )}
 
-                                {item.description && (
-                                    <Text style={styles.desc} numberOfLines={2}>{item.description}</Text>
-                                )}
-
-                                {item.moq && item.moq > 1 && (
-                                    <View style={styles.moqInlineBadge}>
-                                        <Feather name="alert-circle" size={12} color="#4338CA" />
-                                        <Text style={styles.moqInlineText}>MOQ {item.moq} units</Text>
-                                    </View>
-                                )}
-
-                                <View style={styles.priceContainer}>
-                                    <View style={styles.priceItem}>
-                                        <Text style={styles.priceLabel}>Your Cost</Text>
-                                        <Text style={styles.costPrice}>₹{(item.distributor_price || 0).toLocaleString()}</Text>
-                                    </View>
-                                    <View style={styles.priceItem}>
-                                        <Text style={styles.priceLabel}>Retail (MSRP)</Text>
-                                        <Text style={styles.retailPrice}>₹{(item.price || 0).toLocaleString()}</Text>
-                                    </View>
-                                    <View style={styles.marginItem}>
-                                        <Text style={styles.priceLabel}>Margin</Text>
-                                        <Text style={styles.marginText}>
-                                            ₹{((item.price || 0) - (item.distributor_price || 0)).toLocaleString()}
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
+                            <TouchableOpacity style={styles.addBtn} onPress={() => addToCart(item)}>
+                                <Feather name="plus" size={18} color="#fff" />
+                                <Text style={styles.addBtnText}>Add to Cart</Text>
+                            </TouchableOpacity>
                         </View>
                     )}
                     ListEmptyComponent={
@@ -255,125 +227,96 @@ const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#F3F4F6' },
     header: {
         flexDirection: 'row',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingVertical: 14,
+        paddingHorizontal: 20,
+        paddingTop: 44,
+        paddingBottom: 22,
         backgroundColor: '#fff',
         borderBottomWidth: 1,
         borderBottomColor: '#E5E7EB',
     },
-    headerTextWrap: {
-        flex: 1,
-        marginHorizontal: 10,
-        paddingTop: 6,
-    },
     backBtn: {
-        width: 38,
-        height: 38,
-        borderRadius: 19,
+        width: 40,
+        height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F9FAFB',
-        borderWidth: 1,
-        borderColor: '#E5E7EB',
     },
     cartBtn: {
-        width: 38,
-        height: 38,
-        borderRadius: 19,
+        width: 40,
+        height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F9FAFB',
-        borderWidth: 1,
-        borderColor: '#E5E7EB',
     },
     headerTitle: {
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: '800',
         color: '#111827',
     },
-    headerSubtitle: {
-        marginTop: 2,
-        fontSize: 12,
-        color: '#6B7280',
-    },
     searchContainer: {
-        paddingHorizontal: 16,
-        paddingTop: 12,
-        paddingBottom: 8,
+        paddingHorizontal: 24,
+        paddingTop: 26,
+        paddingBottom: 22,
         backgroundColor: '#F3F4F6',
     },
     searchRow: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#fff',
-        borderRadius: 12,
-        paddingHorizontal: 12,
-        height: 48,
+        borderRadius: 16,
+        paddingHorizontal: 18,
+        height: 58,
         borderWidth: 1,
         borderColor: '#E5E7EB',
     },
-    searchInput: { flex: 1, marginLeft: 8, fontSize: 15, color: '#1F2937' },
-    metaRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 10,
-    },
-    metaText: {
-        fontSize: 12,
-        color: '#6B7280',
-        fontWeight: '600',
-    },
-    metaDivider: {
-        marginHorizontal: 8,
-        color: '#9CA3AF',
-        fontSize: 12,
-    },
+    searchInput: { flex: 1, marginLeft: 12, fontSize: 18, color: '#1F2937' },
     center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     loadingText: { marginTop: 12, color: '#6B7280', fontWeight: '600' },
-    list: { paddingHorizontal: 16, paddingBottom: 32, paddingTop: 4 },
-    card: {
+    list: { paddingHorizontal: 26, paddingBottom: 32, paddingTop: 18 },
+    emptyList: { flexGrow: 1 },
+    cardRow: { justifyContent: 'space-between', marginBottom: 26 },
+    productCard: {
+        width: '48.5%',
         backgroundColor: '#fff',
         borderRadius: 16,
-        marginBottom: 12,
-        elevation: 1,
+        paddingHorizontal: 12,
+        paddingTop: 18,
+        paddingBottom: 12,
+        alignItems: 'center',
+        elevation: 2,
         shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowRadius: 6,
+        shadowOpacity: 0.07,
+        shadowRadius: 7,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: '#E5E7EB',
-        flexDirection: 'row',
     },
     imageContainer: {
-        width: 104,
-        minHeight: 132,
+        width: 112,
+        height: 112,
+        borderRadius: 12,
+        overflow: 'hidden',
         backgroundColor: '#F9FAFB',
-        borderRightWidth: 1,
-        borderRightColor: '#F3F4F6',
+        marginBottom: 14,
     },
     productImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-    placeholderImage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-    cardInfo: { flex: 1, padding: 12 },
-    cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6, gap: 8 },
-    name: { fontSize: 15, fontWeight: '700', color: '#111827', flex: 1, lineHeight: 20 },
-    sku: { fontSize: 11, color: '#9CA3AF', fontWeight: '600', marginTop: 2 },
-    addBtn: {
-        width: 34,
-        height: 34,
-        borderRadius: 17,
-        backgroundColor: '#4F46E5',
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 2,
-        shadowColor: '#4F46E5',
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
+    placeholderImage: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F3F4F6' },
+    name: {
+        fontSize: 15,
+        fontWeight: '800',
+        color: '#111827',
+        lineHeight: 19,
+        textAlign: 'center',
+        minHeight: 40,
+        marginBottom: 12,
     },
-    desc: { fontSize: 12, color: '#6B7280', lineHeight: 17, marginBottom: 8 },
-    moqInlineBadge: {
-        alignSelf: 'flex-start',
+    price: {
+        fontSize: 20,
+        fontWeight: '800',
+        color: '#2563EB',
+        marginBottom: 10,
+    },
+    moqBadge: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 4,
@@ -381,26 +324,28 @@ const styles = StyleSheet.create({
         borderRadius: 999,
         paddingHorizontal: 8,
         paddingVertical: 4,
-        marginBottom: 8,
+        marginBottom: 10,
     },
-    moqInlineText: {
-        fontSize: 11,
+    moqText: {
+        fontSize: 10,
         color: '#4338CA',
-        fontWeight: '700',
+        fontWeight: '800',
     },
-    priceContainer: {
-        flexDirection: 'row',
-        backgroundColor: '#F9FAFB',
+    addBtn: {
+        width: '100%',
+        minHeight: 44,
         borderRadius: 10,
-        padding: 10,
+        backgroundColor: '#7C3AED',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
         gap: 8,
+        elevation: 2,
+        shadowColor: '#7C3AED',
+        shadowOpacity: 0.22,
+        shadowRadius: 4,
     },
-    priceItem: { flex: 1 },
-    marginItem: { flex: 1, alignItems: 'flex-end' },
-    priceLabel: { fontSize: 9, color: '#9CA3AF', fontWeight: '700', textTransform: 'uppercase', marginBottom: 3 },
-    costPrice: { fontSize: 13, fontWeight: '800', color: '#111827' },
-    retailPrice: { fontSize: 13, fontWeight: '800', color: '#4F46E5' },
-    marginText: { fontSize: 13, fontWeight: '800', color: '#10B981' },
+    addBtnText: { color: '#fff', fontWeight: '800', fontSize: 14 },
     emptyState: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
     emptyText: { marginTop: 12, color: '#9CA3AF', fontSize: 16 },
 });

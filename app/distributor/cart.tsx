@@ -7,6 +7,7 @@ import {
     ActivityIndicator,
     Alert,
     FlatList,
+    Image,
     SafeAreaView,
     StyleSheet,
     Text,
@@ -33,17 +34,15 @@ export default function DistributorCart() {
     const router = useRouter();
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [placingOrder, setPlacingOrder] = useState(false);
     const [paymentVisible, setPaymentVisible] = useState(false);
-
-    const [distributorId, setDistributorId] = useState<string | null>(null);
 
     useEffect(() => {
         if (auth?.id) {
-            setDistributorId(auth.id);
             fetchCart(auth.id);
+        } else {
+            setLoading(false);
         }
-    }, [auth]);
+    }, [auth?.id]);
 
     const fetchCart = async (distId: string) => {
         try {
@@ -195,6 +194,11 @@ export default function DistributorCart() {
         return sum + (item.quantity * price);
     }, 0);
 
+    const moqViolations = cartItems.filter(item => item.quantity < (item.products?.moq || 1));
+    const hasMoqViolations = moqViolations.length > 0;
+
+    const formatCurrency = (value: number) => `₹${Math.round(value).toLocaleString('en-IN')}`;
+
     if (loading) {
         return (
             <SafeAreaView style={styles.container}>
@@ -216,7 +220,10 @@ export default function DistributorCart() {
             <FlatList
                 data={cartItems}
                 keyExtractor={item => item.id}
-                contentContainerStyle={styles.list}
+                numColumns={2}
+                columnWrapperStyle={cartItems.length > 0 ? styles.cardRow : undefined}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={[styles.list, cartItems.length === 0 && styles.emptyList]}
                 ListEmptyComponent={
                     <View style={styles.emptyState}>
                         <Feather name="shopping-cart" size={48} color="#D1D5DB" />
@@ -231,34 +238,55 @@ export default function DistributorCart() {
                     const isBelowMoq = item.quantity < moq;
 
                     return (
-                        <View style={styles.card}>
-                            <View style={{ flex: 1 }}>
-                                <Text style={styles.name}>{item.products?.name}</Text>
-                                <Text style={styles.price}>${Number(item.products?.distributor_price || 0).toFixed(2)} / unit</Text>
-                                {isBelowMoq && (
-                                    <View style={styles.moqWarningContainer}>
-                                        <Feather name="alert-circle" size={14} color="#DC2626" />
-                                        <Text style={styles.moqWarningText}>
-                                            MOQ: {moq} units required
-                                        </Text>
+                        <View style={[styles.card, isBelowMoq && styles.cardError]}>
+                            <View style={styles.imageWrap}>
+                                {item.products?.image_url ? (
+                                    <Image source={{ uri: item.products.image_url }} style={styles.productImage} />
+                                ) : (
+                                    <View style={styles.placeholderImage}>
+                                        <Feather name="package" size={30} color="#D1D5DB" />
                                     </View>
                                 )}
                             </View>
 
-                            <View style={styles.controls}>
-                                <TouchableOpacity
-                                    style={styles.qtyBtn}
-                                    onPress={() => updateQuantity(item.id, item.quantity - 1)}
-                                >
-                                    <Feather name="minus" size={16} color="#4B5563" />
-                                </TouchableOpacity>
-                                <Text style={styles.qty}>{item.quantity}</Text>
-                                <TouchableOpacity
-                                    style={styles.qtyBtn}
-                                    onPress={() => updateQuantity(item.id, item.quantity + 1)}
-                                >
-                                    <Feather name="plus" size={16} color="#4B5563" />
-                                </TouchableOpacity>
+                            <View style={styles.cardBody}>
+                                <Text style={styles.name} numberOfLines={2}>{item.products?.name || 'Product unavailable'}</Text>
+                                <Text style={styles.sku} numberOfLines={1}>SKU: {item.products?.sku || 'N/A'}</Text>
+                                <Text style={styles.price}>{formatCurrency(Number(item.products?.distributor_price || 0))}</Text>
+
+                                <View style={[styles.moqContainer, isBelowMoq ? styles.moqWarningContainer : styles.moqBadgeContainer]}>
+                                    <Feather
+                                        name={isBelowMoq ? 'alert-circle' : 'info'}
+                                        size={14}
+                                        color={isBelowMoq ? '#DC2626' : '#4338CA'}
+                                    />
+                                    <Text style={[styles.moqText, isBelowMoq ? styles.moqWarningText : styles.moqBadgeText]}>
+                                        {isBelowMoq ? `Minimum ${moq} units required. Current: ${item.quantity}.` : `MOQ ${moq} units`}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.quantitySection}>
+                                    <Text style={styles.quantityLabel}>Quantity</Text>
+                                    <View style={[styles.controls, isBelowMoq && styles.controlsError]}>
+                                        <TouchableOpacity
+                                            style={styles.qtyBtn}
+                                            onPress={() => updateQuantity(item.id, item.quantity - 1)}
+                                        >
+                                            <Feather name="minus" size={16} color="#4B5563" />
+                                        </TouchableOpacity>
+                                        <Text style={[styles.qty, isBelowMoq && styles.qtyError]}>{item.quantity}</Text>
+                                        <TouchableOpacity
+                                            style={styles.qtyBtn}
+                                            onPress={() => updateQuantity(item.id, item.quantity + 1)}
+                                        >
+                                            <Feather name="plus" size={16} color="#4B5563" />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                                <Text style={styles.lineTotal}>
+                                    Total {formatCurrency(item.quantity * Number(item.products?.distributor_price || 0))}
+                                </Text>
                             </View>
                         </View>
                     );
@@ -267,19 +295,32 @@ export default function DistributorCart() {
 
             {cartItems.length > 0 && (
                 <View style={styles.footer}>
+                    {hasMoqViolations && (
+                        <View style={styles.footerWarning}>
+                            <Feather name="alert-triangle" size={16} color="#B91C1C" />
+                            <Text style={styles.footerWarningText}>
+                                Checkout blocked: {moqViolations.length} item{moqViolations.length === 1 ? '' : 's'} below MOQ. Increase the highlighted quantities to continue.
+                            </Text>
+                        </View>
+                    )}
                     <View style={styles.totalRow}>
                         <Text style={styles.totalLabel}>Total</Text>
-                        <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+                        <Text style={styles.totalValue}>{formatCurrency(total)}</Text>
                     </View>
                     <TouchableOpacity
-                        style={[styles.checkoutBtn, placingOrder && styles.disabledBtn]}
+                        style={[
+                            styles.checkoutBtn,
+                            hasMoqViolations && styles.checkoutBtnBlocked
+                        ]}
                         onPress={placeOrder}
-                        disabled={placingOrder || paymentVisible}
+                        disabled={paymentVisible}
                     >
                         {paymentVisible ? (
                             <ActivityIndicator color="#fff" />
                         ) : (
-                            <Text style={styles.checkoutBtnText}>Place Order</Text>
+                            <Text style={styles.checkoutBtnText}>
+                                {hasMoqViolations ? 'Resolve MOQ Issues to Continue' : 'Place Order'}
+                            </Text>
                         )}
                     </TouchableOpacity>
                 </View>
@@ -312,46 +353,90 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E5E7EB',
     },
     headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
-    list: { padding: 16, gap: 12, flexGrow: 1 },
+    list: { paddingHorizontal: 14, paddingTop: 16, paddingBottom: 24, flexGrow: 1 },
+    emptyList: { justifyContent: 'center' },
+    cardRow: { justifyContent: 'space-between', marginBottom: 12 },
     card: {
+        width: '48.5%',
         backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 16,
+        borderRadius: 16,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOpacity: 0.06,
+        shadowRadius: 6,
+        elevation: 2,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+    },
+    cardError: {
+        borderColor: '#FCA5A5',
+        backgroundColor: '#FFF7F7',
+    },
+    imageWrap: {
+        width: '100%',
+        height: 112,
+        backgroundColor: '#F8FAFC',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    productImage: { width: 104, height: 104, borderRadius: 12, resizeMode: 'cover' },
+    placeholderImage: { width: 104, height: 104, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F3F4F6' },
+    cardBody: { flex: 1, padding: 12, alignItems: 'center', gap: 8 },
+    name: { fontSize: 14, fontWeight: '800', color: '#111827', lineHeight: 18, textAlign: 'center', minHeight: 36 },
+    sku: { fontSize: 10, color: '#9CA3AF', fontWeight: '700', textAlign: 'center', maxWidth: '100%' },
+    price: { fontSize: 18, fontWeight: '800', color: '#2563EB', textAlign: 'center' },
+    moqContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        gap: 6,
+        paddingHorizontal: 8,
+        paddingVertical: 7,
+        borderRadius: 10,
+        width: '100%',
+    },
+    moqBadgeContainer: {
+        backgroundColor: '#EEF2FF',
+    },
+    moqWarningContainer: {
+        backgroundColor: '#FEE2E2',
+    },
+    moqText: {
+        flex: 1,
+        fontSize: 11,
+        fontWeight: '700',
+        lineHeight: 15,
+    },
+    moqBadgeText: { color: '#4338CA' },
+    moqWarningText: { color: '#DC2626' },
+    quantitySection: { width: '100%', gap: 6 },
+    quantityLabel: { fontSize: 11, color: '#6B7280', fontWeight: '800', textAlign: 'center' },
+    controls: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        shadowColor: '#000',
-        shadowOpacity: 0.03,
-        shadowRadius: 5,
-        elevation: 2,
+        backgroundColor: '#F8FAFC',
+        borderRadius: 12,
+        paddingVertical: 5,
+        paddingHorizontal: 6,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
     },
-    name: { fontSize: 16, fontWeight: '700', color: '#111827' },
-    price: { fontSize: 14, color: '#6B7280', marginTop: 4 },
-    moqWarningContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        marginTop: 8,
-        backgroundColor: '#FEE2E2',
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 6,
-        alignSelf: 'flex-start',
+    controlsError: {
+        backgroundColor: '#FFF1F2',
+        borderColor: '#FCA5A5',
     },
-    moqWarningText: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: '#DC2626',
-    },
-    controls: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#F3F4F6', borderRadius: 8, padding: 4 },
-    qtyBtn: { padding: 8, backgroundColor: '#fff', borderRadius: 6, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 2, elevation: 1 },
-    qty: { fontSize: 16, fontWeight: '700', color: '#111827', minWidth: 20, textAlign: 'center' },
-    footer: { padding: 20, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#E5E7EB' },
+    qtyBtn: { width: 30, height: 30, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', borderRadius: 9, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 2, elevation: 1 },
+    qty: { fontSize: 16, fontWeight: '800', color: '#111827', minWidth: 30, textAlign: 'center' },
+    qtyError: { color: '#B91C1C' },
+    lineTotal: { fontSize: 12, color: '#374151', fontWeight: '800', textAlign: 'center' },
+    footer: { padding: 20, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#E5E7EB', gap: 12 },
+    footerWarning: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: '#FEF2F2', borderWidth: 1, borderColor: '#FECACA', padding: 12, borderRadius: 14 },
+    footerWarningText: { flex: 1, color: '#991B1B', fontSize: 13, fontWeight: '600', lineHeight: 18 },
     totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
     totalLabel: { fontSize: 16, color: '#6B7280' },
-    totalValue: { fontSize: 24, fontWeight: '800', color: '#059669' },
-    checkoutBtn: { backgroundColor: '#059669', paddingVertical: 16, borderRadius: 12, alignItems: 'center' },
-    disabledBtn: { opacity: 0.7 },
+    totalValue: { fontSize: 24, fontWeight: '800', color: '#2563EB' },
+    checkoutBtn: { backgroundColor: '#7C3AED', paddingVertical: 16, borderRadius: 12, alignItems: 'center' },
+    checkoutBtnBlocked: { backgroundColor: '#DC2626' },
     checkoutBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
     emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 60 },
     emptyText: { fontSize: 18, color: '#9CA3AF', marginTop: 16, marginBottom: 24 },

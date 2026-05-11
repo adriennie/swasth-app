@@ -1,0 +1,106 @@
+pharmacy_id,sku_id,product_name,pharmacy_name,city,daily_pred,forecast_7d,ci_lower_7d,ci_upper_7d,confidence,unit_price,current_stock,reorder_level,days_of_cover,is_low_stock,is_out_of_stock,distributor_id,needed_qty,reorder_qty,should_order,days_until_stockout,urgency,order_value
+PH_01,SKU_001,Starter Pack with Wet Bag,Apollo Pharmacy - Connaught Place,Delhi,2.0,14,0,29,Low,430,45,21,21.9,0,0,DIST_01,17.0,0,False,22.5,OK,0
+PH_01,SKU_002,Sampler Pack with Pads,Apollo Pharmacy - Connaught Place,Delhi,2.14,15,7,23,Medium,450,36,18,20.0,0,0,DIST_01,18.0,0,False,16.8,OK,0
+PH_01,SKU_003,Reusable Pantyliners for Daily Use,Apollo Pharmacy - Connaught Place,Delhi,2.77,19,7,32,Medium,480,39,27,15.2,0,0,DIST_01,23.0,0,False,14.1,OK,0
+PH_01,SKU_004,Day Pads - Pack of 6,Apollo Pharmacy - Connaught Place,Delhi,3.56,25,5,44,Medium,560,77,32,25.0,0,0,DIST_01,30.0,0,False,21.6,OK,0
+PH_01,SKU_005,Value Pack with Wet Bag and Pouch,Apollo Pharmacy - Connaught Place,Delhi,2.58,18,0,44,Low,690,59,24,25.5,0,0,DIST_01,22.0,0,False,22.9,OK,0
+PH_01,SKU_006,Heavy Flow Pack,Apollo Pharmacy - Connaught Place,Delhi,1.94,14,0,31,Low,699,28,16,18.1,0,0,DIST_01,17.0,0,False,14.4,OK,0
+PH_01,SKU_007,Super Pack with Wet Bag and Pouch,Apollo Pharmacy - Connaught Place,Delhi,1.35,9,0,19,Low,1100,22,10,21.4,0,0,DIST_01,11.0,0,False,16.3,OK,0
+PH_02,SKU_001,Starter Pack with Wet Bag,MedPlus - Andheri West,Mumbai,2.25,16,5,26,Medium,430,31,22,14.3,0,0,DIST_02,20.0,0,False,13.8,OK,0
+PH_02,SKU_002,Sampler Pack with Pads,MedPlus - Andheri West,Mumbai,2.63,18,0,42,Low,450,61,19,32.1,0,0,DIST_02,22.0,0,False,23.2,OK,0
+PH_02,SKU_003,Reusable Pantyliners for Daily Use,MedPlus - Andheri West,Mumbai,3.63,25,2,49,Low,480,73,28,26.9,0,0,DIST_02,30.0,0,False,20.1,OK,0
+PH_02,SKU_004,Day Pads - Pack of 6,MedPlus - Andheri West,Mumbai,4.17,29,4,54,Medium,560,83,34,25.5,0,0,DIST_02,35.0,0,False,19.9,OK,0
+PH_02,SKU_005,Value Pack with Wet Bag and Pouch,MedPlus - Andheri West,Mumbai,2.84,20,0,40,Low,690,54,25,22.1,0,0,DIST_02,24.0,0,False,19.0,OK,0
+PH_02,SKU_006,Heavy Flow Pack,MedPlus - Andheri West,Mumbai,1.99,14,0,28,Low,699,32,17,19.6,0,0,DIST_02,17.0,0,False,16.1,OK,0
+PH_02,SKU_007,Super Pack with Wet Bag and Pouch,MedPlus - Andheri West,Mumbai,1.46,10,1,20,Low,1100,15,11,13.8,0,0,DIST_02,12.0,0,False,10.3,OK,0
+PH_03,SKU_001,Starter Pack with Wet Bag,Wellness Forever - Koramangala,Bangalore,2.1,15,1,28,Low,430,34,20,17.5,0,0,DIST_02,18.0,0,False,16.2,OK,0
+PH_03,SKU_002,Sampler Pack with Pads,Wellness Forever - Koramangala,Bangalore,2.34,16,0,34,Low,450,30,17,17.6,0,0,DIST_02,20.0,0,False,12.8,OK,0
+PH_03,SKU_003,Reusable Pantyliners for Daily Use,Wellness Forever - Koramangala,Bangalore,2.9,20,13,28,High,480,41,25,16.9,0,0,DIST_02,24.0,0,False,14.1,OK,0
+PH_03,SKU_004,Day Pads - Pack of 6,Wellness Forever - Koramangala,Bangalore,3.51,25,10,39,Medium,560,73,30,25.0,0,0,DIST_02,30.0,0,False,20.8,OK,0
+PH_03,SKU_005,Value Pack with Wet Bag and Pouch,Wellness Forever - Koramangala,Bangalore,2.36,17,0,35,Low,690,43,22,19.7,0,0,DIST_02,21.0,0,False,18.2,OK,0
+PH_03,SKU_006,Heavy Flow Pack,Wellness Forever - Koramangala,Bangalore,1.97,14,4,23,Medium,699,31,15,21.3,0,0,DIST_02,17.0,0,False,15.7,OK,0
+PH_03,SKU_007,Super Pack with Wet Bag and Pouch,Wellness Forever - Koramangala,Bangalore,1.11,8,0,19,Low,1100,16,10,16.5,0,0,DIST_02,10.0,0,False,14.4,OK,0
+PH_04,SKU_001,Starter Pack with Wet Bag,Medline Pharmacy - Banjara Hills,Hyderabad,2.24,16,6,25,Medium,430,32,19,17.5,0,0,DIST_03,20.0,0,False,14.3,OK,0
+PH_04,SKU_002,Sampler Pack with Pads,Medline Pharmacy - Banjara Hills,Hyderabad,2.33,16,2,31,Medium,450,33,16,20.6,0,0,DIST_03,20.0,0,False,14.2,OK,0
+PH_04,SKU_003,Reusable Pantyliners for Daily Use,Medline Pharmacy - Banjara Hills,Hyderabad,2.48,17,5,29,Medium,480,43,24,18.8,0,0,DIST_03,21.0,0,False,17.3,OK,0
+PH_04,SKU_004,Day Pads - Pack of 6,Medline Pharmacy - Banjara Hills,Hyderabad,3.82,27,17,37,High,560,97,28,35.4,0,0,DIST_03,33.0,0,False,25.4,OK,0
+PH_04,SKU_005,Value Pack with Wet Bag and Pouch,Medline Pharmacy - Banjara Hills,Hyderabad,2.35,16,8,25,Medium,690,45,21,21.9,0,0,DIST_03,20.0,0,False,19.1,OK,0
+PH_04,SKU_006,Heavy Flow Pack,Medline Pharmacy - Banjara Hills,Hyderabad,1.81,13,4,21,Medium,699,31,14,22.6,0,0,DIST_03,16.0,0,False,17.1,OK,0
+PH_04,SKU_007,Super Pack with Wet Bag and Pouch,Medline Pharmacy - Banjara Hills,Hyderabad,1.17,8,0,26,Low,1100,19,9,20.8,0,0,DIST_03,10.0,0,False,16.2,OK,0
+PH_05,SKU_001,Starter Pack with Wet Bag,Sahyadri Medical - FC Road,Pune,2.39,17,5,28,Medium,430,27,16,16.9,0,0,DIST_03,21.0,0,False,11.3,OK,0
+PH_05,SKU_002,Sampler Pack with Pads,Sahyadri Medical - FC Road,Pune,2.16,15,1,29,Low,450,11,14,7.9,1,0,DIST_03,18.0,7,True,5.1,MEDIUM — Order Soon,3150
+PH_05,SKU_003,Reusable Pantyliners for Daily Use,Sahyadri Medical - FC Road,Pune,2.82,20,8,31,Medium,480,16,21,8.0,1,0,DIST_03,24.0,8,True,5.7,MEDIUM — Order Soon,3840
+PH_05,SKU_004,Day Pads - Pack of 6,Sahyadri Medical - FC Road,Pune,3.85,27,16,38,High,560,68,25,28.3,0,0,DIST_03,33.0,0,False,17.7,OK,0
+PH_05,SKU_005,Value Pack with Wet Bag and Pouch,Sahyadri Medical - FC Road,Pune,2.45,17,0,35,Low,690,40,18,22.2,0,0,DIST_03,21.0,0,False,16.3,OK,0
+PH_05,SKU_006,Heavy Flow Pack,Sahyadri Medical - FC Road,Pune,1.75,12,0,29,Low,699,22,12,18.3,0,0,DIST_03,15.0,0,False,12.6,OK,0
+PH_05,SKU_007,Super Pack with Wet Bag and Pouch,Sahyadri Medical - FC Road,Pune,1.24,9,0,17,Low,1100,31,8,38.8,0,0,DIST_03,11.0,0,False,25.0,OK,0
+PH_06,SKU_001,Starter Pack with Wet Bag,Jaipur Medicos - MI Road,Jaipur,1.95,14,0,37,Low,430,45,15,30.3,0,0,DIST_04,17.0,0,False,23.1,OK,0
+PH_06,SKU_002,Sampler Pack with Pads,Jaipur Medicos - MI Road,Jaipur,1.88,13,0,29,Low,450,16,13,12.3,0,0,DIST_04,16.0,0,False,8.5,OK,0
+PH_06,SKU_003,Reusable Pantyliners for Daily Use,Jaipur Medicos - MI Road,Jaipur,2.31,16,4,28,Medium,480,39,19,21.0,0,0,DIST_04,20.0,0,False,16.9,OK,0
+PH_06,SKU_004,Day Pads - Pack of 6,Jaipur Medicos - MI Road,Jaipur,3.24,23,10,36,Medium,560,37,23,16.6,0,0,DIST_04,28.0,0,False,11.4,OK,0
+PH_06,SKU_005,Value Pack with Wet Bag and Pouch,Jaipur Medicos - MI Road,Jaipur,2.37,17,7,26,Medium,690,47,17,28.1,0,0,DIST_04,21.0,0,False,19.8,OK,0
+PH_06,SKU_006,Heavy Flow Pack,Jaipur Medicos - MI Road,Jaipur,1.56,11,0,27,Low,699,27,11,24.2,0,0,DIST_04,14.0,0,False,17.3,OK,0
+PH_06,SKU_007,Super Pack with Wet Bag and Pouch,Jaipur Medicos - MI Road,Jaipur,1.2,8,0,18,Low,1100,17,7,22.9,0,0,DIST_04,10.0,0,False,14.2,OK,0
+PH_07,SKU_001,Starter Pack with Wet Bag,Sanjeevani Pharmacy - Hazratganj,Lucknow,1.99,14,0,36,Low,430,33,14,24.1,0,0,DIST_04,17.0,0,False,16.6,OK,0
+PH_07,SKU_002,Sampler Pack with Pads,Sanjeevani Pharmacy - Hazratganj,Lucknow,1.83,13,1,25,Low,450,23,12,19.2,0,0,DIST_04,16.0,0,False,12.6,OK,0
+PH_07,SKU_003,Reusable Pantyliners for Daily Use,Sanjeevani Pharmacy - Hazratganj,Lucknow,2.52,18,4,31,Medium,480,21,18,12.2,0,0,DIST_04,22.0,1,True,8.3,MEDIUM — Order Soon,480
+PH_07,SKU_004,Day Pads - Pack of 6,Sanjeevani Pharmacy - Hazratganj,Lucknow,2.78,19,2,37,Medium,560,53,21,25.8,0,0,DIST_04,23.0,0,False,19.1,OK,0
+PH_07,SKU_005,Value Pack with Wet Bag and Pouch,Sanjeevani Pharmacy - Hazratganj,Lucknow,1.9,13,3,23,Medium,690,38,16,24.6,0,0,DIST_04,16.0,0,False,20.0,OK,0
+PH_07,SKU_006,Heavy Flow Pack,Sanjeevani Pharmacy - Hazratganj,Lucknow,1.69,12,5,19,Medium,699,21,10,20.4,0,0,DIST_04,15.0,0,False,12.4,OK,0
+PH_07,SKU_007,Super Pack with Wet Bag and Pouch,Sanjeevani Pharmacy - Hazratganj,Lucknow,1.24,9,1,16,Medium,1100,11,7,16.0,0,0,DIST_04,11.0,0,False,8.9,OK,0
+PH_08,SKU_001,Starter Pack with Wet Bag,Himalayan Medicals - Rajpur Road,Dehradun,1.72,12,3,21,Medium,430,25,13,19.9,0,0,DIST_05,15.0,0,False,14.5,OK,0
+PH_08,SKU_002,Sampler Pack with Pads,Himalayan Medicals - Rajpur Road,Dehradun,1.57,11,4,18,Medium,450,10,11,9.1,1,0,DIST_05,14.0,4,True,6.4,MEDIUM — Order Soon,1800
+PH_08,SKU_003,Reusable Pantyliners for Daily Use,Himalayan Medicals - Rajpur Road,Dehradun,2.08,15,4,25,Medium,480,36,16,22.9,0,0,DIST_05,18.0,0,False,17.3,OK,0
+PH_08,SKU_004,Day Pads - Pack of 6,Himalayan Medicals - Rajpur Road,Dehradun,2.77,19,0,40,Low,560,48,19,25.5,0,0,DIST_05,23.0,0,False,17.3,OK,0
+PH_08,SKU_005,Value Pack with Wet Bag and Pouch,Himalayan Medicals - Rajpur Road,Dehradun,2.03,14,0,29,Low,690,27,14,19.1,0,0,DIST_05,17.0,0,False,13.3,OK,0
+PH_08,SKU_006,Heavy Flow Pack,Himalayan Medicals - Rajpur Road,Dehradun,1.64,11,6,17,Medium,699,12,9,12.7,0,0,DIST_05,14.0,2,True,7.3,MEDIUM — Order Soon,1398
+PH_08,SKU_007,Super Pack with Wet Bag and Pouch,Himalayan Medicals - Rajpur Road,Dehradun,0.98,7,0,15,Low,1100,14,6,22.3,0,0,DIST_05,9.0,0,False,14.3,OK,0
+PH_09,SKU_001,Starter Pack with Wet Bag,Jan Aushadhi - Civil Lines,Kanpur,1.63,11,0,23,Low,430,22,12,19.2,0,0,DIST_05,14.0,0,False,13.5,OK,0
+PH_09,SKU_002,Sampler Pack with Pads,Jan Aushadhi - Civil Lines,Kanpur,1.44,10,0,21,Low,450,17,10,17.0,0,0,DIST_05,12.0,0,False,11.8,OK,0
+PH_09,SKU_003,Reusable Pantyliners for Daily Use,Jan Aushadhi - Civil Lines,Kanpur,1.87,13,0,29,Low,480,30,15,21.0,0,0,DIST_05,16.0,0,False,16.0,OK,0
+PH_09,SKU_004,Day Pads - Pack of 6,Jan Aushadhi - Civil Lines,Kanpur,2.4,17,5,28,Medium,560,37,18,21.6,0,0,DIST_05,21.0,0,False,15.4,OK,0
+PH_09,SKU_005,Value Pack with Wet Bag and Pouch,Jan Aushadhi - Civil Lines,Kanpur,1.9,13,0,33,Low,690,31,13,24.1,0,0,DIST_05,16.0,0,False,16.3,OK,0
+PH_09,SKU_006,Heavy Flow Pack,Jan Aushadhi - Civil Lines,Kanpur,1.53,11,3,18,Medium,699,17,9,19.8,0,0,DIST_05,14.0,0,False,11.1,OK,0
+PH_09,SKU_007,Super Pack with Wet Bag and Pouch,Jan Aushadhi - Civil Lines,Kanpur,0.94,7,0,18,Low,1100,11,6,19.2,0,0,DIST_05,9.0,0,False,11.7,OK,0
+PH_10,SKU_001,Starter Pack with Wet Bag,Sharma Medical Hall - Sadar Bazar,Meerut,1.7,12,2,21,Medium,430,28,10,27.2,0,0,DIST_04,15.0,0,False,16.5,OK,0
+PH_10,SKU_002,Sampler Pack with Pads,Sharma Medical Hall - Sadar Bazar,Meerut,1.43,10,0,20,Low,450,16,9,17.8,0,0,DIST_04,12.0,0,False,11.2,OK,0
+PH_10,SKU_003,Reusable Pantyliners for Daily Use,Sharma Medical Hall - Sadar Bazar,Meerut,1.81,13,0,26,Low,480,25,13,19.4,0,0,DIST_04,16.0,0,False,13.8,OK,0
+PH_10,SKU_004,Day Pads - Pack of 6,Sharma Medical Hall - Sadar Bazar,Meerut,2.28,16,0,34,Low,560,26,16,16.9,0,0,DIST_04,20.0,0,False,11.4,OK,0
+PH_10,SKU_005,Value Pack with Wet Bag and Pouch,Sharma Medical Hall - Sadar Bazar,Meerut,1.56,11,1,21,Low,690,27,12,23.3,0,0,DIST_04,14.0,0,False,17.3,OK,0
+PH_10,SKU_006,Heavy Flow Pack,Sharma Medical Hall - Sadar Bazar,Meerut,1.27,9,1,17,Medium,699,20,8,25.9,0,0,DIST_04,11.0,0,False,15.7,OK,0
+PH_10,SKU_007,Super Pack with Wet Bag and Pouch,Sharma Medical Hall - Sadar Bazar,Meerut,0.85,6,0,14,Low,1100,8,5,15.6,0,0,DIST_04,8.0,0,False,9.4,OK,0
+PH_11,SKU_001,Starter Pack with Wet Bag,Ganesh Medicos - Sanjay Place,Agra,1.46,10,0,21,Low,430,19,11,17.5,0,0,DIST_04,12.0,0,False,13.0,OK,0
+PH_11,SKU_002,Sampler Pack with Pads,Ganesh Medicos - Sanjay Place,Agra,1.57,11,0,27,Low,450,23,9,24.2,0,0,DIST_04,14.0,0,False,14.6,OK,0
+PH_11,SKU_003,Reusable Pantyliners for Daily Use,Ganesh Medicos - Sanjay Place,Agra,1.69,12,0,25,Low,480,24,14,17.7,0,0,DIST_04,15.0,0,False,14.2,OK,0
+PH_11,SKU_004,Day Pads - Pack of 6,Ganesh Medicos - Sanjay Place,Agra,2.41,17,9,25,Medium,560,41,17,25.2,0,0,DIST_04,21.0,0,False,17.0,OK,0
+PH_11,SKU_005,Value Pack with Wet Bag and Pouch,Ganesh Medicos - Sanjay Place,Agra,1.76,12,0,28,Low,690,29,12,23.7,0,0,DIST_04,15.0,0,False,16.5,OK,0
+PH_11,SKU_006,Heavy Flow Pack,Ganesh Medicos - Sanjay Place,Agra,1.33,9,0,19,Low,699,24,8,29.5,0,0,DIST_04,11.0,0,False,18.0,OK,0
+PH_11,SKU_007,Super Pack with Wet Bag and Pouch,Ganesh Medicos - Sanjay Place,Agra,0.75,5,0,17,Low,1100,17,5,31.3,0,0,DIST_04,6.0,0,False,22.7,OK,0
+PH_12,SKU_001,Starter Pack with Wet Bag,Rishikesh Pharma - Haridwar Road,Haridwar,1.73,12,8,16,High,430,12,10,12.4,0,0,DIST_05,15.0,3,True,6.9,MEDIUM — Order Soon,1290
+PH_12,SKU_002,Sampler Pack with Pads,Rishikesh Pharma - Haridwar Road,Haridwar,1.46,10,1,20,Low,450,25,8,29.4,0,0,DIST_05,12.0,0,False,17.1,OK,0
+PH_12,SKU_003,Reusable Pantyliners for Daily Use,Rishikesh Pharma - Haridwar Road,Haridwar,1.57,11,1,21,Low,480,21,12,17.3,0,0,DIST_05,14.0,0,False,13.4,OK,0
+PH_12,SKU_004,Day Pads - Pack of 6,Rishikesh Pharma - Haridwar Road,Haridwar,2.32,16,8,25,Medium,560,29,15,19.9,0,0,DIST_05,20.0,0,False,12.5,OK,0
+PH_12,SKU_005,Value Pack with Wet Bag and Pouch,Rishikesh Pharma - Haridwar Road,Haridwar,1.63,11,6,17,Medium,690,23,11,21.0,0,0,DIST_05,14.0,0,False,14.1,OK,0
+PH_12,SKU_006,Heavy Flow Pack,Rishikesh Pharma - Haridwar Road,Haridwar,1.35,9,1,18,Medium,699,16,7,22.0,0,0,DIST_05,11.0,0,False,11.9,OK,0
+PH_12,SKU_007,Super Pack with Wet Bag and Pouch,Rishikesh Pharma - Haridwar Road,Haridwar,0.89,6,6,6,High,1100,7,5,14.4,0,0,DIST_05,8.0,1,True,7.9,MEDIUM — Order Soon,1100
+PH_13,SKU_001,Starter Pack with Wet Bag,Lifeline Pharmacy - Paltan Bazar,Dehradun,1.76,12,5,20,Medium,430,25,13,19.9,0,0,DIST_05,15.0,0,False,14.2,OK,0
+PH_13,SKU_002,Sampler Pack with Pads,Lifeline Pharmacy - Paltan Bazar,Dehradun,1.57,11,3,19,Medium,450,28,11,25.5,0,0,DIST_05,14.0,0,False,17.8,OK,0
+PH_13,SKU_003,Reusable Pantyliners for Daily Use,Lifeline Pharmacy - Paltan Bazar,Dehradun,2.14,15,5,25,Medium,480,50,16,31.8,0,0,DIST_05,18.0,0,False,23.4,OK,0
+PH_13,SKU_004,Day Pads - Pack of 6,Lifeline Pharmacy - Paltan Bazar,Dehradun,2.79,20,4,35,Medium,560,38,19,20.2,0,0,DIST_05,24.0,0,False,13.6,OK,0
+PH_13,SKU_005,Value Pack with Wet Bag and Pouch,Lifeline Pharmacy - Paltan Bazar,Dehradun,2.16,15,6,25,Medium,690,30,14,21.2,0,0,DIST_05,18.0,0,False,13.9,OK,0
+PH_13,SKU_006,Heavy Flow Pack,Lifeline Pharmacy - Paltan Bazar,Dehradun,1.36,10,0,19,Low,699,22,9,23.3,0,0,DIST_05,12.0,0,False,16.2,OK,0
+PH_13,SKU_007,Super Pack with Wet Bag and Pouch,Lifeline Pharmacy - Paltan Bazar,Dehradun,0.93,7,0,17,Low,1100,8,6,12.7,0,0,DIST_05,9.0,1,True,8.6,MEDIUM — Order Soon,1100
+PH_14,SKU_001,Starter Pack with Wet Bag,Sunrise Medical - Salt Lake,Kolkata,2.42,17,4,30,Medium,430,55,19,29.2,0,0,DIST_01,21.0,0,False,22.7,OK,0
+PH_14,SKU_002,Sampler Pack with Pads,Sunrise Medical - Salt Lake,Kolkata,2.26,16,0,35,Low,450,32,17,19.4,0,0,DIST_01,20.0,0,False,14.2,OK,0
+PH_14,SKU_003,Reusable Pantyliners for Daily Use,Sunrise Medical - Salt Lake,Kolkata,2.99,21,1,41,Low,480,69,24,29.3,0,0,DIST_01,26.0,0,False,23.1,OK,0
+PH_14,SKU_004,Day Pads - Pack of 6,Sunrise Medical - Salt Lake,Kolkata,3.46,24,10,38,Medium,560,29,29,10.3,0,0,DIST_01,29.0,0,False,8.4,OK,0
+PH_14,SKU_005,Value Pack with Wet Bag and Pouch,Sunrise Medical - Salt Lake,Kolkata,2.45,17,0,49,Low,690,54,22,25.5,0,0,DIST_01,21.0,0,False,22.0,OK,0
+PH_14,SKU_006,Heavy Flow Pack,Sunrise Medical - Salt Lake,Kolkata,2.1,15,0,39,Low,699,10,14,7.1,1,0,DIST_01,18.0,8,True,4.8,HIGH — < 5 days,5592
+PH_14,SKU_007,Super Pack with Wet Bag and Pouch,Sunrise Medical - Salt Lake,Kolkata,1.1,8,0,19,Low,1100,15,9,15.9,0,0,DIST_01,10.0,0,False,13.6,OK,0
+PH_15,SKU_001,Starter Pack with Wet Bag,Care Pharmacy - T Nagar,Chennai,2.27,16,0,34,Low,430,34,20,17.5,0,0,DIST_03,20.0,0,False,15.0,OK,0
+PH_15,SKU_002,Sampler Pack with Pads,Care Pharmacy - T Nagar,Chennai,2.13,15,7,23,Medium,450,28,17,16.5,0,0,DIST_03,18.0,0,False,13.1,OK,0
+PH_15,SKU_003,Reusable Pantyliners for Daily Use,Care Pharmacy - T Nagar,Chennai,2.83,20,3,37,Medium,480,48,25,19.8,0,0,DIST_03,24.0,0,False,17.0,OK,0
+PH_15,SKU_004,Day Pads - Pack of 6,Care Pharmacy - T Nagar,Chennai,3.79,27,14,39,Medium,560,61,30,20.9,0,0,DIST_03,33.0,0,False,16.1,OK,0
+PH_15,SKU_005,Value Pack with Wet Bag and Pouch,Care Pharmacy - T Nagar,Chennai,2.43,17,1,33,Low,690,50,22,22.9,0,0,DIST_03,21.0,0,False,20.6,OK,0
+PH_15,SKU_006,Heavy Flow Pack,Care Pharmacy - T Nagar,Chennai,1.91,13,1,26,Low,699,22,15,15.1,0,0,DIST_03,16.0,0,False,11.5,OK,0
+PH_15,SKU_007,Super Pack with Wet Bag and Pouch,Care Pharmacy - T Nagar,Chennai,1.28,9,0,18,Low,1100,24,10,24.7,0,0,DIST_03,11.0,0,False,18.8,OK,0

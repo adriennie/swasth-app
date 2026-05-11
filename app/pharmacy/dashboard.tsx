@@ -42,10 +42,17 @@ interface Distributor {
 // ─── NEW: ML Reorder Card ────────────────────────────────────────────────────
 function ReorderCard({ item }: { item: ForecastResult & { product_name: string } }) {
   const color = getUrgencyColor(item.urgency);
+  const urgencyLabel = item.urgency.split(' — ')[0] || 'OK';
+
   return (
     <View style={[mlStyles.reorderCard, { borderLeftColor: color }]}>
       <View style={{ flex: 1 }}>
-        <Text style={mlStyles.productName}>{item.product_name}</Text>
+        <View style={mlStyles.reorderHeader}>
+          <Text style={mlStyles.productName} numberOfLines={1}>{item.product_name}</Text>
+          <View style={[mlStyles.urgencyBadge, { backgroundColor: color }]}>
+            <Text style={mlStyles.urgencyBadgeText}>{urgencyLabel}</Text>
+          </View>
+        </View>
         <Text style={[mlStyles.urgencyText, { color }]}>{item.urgency}</Text>
         <Text style={mlStyles.detailText}>
           Stock: {item.current_stock} units · Reorder: {item.reorder_qty} units
@@ -76,11 +83,21 @@ export default function PharmacyDashboard() {
   const [reorderSuggestions, setReorderSuggestions] = useState<(ForecastResult & { product_name: string })[]>([]);
 
   useEffect(() => {
-    if (auth?.id) fetchDashboardData();
-  }, [auth]);
+    if (auth?.id) {
+      fetchDashboardData();
+    } else {
+      setLoading(false);
+      setMlLoading(false);
+    }
+  }, [auth?.id]);
 
   const fetchDashboardData = async () => {
-    if (!auth?.id || auth.id === 'undefined') return;
+    if (!auth?.id || auth.id === 'undefined') {
+      setLoading(false);
+      setMlLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -91,7 +108,7 @@ export default function PharmacyDashboard() {
         .single();
 
       const realPharmId = profile?.id;
-      if (!realPharmId) { setLoading(false); return; }
+      const inventoryOwnerIds = Array.from(new Set([auth.id, realPharmId].filter(Boolean))) as string[];
 
       const { data: ordersData } = await supabase
         .from('orders')
@@ -101,7 +118,7 @@ export default function PharmacyDashboard() {
       const { data: invData } = await supabase
         .from('pharmacy_inventory')
         .select('stock_quantity, reorder_level')
-        .eq('pharmacy_id', realPharmId);
+        .in('pharmacy_id', inventoryOwnerIds);
 
       const today = new Date().toISOString().split('T')[0];
       const pendingOrders = ordersData?.filter(o => o.status === 'pending').length || 0;
@@ -114,11 +131,11 @@ export default function PharmacyDashboard() {
       const { data } = await supabase
         .from('pharmacy_distributors')
         .select(`distributor:distributor_profiles(id,display_name,contact_name,email,city,state,contact_mobile)`)
-        .eq('pharmacy_id', realPharmId);
+        .eq('pharmacy_id', realPharmId || auth.id);
       setDistributors(data?.map((i: any) => i.distributor).filter(Boolean) || []);
 
       // ─── NEW: Fetch ML reorder suggestions ──────────────────────────────
-      fetchMLSuggestions(realPharmId);
+      fetchMLSuggestions(inventoryOwnerIds);
 
     } catch (e) {
       console.error('Dashboard error:', e);
@@ -134,9 +151,14 @@ export default function PharmacyDashboard() {
 
 // ─── FIND THIS FUNCTION in your dashboard.tsx and REPLACE IT ─────────────────
 
-  const fetchMLSuggestions = async (pharmacyProfileId: string) => {
+  const fetchMLSuggestions = async (inventoryOwnerIds: string[]) => {
     setMlLoading(true);
     try {
+      setReorderSuggestions([]);
+      if (inventoryOwnerIds.length === 0) {
+        return;
+      }
+
       // Get low-stock items with product details
       const { data: invItems } = await supabase
         .from('pharmacy_inventory')
@@ -144,10 +166,12 @@ export default function PharmacyDashboard() {
           id, stock_quantity, reorder_level,
           products(id, name, sku, price)
         `)
-        .eq('pharmacy_id', pharmacyProfileId)
+        .in('pharmacy_id', inventoryOwnerIds)
         .lte('stock_quantity', 200);  // check more items
 
-      if (!invItems || invItems.length === 0) { setMlLoading(false); return; }
+      if (!invItems || invItems.length === 0) {
+        return;
+      }
 
       const suggestions: (ForecastResult & { product_name: string })[] = [];
 
@@ -420,7 +444,10 @@ const mlStyles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  productName:  { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 2 },
+  reorderHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  productName:  { flex: 1, fontSize: 15, fontWeight: '700', color: '#111827' },
+  urgencyBadge: { borderRadius: 999, paddingHorizontal: 8, paddingVertical: 4 },
+  urgencyBadgeText: { color: '#fff', fontSize: 10, fontWeight: '800' },
   urgencyText:  { fontSize: 12, fontWeight: '700', marginBottom: 4 },
   detailText:   { fontSize: 12, color: '#6B7280' },
   badge:        { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, alignItems: 'center' },

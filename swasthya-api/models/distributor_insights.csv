@@ -1,0 +1,6 @@
+distributor_id,insight
+DIST_01,Stock shortfall of 8 units detected across 2 products. Order from admin immediately — lead time is 1 day(s).
+DIST_02,Stock shortfall of 43 units detected across 5 products. Order from admin immediately — lead time is 2 day(s).
+DIST_03,Stock shortfall of 14 units detected across 3 products. Order from admin immediately — lead time is 2 day(s).
+DIST_04,All stocks sufficient. 352 units expected across 7 products next week.
+DIST_05,Stock shortfall of 22 units detected across 2 products. Order from admin immediately — lead time is 2 day(s).

@@ -2,12 +2,12 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function PrivacyPolicyScreen() {
@@ -30,7 +30,7 @@ export default function PrivacyPolicyScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>1. Introduction</Text>
           <Text style={styles.bodyText}>
-            Swasthya (&#34;we&#34;, &#34;us&#34;, &#34;our&#34;, or &#34;Company&#34;) operates the Swasthya mobile application (the &#34;Service&#34;). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
+            Swasthya we operates the Swasthya mobile application the &#34;Service&#34;. This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
           </Text>
         </View>
 

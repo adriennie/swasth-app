@@ -1,0 +1,91 @@
+{
+  "project": "Swasthya \u2014 Intelligent Pharmacy Network",
+  "feature": "Feature 3 \u2014 Distributor Demand Aggregation",
+  "model_used": "Feature 1 LightGBM (demand_forecaster.pkl) \u2014 no new model trained",
+  "feature_cols": [
+    "lag_1",
+    "lag_7",
+    "lag_14",
+    "lag_28",
+    "lag_91",
+    "roll_7_mean",
+    "roll_7_std",
+    "roll_14_mean",
+    "roll_30_mean",
+    "roll_60_mean",
+    "roll_90_mean",
+    "trend_7_vs_30",
+    "trend_14_vs_60",
+    "trend_30_vs_90",
+    "sin_dow",
+    "cos_dow",
+    "sin_doy",
+    "cos_doy",
+    "sin_month",
+    "cos_month",
+    "month",
+    "quarter",
+    "city_tier",
+    "is_weekend",
+    "is_mhd_window",
+    "is_ngo_season",
+    "is_monsoon",
+    "sku_code",
+    "ph_code",
+    "city_code",
+    "cat_code"
+  ],
+  "forecast_horizon_days": 7,
+  "aggregation": "Sum of pharmacy-level forecasts per distributor per SKU",
+  "risk_thresholds": {
+    "CRITICAL": "stock_cover_days <= 2 OR out_of_stock",
+    "HIGH": "coverage_ratio < 0.5",
+    "MEDIUM": "coverage_ratio < 0.8",
+    "LOW": "stock_gap > 0 but coverage_ratio >= 0.8",
+    "OK": "coverage_ratio >= 1.0"
+  },
+  "trend_thresholds": {
+    "Rising": "wow_change_pct > 10%",
+    "Falling": "wow_change_pct < -10%",
+    "Stable": "-10% to +10%"
+  },
+  "distributors": [
+    {
+      "dist_id": "DIST_01",
+      "name": "NorthEast Hygiene Distributors",
+      "city": "Delhi",
+      "reliability": 0.95,
+      "lead_time_days": 1
+    },
+    {
+      "dist_id": "DIST_02",
+      "name": "Western India MedSupply Pvt Ltd",
+      "city": "Mumbai",
+      "reliability": 0.92,
+      "lead_time_days": 2
+    },
+    {
+      "dist_id": "DIST_03",
+      "name": "Deccan Healthcare Network",
+      "city": "Pune",
+      "reliability": 0.88,
+      "lead_time_days": 2
+    },
+    {
+      "dist_id": "DIST_04",
+      "name": "Rajputana Health Distributors",
+      "city": "Jaipur",
+      "reliability": 0.85,
+      "lead_time_days": 3
+    },
+    {
+      "dist_id": "DIST_05",
+      "name": "Himalayan Pharma Agency",
+      "city": "Dehradun",
+      "reliability": 0.82,
+      "lead_time_days": 2
+    }
+  ],
+  "n_pharmacies": 15,
+  "n_skus": 7
+}

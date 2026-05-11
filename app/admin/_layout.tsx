@@ -78,6 +78,10 @@ export default function AdminLayout() {
 
       {/* Hidden screens - accessible but not in tab bar */}
       <Tabs.Screen
+        name="management"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
         name="management/distributors"
         options={{ href: null }}
       />
@@ -98,11 +102,11 @@ export default function AdminLayout() {
         options={{ href: null }}
       />
       <Tabs.Screen
-        name="management/brochures"
+        name="management/ml-test"
         options={{ href: null }}
       />
       <Tabs.Screen
-        name="management/ml-test"
+        name="management/ml-test 2"
         options={{ href: null }}
       />
       <Tabs.Screen

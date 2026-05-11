@@ -1,0 +1,6 @@
+dist_id,name,city,reliability,lead_time_days
+DIST_01,NorthEast Hygiene Distributors,Delhi,0.95,1
+DIST_02,Western India MedSupply Pvt Ltd,Mumbai,0.92,2
+DIST_03,Deccan Healthcare Network,Pune,0.88,2
+DIST_04,Rajputana Health Distributors,Jaipur,0.85,3
+DIST_05,Himalayan Pharma Agency,Dehradun,0.82,2

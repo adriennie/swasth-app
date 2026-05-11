@@ -59,6 +59,7 @@
     "@types/react": "~19.1.10",
     "eslint": "^9.36.0",
     "eslint-config-expo": "~10.0.0",
+    "expo-module-scripts": "~5.0.8",
     "typescript": "~5.9.2"
   },
   "private": true

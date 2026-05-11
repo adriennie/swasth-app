@@ -1,0 +1,93 @@
+{
+  "project": "Swasthya \u2014 Intelligent Pharmacy Network",
+  "feature": "Feature 1 \u2014 Pharmacy Demand Forecasting",
+  "model_type": "LightGBMRegressor",
+  "feature_cols": [
+    "lag_1",
+    "lag_7",
+    "lag_14",
+    "lag_28",
+    "lag_91",
+    "roll_7_mean",
+    "roll_7_std",
+    "roll_14_mean",
+    "roll_30_mean",
+    "roll_60_mean",
+    "roll_90_mean",
+    "trend_7_vs_30",
+    "trend_14_vs_60",
+    "trend_30_vs_90",
+    "sin_dow",
+    "cos_dow",
+    "sin_doy",
+    "cos_doy",
+    "sin_month",
+    "cos_month",
+    "month",
+    "quarter",
+    "city_tier",
+    "is_weekend",
+    "is_mhd_window",
+    "is_ngo_season",
+    "is_monsoon",
+    "sku_code",
+    "ph_code",
+    "city_code",
+    "cat_code"
+  ],
+  "target_col": "quantity_sold",
+  "n_features": 31,
+  "n_trees_used": 1000,
+  "train_rows": 49665,
+  "test_rows": 6300,
+  "train_period": "2024-01-15 to 2025-05-01",
+  "test_period": "2025-05-02 to 2025-06-30",
+  "metrics": {
+    "MAE": 1.1397,
+    "RMSE": 1.4931,
+    "MAPE": 1.1338782611697235e+17,
+    "R2": 0.3505,
+    "baseline_holt_winters_mape": 53.2565,
+    "improvement_over_baseline": -1.133878261169723e+17
+  },
+  "products": [
+    {
+      "sku_id": "SKU_001",
+      "name": "Starter Pack with Wet Bag",
+      "price": 430
+    },
+    {
+      "sku_id": "SKU_002",
+      "name": "Sampler Pack with Pads",
+      "price": 450
+    },
+    {
+      "sku_id": "SKU_003",
+      "name": "Reusable Pantyliners for Daily Use",
+      "price": 480
+    },
+    {
+      "sku_id": "SKU_004",
+      "name": "Day Pads - Pack of 6",
+      "price": 560
+    },
+    {
+      "sku_id": "SKU_005",
+      "name": "Value Pack with Wet Bag and Pouch",
+      "price": 690
+    },
+    {
+      "sku_id": "SKU_006",
+      "name": "Heavy Flow Pack",
+      "price": 699
+    },
+    {
+      "sku_id": "SKU_007",
+      "name": "Super Pack with Wet Bag and Pouch",
+      "price": 1100
+    }
+  ],
+  "n_pharmacies": 15,
+  "safety_factor": 1.2,
+  "forecast_horizon_days": 7
+}

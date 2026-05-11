@@ -1,0 +1,8 @@
+sku_id,name,price,category,base_weekly_demand
+SKU_001,Starter Pack with Wet Bag,430,Starter,8
+SKU_002,Sampler Pack with Pads,450,Sampler,7
+SKU_003,Reusable Pantyliners for Daily Use,480,Pantyliner,10
+SKU_004,Day Pads - Pack of 6,560,Day Pad,12
+SKU_005,Value Pack with Wet Bag and Pouch,690,Value Pack,9
+SKU_006,Heavy Flow Pack,699,Heavy Flow,6
+SKU_007,Super Pack with Wet Bag and Pouch,1100,Super Pack,4
