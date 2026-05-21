@@ -200,6 +200,7 @@ The system implements eight key algorithms:
 | Algorithm | Purpose | Location |
 
 |-----------|---------|----------|
+
 | **Cycle Prediction** | Estimate next period and ovulation from historical logs | `app/(tabs)/tracker.tsx` |
 | **Content Personalization** | Filter articles by user health tags | `app/(tabs)/learn.tsx` |
 | **MOQ Validation** | Enforce minimum order quantities for distributors | `app/distributor/cart.tsx` |
