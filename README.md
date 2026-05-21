@@ -4,9 +4,6 @@
 
 Swasthya is a comprehensive mobile and web application that combines consumer health tracking and education with B2B supply-chain operations for menstrual-wellness products. The platform serves four distinct user roles—**customers**, **pharmacies**, **distributors**, and **admins**—through a unified codebase with role-based navigation and tailored workflows.
 
-[⬇️ Download APK](app/raw/main/apk/application-49bc7b2a-e7a0-44ea-b885-2a6cdc579551.apk)
-[Link to the app](https://expo.dev/accounts/adrika-pradhan/projects/hercircle/builds/49bc7b2a-e7a0-44ea-b885-2a6cdc579551)
-
 ---
 
 ## 🌟 Key Features
@@ -212,7 +209,7 @@ The system implements eight key algorithms:
 | **Dashboard KPIs** | Compute operational metrics from orders and inventory | `app/[role]/dashboard.tsx` |
 | **Distributor-Pharmacy Mapping** | Manage many-to-many network relationships | `app/admin/management/mapping.tsx` |
 
-See [`IMPLEMENTATION.md`](docs/IMPLEMENTATION.md) for detailed pseudocode.
+See [`IMPLEMENTATION.md`](implementation.md) for detailed pseudocode.
 
 ---
 
@@ -231,7 +228,7 @@ The project follows a four-layer testing approach:
 npm test
 ```
 
-For detailed test cases and coverage, see [`TESTING.md`](docs/TESTING.md).
+For detailed test cases and coverage, see [`TESTING.md`](testing.md).
 
 ---
 
@@ -251,7 +248,7 @@ For detailed test cases and coverage, see [`TESTING.md`](docs/TESTING.md).
 ⚠️ **No payment integration** — Orders are created but not yet billed  
 ⚠️ **Single-server scale** — Direct client queries work now but need API gateway at 100k+ users
 
-For a detailed discussion, see [`CHALLENGES.md`](docs/CHALLENGES.md).
+For a detailed discussion, see [`CHALLENGES.md`](challenges.md).
 
 ---
 
@@ -294,7 +291,7 @@ For a detailed discussion, see [`CHALLENGES.md`](docs/CHALLENGES.md).
 - ⚠️ Enterprise SSO/SAML
 - ⚠️ Encryption for sensitive health data
 
-See [`SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md) for security architecture details.
+See [`SYSTEM_DESIGN.md`](system_design.md) for security architecture details.
 
 ---
 
@@ -303,11 +300,11 @@ See [`SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md) for security architecture detail
 | Document | Purpose |
 
 |----------|---------|
-| [SYSTEM_DESIGN.md](docs/SYSTEM_DESIGN.md) | Architecture, data model, and design decisions |
-| [SYSTEM_REQUIREMENTS.md](docs/SYSTEM_REQUIREMENTS.md) | Functional/non-functional requirements and use cases |
-| [IMPLEMENTATION.md](docs/IMPLEMENTATION.md) | Tech stack, module walkthrough, algorithms with pseudocode |
-| [TESTING.md](docs/TESTING.md) | Test strategy, test cases, and validation methods |
-| [CHALLENGES.md](docs/CHALLENGES.md) | Technical, B2B, AI, and process challenges |
+| [SYSTEM_DESIGN.md](system_design.md) | Architecture, data model, and design decisions |
+| [SYSTEM_REQUIREMENTS.md](system_requirements.md) | Functional/non-functional requirements and use cases |
+| [IMPLEMENTATION.md](implementation.md) | Tech stack, module walkthrough, algorithms with pseudocode |
+| [TESTING.md](testing.md) | Test strategy, test cases, and validation methods |
+| [CHALLENGES.md](challenges.md) | Technical, B2B, AI, and process challenges |
 
 ---
 
@@ -323,7 +320,7 @@ Contributions are welcome! Please follow these guidelines:
 
 2. **Keep TypeScript strict** — No `any` types without justification
 3. **Follow role boundaries** — Isolate changes to role-specific folders when possible
-4. **Add test cases** — See [`TESTING.md`](docs/TESTING.md) for test structure
+4. **Add test cases** — See [`TESTING.md`](testing.md) for test structure
 5. **Update docs** — If you change architecture or add algorithms, update the relevant doc
 6. **Create a Pull Request** with a clear description of changes
 
@@ -435,7 +432,7 @@ To install Swasthya on an Android device using the APK file:
 
 1. **Download the APK** — Get the latest `.apk` file from:
    - **EAS Dashboard:** [expo.dev](https://expo.dev) → Your Project → Builds
-   - **GitHub Releases:** [Releases page](https://github.com/yourusername/swasthya/releases)
+   - **GitHub Releases:** [Releases page]()
 
 2. **Enable Unknown Sources** (if needed)
    - Go to `Settings → Security → Unknown Sources`
@@ -450,11 +447,6 @@ To install Swasthya on an Android device using the APK file:
    - Once installation finishes, tap "Open" or find Swasthya in your app drawer
    - On first launch, grant necessary permissions (camera, location, contacts as needed)
 
-### APK Release Versions
-
-| Version | Date     | Status | Download                                                                                          |
-| ------- | -------- | ------ | ------------------------------------------------------------------------------------------------- |
-| v1.0.0  | May 2026 | Latest | [Download](https://github.com/yourusername/swasthya/releases/download/v1.0.0/swasthya-v1.0.0.apk) |
 
 **Note:** APK files will be uploaded to the GitHub Releases page. Check back for the latest stable build.
 
@@ -501,13 +493,13 @@ To install Swasthya on an Android device using the APK file:
 
 - **Issues & Bugs** — Open a GitHub issue with steps to reproduce
 - **Feature Requests** — Use GitHub Discussions or open a feature issue
-- **Security Concerns** — Email privately to [your-email@example.com](mailto:your-email@example.com) (do not open public issues)
+- **Security Concerns** — Email privately to [adrika2607@gmail.com](mailto:adrika2607@gmail.com) (do not open public issues)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License
 
 ---
 
@@ -530,4 +522,4 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 ---
 
 **Last Updated**: May 2026  
-**Status**: Active Development — Ready for MSc Applications & Intern Showcase
+**Status**: MVP Development completed
