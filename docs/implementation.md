@@ -20,7 +20,7 @@ AsyncStorage is used for session persistence and some local domain state such as
 
 ### 1.5 Expo Media / File Modules
 
-Modules such as document picker, file system, image picker, and sharing are used for product import/export and media handling in admin and pharmacy flows.
+Modules such as document picker, file system, image picker, and sharing are used for prod![alt text](image.png)uct import/export and media handling in admin and pharmacy flows.
 
 ## 2. Backend and Cloud Choices
 
