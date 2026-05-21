@@ -16,7 +16,7 @@ The project demonstrates:
 
 **Repository**: [GitHub Link](#)  
 **Live Demo**: Available on request  
-**Evaluation Docs**: See `/docs/` for system design, implementation, testing, and technical challenges.
+**Evaluation Docs**: See `files` for system design, implementation, testing, and technical challenges.
 
 ---
 
