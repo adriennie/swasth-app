@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Jakarta"; src: url("assets/fonts/PlusJakartaSans_700Bold.ttf"); font-weight: 700; }
+      @font-face { font-family: "Jakarta"; src: url("assets/fonts/PlusJakartaSans_800ExtraBold.ttf"); font-weight: 800; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_400Regular.ttf"); font-weight: 400; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_500Medium.ttf"); font-weight: 500; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_600SemiBold.ttf"); font-weight: 600; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter_700Bold.ttf"); font-weight: 700; }
+      @font-face { font-family: "DMSans"; src: url("assets/fonts/DMSans_500Medium.ttf"); font-weight: 500; }
+      @font-face { font-family: "DMSans"; src: url("assets/fonts/DMSans_600SemiBold.ttf"); font-weight: 600; }
+      @font-face { font-family: "DMSans"; src: url("assets/fonts/DMSans_700Bold.ttf"); font-weight: 700; }
+
+      /* Swasthya design tokens (constants/Colors.ts). */
+      :root {
+        --canvas: #faf8fc;
+        --ink: #292638;
+        --lav: #8b75c9;
+        --lav-text: #6b55a8;
+        --lav-deep: #4f3d85;
+        --lav-soft: #f1edfa;
+        --lav-border: #dcd3f0;
+        --blush: #f3c6d4;
+        --teal: #2a7a73;
+        --teal-soft: #e6f4f2;
+        --amber: #b45309;
+        --amber-soft: #fef3c7;
+        --rose: #b4234a;
+        --rose-soft: #fde8ee;
+        --muted: #5b6577;
+        --shadow: 0 10px 30px rgba(41, 38, 56, 0.08);
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--canvas); }
+      #root { position: relative; width: 1920px; height: 1080px; font-family: "Inter", sans-serif; color: var(--ink); }
+
+      .scene { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+      .bg-canvas { background: radial-gradient(1200px 700px at 78% 40%, #efe9fa 0%, var(--canvas) 60%); }
+      .bg-hero { background: linear-gradient(135deg, #292638 0%, #4f3d85 58%, #6b55a8 100%); }
+      .ico { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
+
+      /* ---------- Shared layout for feature scenes ---------- */
+      .copy { position: absolute; left: 150px; top: 0; bottom: 0; width: 760px; display: flex; flex-direction: column; justify-content: center; }
+      .eyebrow { font-family: "DMSans"; font-weight: 600; font-size: 28px; letter-spacing: 3px; text-transform: uppercase; color: var(--lav-text); display: flex; align-items: center; gap: 14px; }
+      .eyebrow .num { width: 46px; height: 46px; border-radius: 14px; background: var(--lav-text); color: #fff; display: grid; place-items: center; font-size: 20px; letter-spacing: 0; }
+      .headline { font-family: "Jakarta"; font-weight: 800; font-size: 76px; line-height: 1.08; letter-spacing: -1.5px; margin-top: 26px; }
+      .sub { font-size: 30px; line-height: 1.45; color: var(--muted); margin-top: 26px; max-width: 700px; }
+      .points { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+      .point { display: flex; align-items: center; gap: 14px; font-size: 28px; font-weight: 600; }
+      .point .dot { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; font-size: 20px; }
+
+      /* ---------- Phone ---------- */
+      .phone { position: absolute; left: 1150px; top: 80px; width: 440px; height: 920px; border-radius: 60px; background: #1b1928; padding: 14px; box-shadow: 0 40px 90px rgba(41, 38, 56, 0.28), 0 0 0 2px #3a364f inset; }
+      .screen { position: relative; width: 100%; height: 100%; border-radius: 47px; overflow: hidden; background: var(--canvas); }
+      .notch { position: absolute; top: 12px; left: 50%; width: 120px; height: 32px; margin-left: -60px; border-radius: 20px; background: #1b1928; z-index: 5; }
+      .hero { padding: 64px 22px 22px; background: linear-gradient(135deg, #292638 0%, #4f3d85 100%); border-radius: 0 0 28px 28px; color: #fff; }
+      .hero .eb { font-family: "DMSans"; font-weight: 600; font-size: 12px; letter-spacing: 1.4px; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); }
+      .hero .tt { font-family: "Jakarta"; font-weight: 800; font-size: 27px; margin-top: 4px; }
+      .hero .st { font-size: 14px; color: rgba(255, 255, 255, 0.82); margin-top: 4px; }
+      .hero .row { display: flex; align-items: center; gap: 12px; }
+      .hero .btn { width: 42px; height: 42px; border-radius: 13px; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.2); display: grid; place-items: center; font-size: 19px; margin-left: auto; position: relative; }
+      .body { padding: 16px; }
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .tile { background: #fff; border-radius: 13px; padding: 14px; box-shadow: var(--shadow); }
+      .tile .ic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-size: 17px; margin-bottom: 9px; }
+      .tile .v { font-family: "DMSans"; font-weight: 700; font-size: 25px; }
+      .tile .l { font-family: "DMSans"; font-weight: 500; font-size: 13px; color: var(--muted); margin-top: 2px; }
+      .tile .h { font-family: "DMSans"; font-weight: 600; font-size: 12px; margin-top: 6px; }
+      .sec { display: flex; align-items: center; gap: 8px; font-family: "Jakarta"; font-weight: 700; font-size: 18px; margin: 20px 0 4px; }
+      .sec .ico { color: var(--lav-text); font-size: 17px; }
+      .secsub { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+      .card { background: #fff; border-radius: 13px; padding: 14px; box-shadow: var(--shadow); }
+      .badge { font-family: "DMSans"; font-weight: 700; font-size: 11px; letter-spacing: 0.4px; padding: 4px 9px; border-radius: 99px; }
+      .t-lav { background: var(--lav-soft); color: var(--lav-text); }
+      .t-teal { background: var(--teal-soft); color: var(--teal); }
+      .t-amber { background: var(--amber-soft); color: var(--amber); }
+      .t-rose { background: var(--rose-soft); color: var(--rose); }
+      .t-slate { background: #f1f5f9; color: #475569; }
+
+      /* reorder card */
+      .rc .top { display: flex; align-items: center; gap: 8px; }
+      .rc .nm { flex: 1; font-weight: 700; font-size: 15px; }
+      .rc .dt { font-size: 12px; color: var(--muted); margin-top: 4px; }
+      .rc .mx { display: flex; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eef0f4; }
+      .rc .mx div { flex: 1; }
+      .rc .mv { font-family: "DMSans"; font-weight: 700; font-size: 18px; }
+      .rc .ml { font-family: "DMSans"; font-size: 11px; color: var(--muted); }
+      .rc .ov { font-family: "DMSans"; font-weight: 600; font-size: 12px; color: var(--teal); margin-top: 8px; }
+      .glowbox { border-radius: 8px; padding: 2px 6px; margin: -2px -6px; }
+
+      /* catalog */
+      .search { margin-top: 16px; background: #fff; border-radius: 12px; height: 46px; display: flex; align-items: center; gap: 10px; padding: 0 14px; color: var(--muted); font-size: 15px; }
+      .search .q { color: var(--ink); font-weight: 500; }
+      .caret { width: 2px; height: 20px; background: var(--lav-text); margin-left: -8px; }
+      .chips { display: flex; gap: 8px; padding: 14px 16px 6px; white-space: nowrap; }
+      .chip { font-weight: 600; font-size: 13px; padding: 8px 12px; border-radius: 99px; background: #fff; border: 1px solid #e7e3f1; display: flex; gap: 6px; align-items: baseline; flex-shrink: 0; }
+      .chip span { font-family: "DMSans"; font-size: 11px; color: var(--muted); }
+      .chip.on { background: var(--lav-text); border-color: var(--lav-text); color: #fff; }
+      .chip.on span { color: #fff; }
+      .rows { padding: 8px 16px; display: flex; flex-direction: column; gap: 10px; }
+      .prow { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 12px; padding: 12px; box-shadow: var(--shadow); }
+      .prow .pi { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 19px; flex-shrink: 0; }
+      .prow .pn { font-weight: 600; font-size: 14px; }
+      .prow .pm { font-size: 12px; color: var(--muted); margin-top: 2px; }
+      .prow .pp { display: flex; gap: 8px; align-items: baseline; margin-top: 5px; }
+      .prow .pr { font-family: "DMSans"; font-weight: 700; font-size: 15px; }
+      .prow .mrp { font-family: "DMSans"; font-size: 12px; color: #6c7382; text-decoration: line-through; }
+      .prow .mg { font-family: "DMSans"; font-weight: 600; font-size: 11px; color: var(--teal); }
+      .add { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--lav-border); background: var(--lav-soft); color: var(--lav-text); display: grid; place-items: center; font-size: 18px; flex-shrink: 0; position: relative; }
+      .add .cnt { position: absolute; inset: -1px; border-radius: 12px; background: var(--lav-text); color: #fff; font-family: "DMSans"; font-weight: 700; font-size: 15px; display: grid; place-items: center; opacity: 0; }
+      .cartbar { position: absolute; left: 16px; right: 16px; bottom: 26px; background: var(--ink); color: #fff; border-radius: 16px; padding: 15px 16px; display: flex; align-items: center; gap: 10px; font-family: "DMSans"; font-weight: 600; font-size: 15px; opacity: 0; }
+      .cartbar .cta { margin-left: auto; color: var(--blush); font-family: "Inter"; font-weight: 700; }
+      .cartbar .stack { position: relative; flex: 1; height: 20px; }
+      .cartbar .stack div { position: absolute; left: 0; top: 0; opacity: 0; }
+      .toast { position: absolute; left: 16px; right: 16px; top: 300px; background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 20px 50px rgba(41, 38, 56, 0.25); display: flex; gap: 12px; align-items: center; opacity: 0; }
+      .toast .ok { width: 40px; height: 40px; border-radius: 12px; background: var(--teal-soft); color: var(--teal); display: grid; place-items: center; font-size: 20px; }
+      .tap { position: absolute; width: 46px; height: 46px; border-radius: 50%; background: rgba(107, 85, 168, 0.25); border: 2px solid rgba(107, 85, 168, 0.55); opacity: 0; z-index: 6; }
+
+      /* distributor timeline */
+      .steps { margin-top: 16px; display: flex; flex-direction: column; gap: 0; }
+      .step { display: flex; gap: 14px; align-items: flex-start; position: relative; padding-bottom: 22px; }
+      .step .b { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #cbd5e1; background: #fff; display: grid; place-items: center; font-size: 16px; color: #fff; flex-shrink: 0; position: relative; z-index: 2; }
+      .step .b .fill { position: absolute; inset: -2px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; opacity: 0; }
+      .step .line { position: absolute; left: 16px; top: 34px; width: 2px; height: 22px; background: #e2e8f0; z-index: 1; }
+      .step .line i { display: block; width: 100%; height: 100%; background: var(--teal); transform-origin: top; transform: scaleY(0); }
+      .step .s1 { font-weight: 700; font-size: 15px; padding-top: 6px; }
+      .step .s2 { font-size: 12px; color: var(--muted); margin-top: 2px; }
+      .otp { margin-top: 4px; display: flex; gap: 8px; align-items: center; }
+      .otp .d { width: 40px; height: 48px; border-radius: 10px; background: var(--lav-soft); border: 1px solid var(--lav-border); display: grid; place-items: center; font-family: "DMSans"; font-weight: 700; font-size: 22px; color: var(--lav-text); opacity: 0; }
+
+      /* admin */
+      .banner { display: flex; align-items: center; gap: 12px; padding: 13px; border-radius: 12px; background: #fffbeb; border: 1px solid #fde68a; margin-top: 12px; opacity: 0; }
+      .banner .bi { width: 36px; height: 36px; border-radius: 10px; background: var(--amber-soft); color: var(--amber); display: grid; place-items: center; font-size: 17px; }
+      .anomaly { border: 1.5px solid #f4b8c8; background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 16px 40px rgba(180, 35, 74, 0.16); margin-top: 14px; opacity: 0; }
+      .anomaly .ah { display: flex; align-items: center; gap: 10px; }
+      .anomaly .ai { width: 36px; height: 36px; border-radius: 10px; background: var(--rose-soft); color: var(--rose); display: grid; place-items: center; font-size: 18px; }
+      .anomaly .at { font-family: "Jakarta"; font-weight: 700; font-size: 15px; flex: 1; }
+      .anomaly p { font-size: 14px; line-height: 1.5; color: #334155; margin-top: 10px; }
+
+      /* ---------- Scene 1 + 8: shelf ---------- */
+      .shelfwrap { position: absolute; left: 50%; top: 470px; width: 1180px; margin-left: -590px; }
+      .shelf { display: flex; gap: 22px; align-items: flex-end; height: 230px; padding: 0 30px; }
+      .boxm { width: 150px; border-radius: 14px; box-shadow: 0 12px 26px rgba(41, 38, 56, 0.14); display: flex; flex-direction: column; justify-content: flex-end; padding: 16px 14px; color: #fff; font-family: "Jakarta"; font-weight: 700; font-size: 18px; line-height: 1.2; position: relative; }
+      .boxm small { display: block; font-family: "DMSans"; font-weight: 500; font-size: 13px; opacity: 0.85; margin-top: 4px; }
+      .gap { width: 150px; height: 200px; border-radius: 14px; border: 3px dashed #c9bfe0; position: relative; }
+      .plank { height: 26px; border-radius: 8px; background: linear-gradient(#d8cfec, #c3b6e2); margin-top: 6px; box-shadow: 0 14px 24px rgba(41, 38, 56, 0.12); }
+      .stock { position: absolute; top: 290px; left: 50%; transform: translateX(-50%); background: #fff; border-radius: 16px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow); white-space: nowrap; opacity: 0; }
+      .stock .nm { font-weight: 700; font-size: 28px; }
+      .stock .q { font-family: "DMSans"; font-size: 28px; color: var(--muted); }
+      .bigq { position: absolute; left: 0; right: 0; text-align: center; font-family: "Jakarta"; font-weight: 800; letter-spacing: -1.4px; }
+
+      /* ---------- Scene 2: problems ---------- */
+      .s2title { position: absolute; left: 150px; top: 150px; }
+      .pcards { position: absolute; left: 150px; right: 150px; top: 400px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+      .pcard { background: #fff; border-radius: 24px; padding: 40px; box-shadow: 0 20px 50px rgba(41, 38, 56, 0.09); opacity: 0; }
+      .pcard .pi { width: 72px; height: 72px; border-radius: 20px; display: grid; place-items: center; font-size: 34px; }
+      .pcard h3 { font-family: "Jakarta"; font-weight: 800; font-size: 40px; margin-top: 28px; }
+      .pcard p { font-size: 28px; line-height: 1.45; color: var(--muted); margin-top: 14px; }
+
+      /* ---------- Scene 3: reveal ---------- */
+      .reveal { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; }
+      .glow { position: absolute; width: 900px; height: 900px; left: 50%; top: 50%; margin: -450px 0 0 -450px; border-radius: 50%; background: radial-gradient(circle, rgba(243, 198, 212, 0.28) 0%, rgba(243, 198, 212, 0) 65%); }
+      .logo { width: 150px; height: 150px; border-radius: 40px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.24); overflow: hidden; display: grid; place-items: center; position: relative; }
+      .logo img { width: 150px; height: 150px; }
+      .brand { font-family: "Jakarta"; font-weight: 800; font-size: 120px; letter-spacing: -3px; margin-top: 28px; position: relative; }
+      .tag { font-size: 36px; color: rgba(255, 255, 255, 0.86); margin-top: 18px; max-width: 1200px; line-height: 1.4; position: relative; }
+      .pills { display: flex; gap: 18px; margin-top: 44px; position: relative; }
+      .pill { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-radius: 99px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.22); font-family: "DMSans"; font-weight: 600; font-size: 26px; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="60" data-width="1920" data-height="1080">
+
+      <!-- ===================== SCENE 1: the empty shelf (0 - 7.2) ===================== -->
+      <section id="s1" class="scene bg-canvas clip" data-start="0" data-duration="7.2" data-track-index="0">
+        <div id="s1q1" class="bigq" style="top: 170px; font-size: 64px; color: var(--muted)">A patient needs Paracetamol today.</div>
+        <div id="s1q2" class="bigq" style="top: 255px; font-size: 92px">The shelf is empty.</div>
+        <div class="shelfwrap">
+          <div class="shelf">
+            <div class="boxm s1box" style="height: 190px; background: #2a7a73">Cetirizine<small>10 mg · 10 tabs</small></div>
+            <div class="boxm s1box" style="height: 210px; background: #6b55a8">Pantoprazole<small>40 mg · 15 tabs</small></div>
+            <div class="boxm s1box" style="height: 170px; background: #b45309">ORS<small>21 g sachet</small></div>
+            <div id="s1gap" class="gap s1box"></div>
+            <div class="boxm s1box" style="height: 200px; background: #4f3d85">Metformin<small>500 mg · 20 tabs</small></div>
+            <div class="boxm s1box" style="height: 180px; background: #b4234a">Amlodipine<small>5 mg · 15 tabs</small></div>
+          </div>
+          <div class="plank"></div>
+          <div id="s1stock" class="stock">
+            <span class="badge t-rose" style="font-size: 20px; padding: 6px 12px">OUT OF STOCK</span>
+            <span class="nm">Paracetamol 650 mg Tablet</span>
+            <span class="q">0 in stock</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SCENE 2: three problems (7.2 - 15.2) ===================== -->
+      <section id="s2" class="scene bg-canvas clip" data-start="7.2" data-duration="8" data-track-index="0">
+        <div class="s2title">
+          <div class="eyebrow">Why it keeps happening</div>
+          <div class="headline" style="font-size: 72px">Medicine supply still runs on guesswork.</div>
+        </div>
+        <div class="pcards">
+          <div class="pcard" id="p1">
+            <div class="pi t-rose" data-icon="trending-up"></div>
+            <h3>Stockouts</h3>
+            <p>Reorders are guessed, so fast-moving medicines run out.</p>
+          </div>
+          <div class="pcard" id="p2">
+            <div class="pi t-amber" data-icon="calendar"></div>
+            <h3>Expiry losses</h3>
+            <p>Near-expiry batches sit unnoticed until they are wasted.</p>
+          </div>
+          <div class="pcard" id="p3">
+            <div class="pi t-lav" data-icon="phone"></div>
+            <h3>Manual reordering</h3>
+            <p>Orders to distributors still go out by phone call.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SCENE 3: reveal (15.2 - 22.0) ===================== -->
+      <section id="s3" class="scene bg-hero clip" data-start="15.2" data-duration="6.8" data-track-index="0">
+        <div class="glow" id="s3glow" data-layout-allow-overflow></div>
+        <div class="reveal">
+          <div class="logo" id="s3logo"><img src="assets/img/logo.png" alt="Swasthya logo" /></div>
+          <div class="brand" id="s3brand">Swasthya</div>
+          <div class="tag" id="s3tag">Keep every shelf stocked with the medicines your community needs.</div>
+          <div class="pills">
+            <div class="pill" id="r1"><span data-icon="home"></span>Pharmacies</div>
+            <div class="pill" id="r2"><span data-icon="truck"></span>Distributors</div>
+            <div class="pill" id="r3"><span data-icon="shield"></span>Admins</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SCENE 4: pharmacy forecast (22.0 - 33.2) ===================== -->
+      <section id="s4" class="scene bg-canvas clip" data-start="22" data-duration="11.2" data-track-index="0">
+        <div class="copy" id="s4copy">
+          <div class="eyebrow"><span class="num">01</span>Pharmacy</div>
+          <div class="headline">Know what runs out, before it does.</div>
+          <div class="sub">A 7-day demand forecast for the lowest-stock items, with how much to reorder.</div>
+          <div class="points">
+            <div class="point"><span class="dot t-amber" data-icon="alert-triangle"></span>8 items at or below reorder level</div>
+            <div class="point"><span class="dot t-lav" data-icon="cpu"></span>Forecast-backed reorder quantities</div>
+          </div>
+        </div>
+        <div class="phone" id="s4phone">
+          <div class="screen" data-layout-ignore>
+            <div class="notch"></div>
+            <div class="hero">
+              <div class="row">
+                <div>
+                  <div class="eb">Pharmacy workspace</div>
+                  <div class="tt">Today at a glance</div>
+                  <div class="st">8 items need restocking</div>
+                </div>
+                <div class="btn" data-icon="log-out"></div>
+              </div>
+            </div>
+            <div class="body">
+              <div class="grid2">
+                <div class="tile s4tile"><div class="ic t-amber" data-icon="alert-triangle"></div><div class="v" id="cLow">0</div><div class="l">Low stock</div><div class="h" style="color: var(--amber)">At or below reorder level</div></div>
+                <div class="tile s4tile"><div class="ic t-slate" data-icon="slash"></div><div class="v">0</div><div class="l">Out of stock</div></div>
+              </div>
+              <div class="sec"><span data-icon="cpu"></span>AI reorder suggestions</div>
+              <div class="secsub">7-day demand forecast for your lowest-stock items</div>
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <div class="card rc" id="rc1">
+                  <div class="top"><div class="nm">Mefenamic Acid + Dicyclomine Tablet</div><span class="badge t-rose">URGENT</span></div>
+                  <div class="dt">&lt; 2 days</div>
+                  <div class="mx"><div><div class="mv">8</div><div class="ml">Stock</div></div><div><div class="mv">28</div><div class="ml">7d demand</div></div><div><div class="mv">~2</div><div class="ml">Days left</div></div><div><div class="mv" style="color: var(--lav-text)">26</div><div class="ml">Reorder</div></div></div>
+                  <div class="ov">Suggested order value ₹962</div>
+                </div>
+                <div class="card rc" id="rc2">
+                  <div class="top"><div class="nm">Paracetamol 650 mg Tablet</div><span class="badge t-amber">HIGH</span></div>
+                  <div class="dt">&lt; 5 days</div>
+                  <div class="mx"><div><div class="mv">12</div><div class="ml">Stock</div></div><div><div class="mv">26</div><div class="ml">7d demand</div></div><div><div class="mv">~3.2</div><div class="ml">Days left</div></div><div><div class="mv glowbox" id="rc2reorder" style="color: var(--lav-text)">20</div><div class="ml">Reorder</div></div></div>
+                  <div class="ov">Suggested order value ₹530</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SCENE 5: catalog ordering (33.2 - 44.0) ===================== -->
+      <section id="s5" class="scene bg-canvas clip" data-start="33.2" data-duration="10.8" data-track-index="0">
+        <div class="copy" id="s5copy">
+          <div class="eyebrow"><span class="num">02</span>Ordering</div>
+          <div class="headline">250 medicines. One tap to order.</div>
+          <div class="sub">Search by name, salt, SKU or maker. Price, MRP and margin on every row.</div>
+          <div class="points">
+            <div class="point"><span class="dot t-teal" data-icon="search"></span>17 categories to filter</div>
+            <div class="point"><span class="dot t-lav" data-icon="truck"></span>Sent straight to your distributor</div>
+          </div>
+        </div>
+        <div class="phone" id="s5phone">
+          <div class="screen" data-layout-ignore>
+            <div class="notch"></div>
+            <div class="hero">
+              <div class="row">
+                <div>
+                  <div class="eb">Order from your distributor</div>
+                  <div class="tt">Browse catalog</div>
+                  <div class="st">250 products · 17 categories</div>
+                </div>
+                <div class="btn" data-icon="shopping-cart"></div>
+              </div>
+              <div class="search"><span data-icon="search"></span><span class="q" id="typed"></span><span class="caret" id="caret"></span><span id="ph" style="color: #6c7382">Search name, salt, SKU or maker</span></div>
+            </div>
+            <div class="chips">
+              <div class="chip" id="chAll">All <span>250</span></div>
+              <div class="chip">Allergy <span>8</span></div>
+              <div class="chip" id="chPain">Pain &amp; Fever <span>18</span></div>
+            </div>
+            <div class="rows">
+              <div class="prow s5row">
+                <div class="pi t-rose" data-icon="thermometer"></div>
+                <div style="flex: 1"><div class="pn">Paracetamol 650 mg Tablet</div><div class="pm">Arogya Labs · Strip of 15</div><div class="pp"><span class="pr">₹26.50</span><span class="mrp">MRP ₹34</span><span class="mg">22% margin</span></div></div>
+                <div class="add" id="add1"><span data-icon="plus"></span><div class="cnt" id="n1">1</div><div class="cnt" id="n2">2</div><div class="cnt" id="n3">3</div></div>
+              </div>
+              <div class="prow s5row">
+                <div class="pi t-rose" data-icon="thermometer"></div>
+                <div style="flex: 1"><div class="pn">Paracetamol 500 mg Tablet</div><div class="pm">Arogya Labs · Strip of 10</div><div class="pp"><span class="pr">₹13.80</span><span class="mrp">MRP ₹18</span><span class="mg">23% margin</span></div></div>
+                <div class="add"><span data-icon="plus"></span></div>
+              </div>
+              <div class="prow s5row">
+                <div class="pi t-rose" data-icon="thermometer"></div>
+                <div style="flex: 1"><div class="pn">Paracetamol 250 mg/5 ml Suspension</div><div class="pm">Medisure Pharma · Bottle of 60 ml</div><div class="pp"><span class="pr">₹25.74</span><span class="mrp">MRP ₹33</span><span class="mg">22% margin</span></div></div>
+                <div class="add"><span data-icon="plus"></span></div>
+              </div>
+              <div class="prow s5row">
+                <div class="pi t-rose" data-icon="thermometer"></div>
+                <div style="flex: 1"><div class="pn">Aceclofenac + Paracetamol 100/325 mg Tablet</div><div class="pm">Sanjivani Generics · Strip of 10</div><div class="pp"><span class="pr">₹49.14</span><span class="mrp">MRP ₹63</span><span class="mg">22% margin</span></div></div>
+                <div class="add"><span data-icon="plus"></span></div>
+              </div>
+            </div>
+            <div class="cartbar" id="cartbar">
+              <span data-icon="shopping-cart"></span>
+              <div class="stack"><div id="cb1">1 unit · ₹26.50</div><div id="cb2">2 units · ₹53</div><div id="cb3">3 units · ₹79.50</div></div>
+              <span class="cta">Review order</span><span data-icon="arrow-right"></span>
+            </div>
+            <div class="toast" id="toast" data-layout-allow-overlap data-layout-allow-occlusion>
+              <div class="ok" data-icon="check"></div>
+              <div><div style="font-weight: 700; font-size: 16px">Order sent</div><div style="font-size: 13px; color: var(--muted); margin-top: 2px">To MedLine Distributors · 3 units · ₹79.50</div></div>
+            </div>
+            <div class="tap" id="tap1" style="left: 337px; top: 309px"></div>
+            <div class="tap" id="tap2" style="left: 300px; top: 820px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SCENE 6: distributor fulfilment (44.0 - 50.0) ===================== -->
+      <section id="s6" class="scene bg-canvas clip" data-start="44" data-duration="6" data-track-index="0">
+        <div class="copy" id="s6copy">
+          <div class="eyebrow"><span class="num">03</span>Distributor</div>
+          <div class="headline">Confirm. Ship. Verify.</div>
+          <div class="sub">Each delivery is confirmed with a one-time code before it counts as delivered.</div>
+        </div>
+        <div class="phone" id="s6phone">
+          <div class="screen" data-layout-ignore>
+            <div class="notch"></div>
+            <div class="hero">
+              <div class="row">
+                <div>
+                  <div class="eb">Distributor workspace</div>
+                  <div class="tt">Fulfilment hub</div>
+                  <div class="st">1 pharmacy order is waiting for you</div>
+                </div>
+                <div class="btn" data-icon="log-out"></div>
+              </div>
+            </div>
+            <div class="body">
+              <div class="card">
+                <div style="display: flex; align-items: center; gap: 12px">
+                  <div class="tile" style="box-shadow: none; padding: 0"><div class="ic t-lav" data-icon="home" style="margin: 0"></div></div>
+                  <div style="flex: 1"><div style="font-family: Jakarta; font-weight: 700; font-size: 16px">Sanjeevani Medicals</div><div style="font-size: 12px; color: var(--muted); margin-top: 2px">Paracetamol 650 mg Tablet × 3 · ₹79.50</div></div>
+                </div>
+                <div class="steps">
+                  <div class="step"><div class="b"><div class="fill" id="f1" data-icon="check"></div></div><div class="line"><i id="l1"></i></div><div><div class="s1">Placed</div><div class="s2">by pharmacy</div></div></div>
+                  <div class="step"><div class="b"><div class="fill" id="f2" data-icon="check"></div></div><div class="line"><i id="l2"></i></div><div><div class="s1">Confirmed</div><div class="s2">stock reserved</div></div></div>
+                  <div class="step"><div class="b"><div class="fill" id="f3" data-icon="check"></div></div><div class="line"><i id="l3"></i></div><div><div class="s1">Shipped</div><div class="s2">delivery code issued</div></div></div>
+                  <div class="step" style="padding-bottom: 0"><div class="b"><div class="fill" id="f4" data-icon="check"></div></div><div><div class="s1">Delivered</div><div class="s2" id="vtext">code verified at the pharmacy</div></div></div>
+                </div>
+                <div style="margin-top: 18px; font-family: DMSans; font-weight: 600; font-size: 13px; color: var(--muted)">Delivery code</div>
+                <div class="otp"><div class="d">4</div><div class="d">8</div><div class="d">2</div><div class="d">1</div><span class="badge t-teal" id="verified" style="margin-left: 8px; opacity: 0">VERIFIED</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SCENE 7: admin oversight (50.0 - 56.4) ===================== -->
+      <section id="s7" class="scene bg-canvas clip" data-start="50" data-duration="6.4" data-track-index="0">
+        <div class="copy" id="s7copy">
+          <div class="eyebrow"><span class="num">04</span>Admin</div>
+          <div class="headline">Oversight for the whole network.</div>
+          <div class="sub">Approve new businesses. Flag unusually large orders for review.</div>
+        </div>
+        <div class="phone" id="s7phone">
+          <div class="screen" data-layout-ignore>
+            <div class="notch"></div>
+            <div class="hero">
+              <div class="row">
+                <div>
+                  <div class="eb">Admin console</div>
+                  <div class="tt">Network overview</div>
+                  <div class="st">2 businesses are waiting for approval</div>
+                </div>
+                <div class="btn" data-icon="log-out"></div>
+              </div>
+            </div>
+            <div class="body">
+              <div class="grid2">
+                <div class="tile"><div class="ic t-teal" data-icon="trending-up"></div><div class="v">₹1,94,568</div><div class="l">Distributor purchases</div></div>
+                <div class="tile"><div class="ic t-lav" data-icon="shopping-bag"></div><div class="v">8</div><div class="l">Purchase orders</div></div>
+              </div>
+              <div class="banner" id="banner">
+                <div class="bi" data-icon="user-check"></div>
+                <div style="flex: 1"><div style="font-family: Jakarta; font-weight: 700; font-size: 14px; color: #78350f">Approvals waiting</div><div style="font-family: DMSans; font-weight: 500; font-size: 12px; color: #92400e; margin-top: 2px">1 pharmacy · 1 distributor</div></div>
+              </div>
+              <div class="anomaly" id="anomaly">
+                <div class="ah"><div class="ai" data-icon="alert-octagon"></div><div class="at">Order flagged for review</div><span class="badge t-rose">CRITICAL</span></div>
+                <p>Order of 500 units is 13.0x the normal average (38 units). Recommend manual review.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SCENE 8: outro (56.4 - 60.0) ===================== -->
+      <section id="s8" class="scene bg-hero clip" data-start="56.4" data-duration="3.6" data-track-index="0">
+        <div class="glow" style="top: 40%" data-layout-allow-overflow></div>
+        <div class="bigq" id="s8brand" style="top: 150px; font-size: 128px; color: #fff">Swasthya</div>
+        <div class="bigq" id="s8tag" style="top: 310px; font-size: 52px; color: rgba(255, 255, 255, 0.9); font-weight: 700; letter-spacing: -0.5px">Keep every shelf stocked.</div>
+        <div class="shelfwrap" style="top: 560px">
+          <div class="shelf">
+            <div class="boxm" style="height: 190px; background: #2a7a73">Cetirizine<small>10 mg · 10 tabs</small></div>
+            <div class="boxm" style="height: 210px; background: #6b55a8">Pantoprazole<small>40 mg · 15 tabs</small></div>
+            <div class="boxm" style="height: 170px; background: #b45309">ORS<small>21 g sachet</small></div>
+            <div class="boxm" id="s8fill" style="height: 200px; background: #f3c6d4; color: #292638">Paracetamol<small>650 mg · 15 tabs</small></div>
+            <div class="boxm" style="height: 200px; background: #3d3360">Metformin<small>500 mg · 20 tabs</small></div>
+            <div class="boxm" style="height: 180px; background: #b4234a">Amlodipine<small>5 mg · 15 tabs</small></div>
+          </div>
+          <div class="plank" style="background: linear-gradient(#8b75c9, #6b55a8)"></div>
+        </div>
+      </section>
+
+      <!-- ===================== AUDIO ===================== -->
+      <audio id="music" class="clip" data-start="0" data-duration="60" data-track-index="1" data-volume="0.16" data-fade-in="1.5" data-fade-out="2.5" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3"></audio>
+
+      <audio id="vo-01" class="clip" data-start="0.5" data-duration="5.82" data-track-index="2" data-volume="1" src="assets/vo/vo-01.wav"></audio>
+      <audio id="vo-02" class="clip" data-start="7.6" data-duration="6.95" data-track-index="2" data-volume="1" src="assets/vo/vo-02.wav"></audio>
+      <audio id="vo-03" class="clip" data-start="15.7" data-duration="5.82" data-track-index="2" data-volume="1" src="assets/vo/vo-03.wav"></audio>
+      <audio id="vo-04" class="clip" data-start="22.4" data-duration="10.22" data-track-index="2" data-volume="1" src="assets/vo/vo-04.wav"></audio>
+      <audio id="vo-05" class="clip" data-start="33.6" data-duration="9.9" data-track-index="2" data-volume="1" src="assets/vo/vo-05.wav"></audio>
+      <audio id="vo-06" class="clip" data-start="44.4" data-duration="5.31" data-track-index="2" data-volume="1" src="assets/vo/vo-06.wav"></audio>
+      <audio id="vo-07" class="clip" data-start="50.4" data-duration="5.53" data-track-index="2" data-volume="1" src="assets/vo/vo-07.wav"></audio>
+      <audio id="vo-08" class="clip" data-start="57.0" data-duration="2.05" data-track-index="2" data-volume="1" src="assets/vo/vo-08.wav"></audio>
+
+      <!-- SFX: motion-matched, kept under the narration -->
+      <audio id="sfx-01" class="clip" data-start="9.0" data-duration="0.4" data-track-index="3" data-volume="0.28" src="assets/sfx/card-slide-1.ogg"></audio>
+      <audio id="sfx-02" class="clip" data-start="10.6" data-duration="0.4" data-track-index="3" data-volume="0.28" src="assets/sfx/card-slide-1.ogg"></audio>
+      <audio id="sfx-03" class="clip" data-start="12.3" data-duration="0.4" data-track-index="3" data-volume="0.28" src="assets/sfx/card-slide-1.ogg"></audio>
+      <audio id="sfx-04" class="clip" data-start="15.29" data-duration="0.18" data-track-index="3" data-volume="0.5" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sfx-05" class="clip" data-start="25.8" data-duration="0.4" data-track-index="3" data-volume="0.25" src="assets/sfx/card-slide-1.ogg"></audio>
+      <audio id="sfx-06" class="clip" data-start="26.9" data-duration="0.4" data-track-index="3" data-volume="0.25" src="assets/sfx/card-slide-1.ogg"></audio>
+      <audio id="sfx-07" class="clip" data-start="35.4" data-duration="0.2" data-track-index="3" data-volume="0.35" src="assets/sfx/keypress-003.wav"></audio>
+      <audio id="sfx-08" class="clip" data-start="35.62" data-duration="0.2" data-track-index="3" data-volume="0.35" src="assets/sfx/keypress-011.wav"></audio>
+      <audio id="sfx-09" class="clip" data-start="35.84" data-duration="0.2" data-track-index="3" data-volume="0.35" src="assets/sfx/keypress-019.wav"></audio>
+      <audio id="sfx-10" class="clip" data-start="36.06" data-duration="0.2" data-track-index="3" data-volume="0.35" src="assets/sfx/keypress-007.wav"></audio>
+      <audio id="sfx-11" class="clip" data-start="37.9" data-duration="0.05" data-track-index="3" data-volume="0.4" src="assets/sfx/click_003.ogg"></audio>
+      <audio id="sfx-12" class="clip" data-start="39.3" data-duration="0.05" data-track-index="3" data-volume="0.4" src="assets/sfx/click_002.ogg"></audio>
+      <audio id="sfx-13" class="clip" data-start="39.75" data-duration="0.05" data-track-index="3" data-volume="0.4" src="assets/sfx/click_003.ogg"></audio>
+      <audio id="sfx-14" class="clip" data-start="40.2" data-duration="0.05" data-track-index="3" data-volume="0.4" src="assets/sfx/click_002.ogg"></audio>
+      <audio id="sfx-15" class="clip" data-start="41.9" data-duration="0.06" data-track-index="3" data-volume="0.4" src="assets/sfx/click2.ogg"></audio>
+      <audio id="sfx-16" class="clip" data-start="42.25" data-duration="0.12" data-track-index="3" data-volume="0.35" src="assets/sfx/bong_001.ogg"></audio>
+      <audio id="sfx-17" class="clip" data-start="45.4" data-duration="0.05" data-track-index="3" data-volume="0.3" src="assets/sfx/click_003.ogg"></audio>
+      <audio id="sfx-18" class="clip" data-start="46.6" data-duration="0.05" data-track-index="3" data-volume="0.3" src="assets/sfx/click_003.ogg"></audio>
+      <audio id="sfx-19" class="clip" data-start="48.6" data-duration="0.12" data-track-index="3" data-volume="0.35" src="assets/sfx/bong_001.ogg"></audio>
+      <audio id="sfx-20" class="clip" data-start="52.2" data-duration="0.15" data-track-index="3" data-volume="0.4" src="assets/sfx/impactSoft_medium_004.ogg"></audio>
+      <audio id="sfx-21" class="clip" data-start="56.74" data-duration="0.65" data-track-index="3" data-volume="0.4" src="assets/sfx/impactBell_heavy_003.ogg"></audio>
+    </div>
+
+    <script>
+      // Feather icon paths used by the Swasthya app (data-icon="name" placeholders).
+      const ICONS = {
+        "alert-triangle": '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+        slash: '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>',
+        cpu: '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>',
+        truck: '<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+        search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+        "shopping-cart": '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>',
+        "shopping-bag": '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+        plus: '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+        check: '<polyline points="20 6 9 17 4 12"/>',
+        home: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+        shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+        "trending-up": '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+        calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+        phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+        thermometer: '<path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>',
+        "user-check": '<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/>',
+        "log-out": '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+        "arrow-right": '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+        "alert-octagon": '<polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+      };
+      document.querySelectorAll("[data-icon]").forEach((el) => {
+        el.innerHTML = `<svg class="ico" viewBox="0 0 24 24">${ICONS[el.dataset.icon] || ""}</svg>` + el.innerHTML;
+      });
+
+      const tl = gsap.timeline({ paused: true });
+      const IN = "power3.out";
+
+      // Scene fades: each scene fades in at its start and out just before its end.
+      const scenes = [["#s1", 0, 7.2], ["#s2", 7.2, 8], ["#s3", 15.2, 6.8], ["#s4", 22, 11.2], ["#s5", 33.2, 10.8], ["#s6", 44, 6], ["#s7", 50, 6.4], ["#s8", 56.4, 3.6]];
+      scenes.forEach(([sel, start, dur], i) => {
+        tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: i === 0 ? 0.6 : 0.45, ease: "none" }, start);
+        if (i < scenes.length - 1) tl.to(sel, { opacity: 0, duration: 0.4, ease: "none" }, start + dur - 0.4);
+        else tl.to(sel, { opacity: 0, duration: 0.6, ease: "none" }, start + dur - 0.6);
+      });
+
+      // ---------- Scene 1: the empty shelf ----------
+      tl.from(".s1box", { y: 60, opacity: 0, duration: 0.6, stagger: 0.12, ease: IN }, 0.3);
+      tl.from("#s1q1", { y: 24, opacity: 0, duration: 0.6, ease: IN }, 0.8);
+      tl.fromTo("#s1gap", { borderColor: "#c9bfe0", backgroundColor: "rgba(253,232,238,0)" }, { borderColor: "#b4234a", backgroundColor: "rgba(253,232,238,0.9)", duration: 0.5 }, 3.0);
+      tl.fromTo("#s1stock", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.5, ease: IN }, 3.3);
+      tl.from("#s1q2", { y: 30, opacity: 0, scale: 0.97, duration: 0.6, ease: IN }, 4.6);
+
+      // ---------- Scene 2: problems, one per narration clause ----------
+      tl.from(".s2title", { y: 24, opacity: 0, duration: 0.6, ease: IN }, 7.5);
+      tl.fromTo("#p1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, ease: IN }, 9.0);
+      tl.fromTo("#p2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, ease: IN }, 10.6);
+      tl.fromTo("#p3", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.6, ease: IN }, 12.3);
+
+      // ---------- Scene 3: reveal (logo beat-locked near 15.5s) ----------
+      // beat-locked: 15.29s
+      tl.from("#s3logo", { scale: 0.6, opacity: 0, duration: 0.7, ease: "back.out(1.6)" }, 15.29);
+      tl.from("#s3brand", { y: 30, opacity: 0, duration: 0.6, ease: IN }, 15.8);
+      tl.from("#s3tag", { y: 20, opacity: 0, duration: 0.6, ease: IN }, 16.4);
+      tl.fromTo("#r1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: IN }, 18.5);
+      tl.fromTo("#r2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: IN }, 19.0);
+      tl.fromTo("#r3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: IN }, 19.6);
+      tl.fromTo("#s3glow", { scale: 0.85, opacity: 0.6 }, { scale: 1.08, opacity: 1, duration: 6.8, ease: "sine.inOut" }, 15.2);
+
+      // ---------- Scene 4: pharmacy dashboard + forecast ----------
+      tl.from("#s4copy > *", { x: -40, opacity: 0, duration: 0.6, stagger: 0.15, ease: IN }, 22.3);
+      tl.from("#s4phone", { y: 80, opacity: 0, duration: 0.8, ease: IN }, 22.2);
+      tl.from(".s4tile", { y: 20, opacity: 0, duration: 0.5, stagger: 0.12, ease: IN }, 23.0);
+      const low = { n: 0 };
+      tl.to(low, { n: 8, duration: 1.0, ease: "power2.out", onUpdate: () => (document.getElementById("cLow").textContent = Math.round(low.n)) }, 23.2);
+      tl.fromTo("#rc1", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.6, ease: IN }, 25.8);
+      tl.fromTo("#rc2", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.6, ease: IN }, 26.9);
+      tl.fromTo("#rc1", { boxShadow: "0 10px 30px rgba(41,38,56,0.08)" }, { boxShadow: "0 0 0 3px rgba(180,35,74,0.45), 0 16px 36px rgba(180,35,74,0.18)", duration: 0.5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 28.3);
+      tl.fromTo("#rc2reorder", { backgroundColor: "rgba(241,237,250,0)" }, { backgroundColor: "rgba(220,211,240,1)", duration: 0.4, yoyo: true, repeat: 1 }, 30.6);
+
+      // ---------- Scene 5: catalog ordering ----------
+      tl.from("#s5copy > *", { x: -40, opacity: 0, duration: 0.6, stagger: 0.15, ease: IN }, 33.5);
+      tl.from("#s5phone", { y: 80, opacity: 0, duration: 0.8, ease: IN }, 33.4);
+      tl.from(".s5row", { y: 20, opacity: 0, duration: 0.45, stagger: 0.1, ease: IN }, 34.0);
+      tl.set("#ph", { opacity: 0 }, 35.35);
+      const typed = { n: 0 };
+      tl.to(typed, { n: 4, duration: 0.88, ease: "none", onUpdate: () => (document.getElementById("typed").textContent = "para".slice(0, Math.floor(typed.n + 0.0001))) }, 35.3);
+      tl.set("#chAll", { className: "chip" }, 37.9);
+      tl.set("#chPain", { className: "chip on" }, 37.9);
+      tl.fromTo("#tap1", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.15 }, 39.25);
+      tl.to("#tap1", { opacity: 0, duration: 0.2 }, 40.35);
+      [["#n1", 39.3], ["#n2", 39.75], ["#n3", 40.2]].forEach(([sel, t]) => tl.set(sel, { opacity: 1 }, t));
+      tl.set("#n1", { opacity: 0 }, 39.75);
+      tl.set("#n2", { opacity: 0 }, 40.2);
+      tl.fromTo("#add1", { scale: 1 }, { scale: 0.88, duration: 0.08, yoyo: true, repeat: 5 }, 39.3);
+      tl.fromTo("#cartbar", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: IN }, 39.35);
+      tl.set("#cb1", { opacity: 1 }, 39.3);
+      tl.set("#cb1", { opacity: 0 }, 39.75);
+      tl.set("#cb2", { opacity: 1 }, 39.75);
+      tl.set("#cb2", { opacity: 0 }, 40.2);
+      tl.set("#cb3", { opacity: 1 }, 40.2);
+      tl.fromTo("#tap2", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.15 }, 41.85);
+      tl.to("#tap2", { opacity: 0, duration: 0.2 }, 42.2);
+      tl.to(".s5row", { opacity: 0.35, duration: 0.3 }, 42.2);
+      tl.fromTo("#toast", { opacity: 0, y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: IN }, 42.2);
+
+      // ---------- Scene 6: distributor fulfilment ----------
+      tl.from("#s6copy > *", { x: -40, opacity: 0, duration: 0.6, stagger: 0.15, ease: IN }, 44.3);
+      tl.from("#s6phone", { y: 80, opacity: 0, duration: 0.8, ease: IN }, 44.2);
+      tl.set("#f1", { opacity: 1 }, 44.6);
+      tl.to("#l1", { scaleY: 1, duration: 0.5 }, 44.9);
+      tl.to("#f2", { opacity: 1, duration: 0.2 }, 45.4);
+      tl.to("#l2", { scaleY: 1, duration: 0.5 }, 45.9);
+      tl.to("#f3", { opacity: 1, duration: 0.2 }, 46.6);
+      tl.to(".otp .d", { opacity: 1, duration: 0.25, stagger: 0.15 }, 47.2);
+      tl.to("#l3", { scaleY: 1, duration: 0.5 }, 47.9);
+      tl.to("#f4", { opacity: 1, duration: 0.2 }, 48.6);
+      tl.to("#verified", { opacity: 1, duration: 0.3 }, 48.6);
+
+      // ---------- Scene 7: admin oversight ----------
+      tl.from("#s7copy > *", { x: -40, opacity: 0, duration: 0.6, stagger: 0.15, ease: IN }, 50.3);
+      tl.from("#s7phone", { y: 80, opacity: 0, duration: 0.8, ease: IN }, 50.2);
+      tl.fromTo("#banner", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: IN }, 50.9);
+      tl.fromTo("#anomaly", { opacity: 0, y: 30, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: IN }, 52.2);
+
+      // ---------- Scene 8: outro (bell beat-locked near 56.9s) ----------
+      tl.from("#s8brand", { y: 30, opacity: 0, duration: 0.6, ease: IN }, 56.6);
+      tl.from("#s8tag", { y: 20, opacity: 0, duration: 0.6, ease: IN }, 57.6);
+      // beat-locked: 56.74s
+      tl.from("#s8fill", { y: -220, opacity: 0, duration: 0.7, ease: "bounce.out" }, 56.74);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

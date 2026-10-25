@@ -3,6 +3,8 @@ import { supabase } from '@/lib/supabase';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Modal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Order {
   id: string;
@@ -114,8 +116,8 @@ export default function OrdersScreen() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return '#F59E0B';
-      case 'confirmed': return '#3B82F6';
-      case 'shipped': return '#8B5CF6';
+      case 'confirmed': return Palette.teal;
+      case 'shipped': return Palette.lavender;
       case 'delivered': return '#10B981';
       case 'cancelled': return '#EF4444';
       default: return '#6B7280';
@@ -160,12 +162,12 @@ export default function OrdersScreen() {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Orders</Text>
         <TouchableOpacity onPress={fetchOrders}>
-          <Ionicons name="refresh" size={24} color="#7C3AED" />
+          <Ionicons name="refresh" size={24} color={Palette.lavenderText} />
         </TouchableOpacity>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#7C3AED" style={{ marginTop: 20 }} />
+        <ActivityIndicator size="large" color={Palette.lavenderText} style={{ marginTop: 20 }} />
       ) : (
         <FlatList
           data={orders}
@@ -196,7 +198,7 @@ export default function OrdersScreen() {
         </View>
 
         {loadingDetails ? (
-          <ActivityIndicator size="large" color="#7C3AED" style={{ marginTop: 40 }} />
+          <ActivityIndicator size="large" color={Palette.lavenderText} style={{ marginTop: 40 }} />
         ) : (
           <FlatList
             data={orderItems}
@@ -234,37 +236,37 @@ export default function OrdersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   header: { paddingHorizontal: 16, paddingVertical: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#E5E7EB', paddingTop: 50 },
-  headerTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
+  headerTitle: { fontFamily: Fonts.heading.bold, fontSize: 18, color: Palette.ink },
   orderCard: { backgroundColor: '#fff', borderRadius: 16, padding: 16, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 3 },
   orderHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 },
-  orderId: { fontSize: 15, fontWeight: '700', color: '#111827' },
-  orderDate: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+  orderId: { fontFamily: Fonts.body.bold, fontSize: 15, color: Palette.ink },
+  orderDate: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginTop: 2 },
   statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
-  statusText: { fontSize: 11, fontWeight: '800' },
+  statusText: { fontFamily: Fonts.label.extraBold, fontSize: 11 },
   orderBody: { borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#F3F4F6', paddingVertical: 12, gap: 8 },
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  infoText: { fontSize: 14, color: '#4B5563', flex: 1 },
+  infoText: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#4B5563', flex: 1 },
   orderFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 },
-  totalLabel: { fontSize: 14, color: '#6B7280' },
-  totalValue: { fontSize: 18, fontWeight: '800', color: '#7C3AED' },
+  totalLabel: { fontFamily: Fonts.label.regular, fontSize: 14, color: '#6B7280' },
+  totalValue: { fontFamily: Fonts.label.extraBold, fontSize: 18, color: Palette.lavenderText },
   emptyContainer: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
-  emptyText: { marginTop: 16, fontSize: 16, color: '#9CA3AF' },
+  emptyText: { fontFamily: Fonts.body.regular, marginTop: 16, fontSize: 16, color: '#9CA3AF' },
 
   // Modal
   modalHeader: { padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 1, borderColor: '#eee', paddingTop: 20 },
-  modalTitle: { fontSize: 18, fontWeight: 'bold' },
-  detailSummary: { marginBottom: 20, padding: 16, backgroundColor: '#F9FAFB', borderRadius: 12 },
-  detailTotal: { fontSize: 20, fontWeight: 'bold', color: '#7C3AED' },
-  detailStatus: { fontSize: 14, color: '#6B7280', marginTop: 4 },
+  modalTitle: { fontFamily: Fonts.heading.bold, fontSize: 18 },
+  detailSummary: { marginBottom: 20, padding: 16, backgroundColor: Palette.canvas, borderRadius: 12 },
+  detailTotal: { fontFamily: Fonts.heading.bold, fontSize: 20, color: Palette.lavenderText },
+  detailStatus: { fontFamily: Fonts.label.regular, fontSize: 14, color: '#6B7280', marginTop: 4 },
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderColor: '#F3F4F6' },
   itemInfo: { flex: 1 },
-  itemName: { fontSize: 16, fontWeight: '600', color: '#1F2937' },
-  itemSub: { fontSize: 14, color: '#6B7280', marginTop: 2 },
-  itemPrice: { fontSize: 16, fontWeight: 'bold', color: '#1F2937' },
-  otpContainer: { marginTop: 12, padding: 12, backgroundColor: '#EFF6FF', borderRadius: 8, borderColor: '#BFDBFE', borderWidth: 1 },
-  otpLabel: { fontSize: 13, color: '#1E40AF', fontWeight: '600' },
-  otpValue: { fontSize: 24, fontWeight: 'bold', color: '#1E3A8A', marginVertical: 4, letterSpacing: 4 },
-  otpNote: { fontSize: 12, color: '#60A5FA' },
+  itemName: { fontFamily: Fonts.body.semiBold, fontSize: 16, color: Palette.ink },
+  itemSub: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', marginTop: 2 },
+  itemPrice: { fontFamily: Fonts.label.bold, fontSize: 16, color: Palette.ink },
+  otpContainer: { marginTop: 12, padding: 12, backgroundColor: Palette.tealSoft, borderRadius: 8, borderColor: Palette.tealBorder, borderWidth: 1 },
+  otpLabel: { fontFamily: Fonts.body.semiBold, fontSize: 13, color: Palette.tealDeep },
+  otpValue: { fontFamily: Fonts.heading.bold, fontSize: 24, color: '#1E3A8A', marginVertical: 4, letterSpacing: 4 },
+  otpNote: { fontFamily: Fonts.body.regular, fontSize: 12, color: Palette.teal },
 });

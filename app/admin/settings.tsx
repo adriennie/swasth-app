@@ -12,6 +12,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function SettingsTab() {
     const { auth, logout } = useAuth();
@@ -50,7 +52,7 @@ export default function SettingsTab() {
     return (
         <SafeAreaView style={styles.container}>
             <LinearGradient
-                colors={['#4B5563', '#1F2937']}
+                colors={['#4B5563', Palette.ink]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}>
@@ -81,7 +83,7 @@ export default function SettingsTab() {
                                         onPress={() => item.route && router.push(item.route as any)}>
                                         <View style={styles.menuItemLeft}>
                                             <View style={styles.iconContainer}>
-                                                <Feather name={item.icon as any} size={18} color="#4F46E5" />
+                                                <Feather name={item.icon as any} size={18} color={Palette.lavenderText} />
                                             </View>
                                             <Text style={styles.menuItemText}>{item.title}</Text>
                                         </View>
@@ -107,7 +109,7 @@ export default function SettingsTab() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: Palette.canvas,
     },
     header: {
         paddingTop: 60,
@@ -130,16 +132,17 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.3)',
     },
     avatarText: {
+        fontFamily: Fonts.heading.extraBold,
         fontSize: 24,
-        fontWeight: '800',
         color: '#fff',
     },
     adminName: {
+        fontFamily: Fonts.heading.bold,
         fontSize: 20,
-        fontWeight: '700',
         color: '#fff',
     },
     adminEmail: {
+        fontFamily: Fonts.body.regular,
         fontSize: 14,
         color: 'rgba(255,255,255,0.7)',
         marginTop: 2,
@@ -155,8 +158,8 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     sectionTitle: {
+        fontFamily: Fonts.heading.bold,
         fontSize: 14,
-        fontWeight: '700',
         color: '#6B7280',
         textTransform: 'uppercase',
         letterSpacing: 1,
@@ -190,14 +193,14 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 10,
-        backgroundColor: '#F5F3FF',
+        backgroundColor: Palette.lavenderSoft,
         alignItems: 'center',
         justifyContent: 'center',
     },
     menuItemText: {
+        fontFamily: Fonts.body.semiBold,
         fontSize: 15,
-        fontWeight: '600',
-        color: '#1F2937',
+        color: Palette.ink,
     },
     logoutBtn: {
         flexDirection: 'row',
@@ -212,11 +215,12 @@ const styles = StyleSheet.create({
         borderColor: '#FEE2E2',
     },
     logoutText: {
+        fontFamily: Fonts.heading.bold,
         fontSize: 16,
-        fontWeight: '700',
         color: '#EF4444',
     },
     versionText: {
+        fontFamily: Fonts.body.regular,
         textAlign: 'center',
         fontSize: 12,
         color: '#9CA3AF',

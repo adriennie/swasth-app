@@ -1,6 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { hiddenTab } from '@/constants/navigation';
 import { Platform } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function AdminLayout() {
   return (
@@ -23,11 +26,11 @@ export default function AdminLayout() {
           shadowOpacity: 0.1,
           shadowRadius: 8,
         },
-        tabBarActiveTintColor: '#4F46E5',
+        tabBarActiveTintColor: Palette.lavenderText,
         tabBarInactiveTintColor: '#9CA3AF',
         tabBarLabelStyle: {
+          fontFamily: Fonts.body.semiBold,
           fontSize: 11,
-          fontWeight: '600',
         },
       }}>
       <Tabs.Screen
@@ -35,7 +38,7 @@ export default function AdminLayout() {
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="grid" size={focused ? 24 : 22} color={color} />
+            <Feather name="grid" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -44,7 +47,7 @@ export default function AdminLayout() {
         options={{
           title: 'Distributors',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="truck" size={focused ? 24 : 22} color={color} />
+            <Feather name="truck" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -53,7 +56,7 @@ export default function AdminLayout() {
         options={{
           title: 'Pharmacies',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="home" size={focused ? 24 : 22} color={color} />
+            <Feather name="home" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -62,7 +65,7 @@ export default function AdminLayout() {
         options={{
           title: 'Orders',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="shopping-bag" size={focused ? 24 : 22} color={color} />
+            <Feather name="shopping-bag" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -71,7 +74,7 @@ export default function AdminLayout() {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="settings" size={focused ? 24 : 22} color={color} />
+            <Feather name="settings" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -79,47 +82,47 @@ export default function AdminLayout() {
       {/* Hidden screens - accessible but not in tab bar */}
       <Tabs.Screen
         name="management"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="management/distributors"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="management/pharmacies"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="management/products"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="management/orders"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="management/mapping"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="management/ml-test"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="management/ml-test 2"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="about"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="contact-support"
-        options={{ href: null }}
+        options={hiddenTab}
       />
       <Tabs.Screen
         name="privacy-policy"
-        options={{ href: null }}
+        options={hiddenTab}
       />
     </Tabs>
   );

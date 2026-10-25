@@ -15,6 +15,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 // SQL REQUIRED:
 // create table if not exists public.pharmacy_distributors (
@@ -188,7 +190,7 @@ export default function MappingScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#4F46E5" />
+          <ActivityIndicator size="large" color={Palette.lavenderText} />
           <Text style={styles.loadingText}>Loading Data...</Text>
         </View>
       </SafeAreaView>
@@ -199,7 +201,7 @@ export default function MappingScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={['#EC4899', '#DB2777']}
+        colors={[Palette.lavenderText, Palette.lavenderDeep]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}>
@@ -283,7 +285,7 @@ export default function MappingScreen() {
                 </Text>
               </View>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Feather name="x" size={24} color="#111827" />
+                <Feather name="x" size={24} color={Palette.ink} />
               </TouchableOpacity>
             </View>
 
@@ -300,7 +302,7 @@ export default function MappingScreen() {
 
             <View style={styles.limitInfo}>
               <Text style={styles.limitText}>
-                Selected: <Text style={{ fontWeight: '700' }}>{tempSelectedDistributors.size}</Text>/5
+                Selected: <Text style={{ fontFamily: Fonts.body.bold }}>{tempSelectedDistributors.size}</Text>/5
               </Text>
             </View>
 
@@ -364,18 +366,18 @@ export default function MappingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   loadingText: { marginTop: 12, color: '#6B7280' },
   header: { paddingTop: 60, paddingBottom: 20, paddingHorizontal: 20 },
   headerTop: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   backBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.2)', alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontSize: 24, fontWeight: '800', color: '#fff' },
-  headerSubtitle: { fontSize: 13, color: 'rgba(255,255,255,0.9)', fontWeight: '600', marginTop: 2 },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 24, color: '#fff' },
+  headerSubtitle: { fontFamily: Fonts.body.semiBold, fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 2 },
 
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', margin: 20, paddingHorizontal: 16, height: 48, borderRadius: 12, elevation: 2, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4 },
   searchIcon: { marginRight: 12 },
-  searchInput: { flex: 1, fontSize: 16, color: '#111827' },
+  searchInput: { fontFamily: Fonts.body.regular, flex: 1, fontSize: 16, color: Palette.ink },
 
   listContent: { paddingHorizontal: 20, paddingBottom: 40 },
   card: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 16, borderRadius: 16, marginBottom: 12, elevation: 2, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4 },
@@ -384,13 +386,13 @@ const styles = StyleSheet.create({
   bgGreen: { backgroundColor: '#D1FAE5' },
   bgRed: { backgroundColor: '#FEE2E2' },
   bgGray: { backgroundColor: '#F3F4F6' },
-  countText: { fontSize: 12, fontWeight: '800' },
+  countText: { fontFamily: Fonts.label.extraBold, fontSize: 12 },
   textGreen: { color: '#10B981' },
   textRed: { color: '#EF4444' },
   textGray: { color: '#6B7280' },
   cardContent: { flex: 1 },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 2 },
-  cardSubtitle: { fontSize: 13, color: '#6B7280' },
+  cardTitle: { fontFamily: Fonts.heading.bold, fontSize: 16, color: Palette.ink, marginBottom: 2 },
+  cardSubtitle: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280' },
 
   emptyState: { alignItems: 'center', paddingVertical: 40 },
   emptyText: { color: '#9CA3AF', marginTop: 12 },
@@ -399,27 +401,27 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalContainer: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, height: '85%' },
   modalHeader: { padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#F3F4F6' },
-  modalTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
-  modalSubtitle: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+  modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
+  modalSubtitle: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginTop: 2 },
 
   modalSearchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F3F4F6', margin: 16, paddingHorizontal: 12, height: 44, borderRadius: 10 },
-  modalSearchInput: { flex: 1, marginLeft: 8, fontSize: 15, color: '#111827' },
+  modalSearchInput: { fontFamily: Fonts.body.regular, flex: 1, marginLeft: 8, fontSize: 15, color: Palette.ink },
 
   limitInfo: { paddingHorizontal: 20, paddingBottom: 12 },
-  limitText: { fontSize: 13, color: '#6B7280' },
+  limitText: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280' },
 
   modalList: { flex: 1 },
-  distItem: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#F9FAFB' },
+  distItem: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: Palette.canvas },
   distItemSelected: { backgroundColor: '#F0FDF4' },
   distItemDisabled: { opacity: 0.5 },
   checkbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 1.5, borderColor: '#D1D5DB', alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   checkboxSelected: { backgroundColor: '#10B981', borderColor: '#10B981' },
-  distName: { fontSize: 15, fontWeight: '600', color: '#374151', marginBottom: 2 },
-  distLocation: { fontSize: 12, color: '#9CA3AF' },
+  distName: { fontFamily: Fonts.body.semiBold, fontSize: 15, color: '#374151', marginBottom: 2 },
+  distLocation: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#9CA3AF' },
   textSelected: { color: '#000' },
   textDisabled: { color: '#9CA3AF' },
 
   modalFooter: { padding: 20, borderTopWidth: 1, borderTopColor: '#F3F4F6' },
-  saveBtn: { backgroundColor: '#DB2777', paddingVertical: 16, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  saveBtnText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  saveBtn: { backgroundColor: Palette.lavenderDeep, paddingVertical: 16, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  saveBtnText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
 });

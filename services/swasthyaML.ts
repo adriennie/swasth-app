@@ -3,7 +3,11 @@
 
 import { supabase } from '@/lib/supabase';
 
-const ML_API = 'https://074hc0y3ta.execute-api.ap-south-1.amazonaws.com/default';
+// Base URL of the ML API (swasthya-api). Set EXPO_PUBLIC_ML_API_URL to a local
+// Docker server or a Hugging Face Space; falls back to the AWS deployment.
+export const ML_API = (
+  process.env.EXPO_PUBLIC_ML_API_URL || 'https://074hc0y3ta.execute-api.ap-south-1.amazonaws.com/default'
+).replace(/\/+$/, '');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // UUID → ML ID MAPPING

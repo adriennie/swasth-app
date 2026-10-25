@@ -6,7 +6,6 @@ import { supabase } from '@/lib/supabase';
 import {
   ForecastResult,
   getDemandForecast,
-  getUrgencyColor,
 } from '@/services/swasthyaML';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -14,13 +13,26 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Modal,
-  SafeAreaView,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import {
+  ActionTile,
+  Badge,
+  Card,
+  FadeIn,
+  HeroHeader,
+  HeroIconButton,
+  SectionHeader,
+  StatTile,
+  type Tone,
+} from '@/components/ui/kit';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Stats {
   pendingOrders: number;
@@ -39,33 +51,44 @@ interface Distributor {
   contact_mobile?: string;
 }
 
-// ─── NEW: ML Reorder Card ────────────────────────────────────────────────────
+// Urgency label from the model ("HIGH — < 5 days") mapped to a badge tone.
+function urgencyTone(urgency: string): Tone {
+  if (urgency.startsWith('CRITICAL') || urgency.startsWith('URGENT')) return 'rose';
+  if (urgency.startsWith('HIGH') || urgency.startsWith('MEDIUM')) return 'amber';
+  return 'teal';
+}
+
 function ReorderCard({ item }: { item: ForecastResult & { product_name: string } }) {
-  const color = getUrgencyColor(item.urgency);
-  const urgencyLabel = item.urgency.split(' — ')[0] || 'OK';
+  const tone = urgencyTone(item.urgency);
+  const [level, detail] = item.urgency.split(' — ');
 
   return (
-    <View style={[mlStyles.reorderCard, { borderLeftColor: color }]}>
-      <View style={{ flex: 1 }}>
-        <View style={mlStyles.reorderHeader}>
-          <Text style={mlStyles.productName} numberOfLines={1}>{item.product_name}</Text>
-          <View style={[mlStyles.urgencyBadge, { backgroundColor: color }]}>
-            <Text style={mlStyles.urgencyBadgeText}>{urgencyLabel}</Text>
-          </View>
-        </View>
-        <Text style={[mlStyles.urgencyText, { color }]}>{item.urgency}</Text>
-        <Text style={mlStyles.detailText}>
-          Stock: {item.current_stock} units · Reorder: {item.reorder_qty} units
+    <Card style={mlStyles.reorderCard}>
+      <View style={mlStyles.reorderHeader}>
+        <Text style={mlStyles.productName} numberOfLines={1}>
+          {item.product_name}
         </Text>
-        <Text style={mlStyles.detailText}>
-          Days left: ~{item.days_until_stockout} · 7-day demand: {item.forecast_7d} units
-        </Text>
+        <Badge label={level || 'OK'} tone={tone} />
       </View>
-      <View style={[mlStyles.badge, { backgroundColor: color + '20' }]}>
-        <Text style={[mlStyles.badgeText, { color }]}>
-          ₹{item.order_value.toLocaleString()}
-        </Text>
+      {detail ? <Text style={mlStyles.urgencyText}>{detail}</Text> : null}
+      <View style={mlStyles.metrics}>
+        <Metric label="Stock" value={`${item.current_stock}`} />
+        <Metric label="7d demand" value={`${item.forecast_7d}`} />
+        <Metric label="Days left" value={`~${item.days_until_stockout}`} />
+        <Metric label="Reorder" value={`${item.reorder_qty}`} strong />
       </View>
+      {item.reorder_qty > 0 ? (
+        <Text style={mlStyles.orderValue}>Suggested order value ₹{item.order_value.toLocaleString('en-IN')}</Text>
+      ) : null}
+    </Card>
+  );
+}
+
+function Metric({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+  return (
+    <View style={{ flex: 1 }}>
+      <Text style={[mlStyles.metricValue, strong && { color: Palette.lavenderText }]}>{value}</Text>
+      <Text style={mlStyles.metricLabel}>{label}</Text>
     </View>
   );
 }
@@ -81,6 +104,7 @@ export default function PharmacyDashboard() {
   // ─── NEW ML state ──────────────────────────────────────────────────────────
   const [mlLoading, setMlLoading] = useState(false);
   const [reorderSuggestions, setReorderSuggestions] = useState<(ForecastResult & { product_name: string })[]>([]);
+  const [mlUnavailable, setMlUnavailable] = useState(false);
 
   useEffect(() => {
     if (auth?.id) {
@@ -155,6 +179,7 @@ export default function PharmacyDashboard() {
     setMlLoading(true);
     try {
       setReorderSuggestions([]);
+      setMlUnavailable(false);
       if (inventoryOwnerIds.length === 0) {
         return;
       }
@@ -174,12 +199,14 @@ export default function PharmacyDashboard() {
       }
 
       const suggestions: (ForecastResult & { product_name: string })[] = [];
+      let attempted = 0;
 
       for (const item of invItems.slice(0, 5)) {
         const product = (item as any).products;
         if (!product) continue;
 
         const avgDailySales = Math.max(item.reorder_level / 7, 1);
+        attempted++;
 
         const result = await getDemandForecast({
           // ✅ Pass auth.id UUID — the function handles conversion to PH_01 format
@@ -210,6 +237,8 @@ export default function PharmacyDashboard() {
       ];
       suggestions.sort((a, b) => urgencyOrder.indexOf(a.urgency) - urgencyOrder.indexOf(b.urgency));
       setReorderSuggestions(suggestions);
+      // Every forecast call failed: the ML service is unreachable, not "all good".
+      setMlUnavailable(attempted > 0 && suggestions.length === 0);
 
     } catch (e) {
       console.error('ML suggestions error:', e);
@@ -228,142 +257,110 @@ export default function PharmacyDashboard() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#7C3AED" />
-      </SafeAreaView>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Palette.lavenderText} />
+      </View>
     );
   }
 
+  const needsAttention = stats.lowStock + stats.outOfStock;
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>My Pharmacy</Text>
-          <Text style={styles.headerSubtitle}>Dashboard Overview</Text>
-        </View>
-        <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-          <Feather name="log-out" size={20} color="#EF4444" />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <HeroHeader
+        eyebrow="Pharmacy workspace"
+        title="Today at a glance"
+        subtitle={
+          needsAttention > 0
+            ? `${needsAttention} ${needsAttention === 1 ? 'item needs' : 'items need'} restocking`
+            : 'Stock levels are healthy'
+        }
+        right={<HeroIconButton icon="log-out" label="Sign out" onPress={logout} />}
+      />
 
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Stats Grid — unchanged from your original */}
         <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: '#FEF3C7' }]}>
-              <Feather name="clock" size={20} color="#F59E0B" />
-            </View>
-            <Text style={styles.statValue}>{stats.pendingOrders}</Text>
-            <Text style={styles.statTitle}>Pending Orders</Text>
-          </View>
-          <View style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: '#FEE2E2' }]}>
-              <Feather name="alert-triangle" size={20} color="#EF4444" />
-            </View>
-            <Text style={styles.statValue}>{stats.lowStock}</Text>
-            <Text style={styles.statTitle}>Low Stock</Text>
-          </View>
-          <View style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: '#F3F4F6' }]}>
-              <Feather name="slash" size={20} color="#6B7280" />
-            </View>
-            <Text style={styles.statValue}>{stats.outOfStock}</Text>
-            <Text style={styles.statTitle}>Out of Stock</Text>
-          </View>
-          <View style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: '#D1FAE5' }]}>
-              <Feather name="dollar-sign" size={20} color="#10B981" />
-            </View>
-            <Text style={styles.statValue}>₹{stats.revenueToday.toFixed(0)}</Text>
-            <Text style={styles.statTitle}>Revenue Today</Text>
-          </View>
+          <FadeIn index={0} style={styles.statCell}>
+            <StatTile icon="alert-triangle" tone={stats.lowStock ? 'amber' : 'teal'} value={stats.lowStock} label="Low stock" hint={stats.lowStock ? 'At or below reorder level' : undefined} />
+          </FadeIn>
+          <FadeIn index={1} style={styles.statCell}>
+            <StatTile icon="slash" tone={stats.outOfStock ? 'rose' : 'slate'} value={stats.outOfStock} label="Out of stock" />
+          </FadeIn>
+          <FadeIn index={2} style={styles.statCell}>
+            <StatTile icon="clock" tone="lavender" value={stats.pendingOrders} label="Pending orders" />
+          </FadeIn>
+          <FadeIn index={3} style={styles.statCell}>
+            <StatTile icon="credit-card" tone="teal" value={`₹${stats.revenueToday.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`} label="Ordered today" />
+          </FadeIn>
         </View>
 
-        {/* ─── NEW: AI Reorder Suggestions Section ─────────────────────── */}
-        <View style={mlStyles.sectionHeader}>
-          <View style={mlStyles.sectionTitleRow}>
-            <Feather name="cpu" size={18} color="#7C3AED" />
-            <Text style={mlStyles.sectionTitle}>AI Reorder Suggestions</Text>
+        <FadeIn index={4}>
+          <View style={styles.actions}>
+            <ActionTile icon="shopping-bag" tone="lavender" title="Browse catalog" subtitle="250+ products" onPress={() => router.push('/pharmacy/catalog')} />
+            <ActionTile icon="package" tone="teal" title="Inventory" subtitle="Stock and batches" onPress={() => router.push('/pharmacy/inventory')} />
+            <ActionTile icon="truck" tone="amber" title="Orders" subtitle="Track deliveries" onPress={() => router.push('/pharmacy/orders')} />
           </View>
-          <Text style={mlStyles.sectionSubtitle}>Based on your 7-day demand forecast</Text>
-        </View>
+        </FadeIn>
+
+        <SectionHeader
+          icon="cpu"
+          title="AI reorder suggestions"
+          subtitle="7-day demand forecast for your lowest-stock items"
+          action={reorderSuggestions.length ? { label: 'Order now', onPress: () => router.push('/pharmacy/catalog') } : undefined}
+        />
 
         {mlLoading ? (
-          <View style={mlStyles.mlLoadingBox}>
-            <ActivityIndicator size="small" color="#7C3AED" />
-            <Text style={mlStyles.mlLoadingText}>Running demand forecast...</Text>
-          </View>
+          <Card style={mlStyles.stateBox}>
+            <ActivityIndicator size="small" color={Palette.lavenderText} />
+            <Text style={mlStyles.stateText}>Running demand forecast…</Text>
+          </Card>
+        ) : mlUnavailable ? (
+          <Card style={mlStyles.stateBox}>
+            <Feather name="cloud-off" size={20} color="#B45309" />
+            <Text style={mlStyles.stateText}>Forecast service is unavailable right now. Ordering still works.</Text>
+          </Card>
         ) : reorderSuggestions.length > 0 ? (
-          <View style={{ gap: 10, marginBottom: 20 }}>
+          <View style={{ gap: 10 }}>
             {reorderSuggestions.map((item, idx) => (
-              <ReorderCard key={idx} item={item} />
+              <FadeIn key={idx} index={idx + 5}>
+                <ReorderCard item={item} />
+              </FadeIn>
             ))}
-            <TouchableOpacity
-              style={mlStyles.orderNowBtn}
-              onPress={() => router.push('/pharmacy/catalog')}
-            >
-              <Feather name="shopping-cart" size={16} color="#fff" />
-              <Text style={mlStyles.orderNowText}>Order Now from Catalog</Text>
-            </TouchableOpacity>
           </View>
         ) : (
-          <View style={mlStyles.allGoodBox}>
-            <Feather name="check-circle" size={28} color="#10B981" />
-            <Text style={mlStyles.allGoodText}>All stock levels are good!</Text>
-          </View>
+          <Card style={mlStyles.stateBox}>
+            <Feather name="check-circle" size={20} color={Palette.tealText} />
+            <Text style={mlStyles.stateText}>No reorders needed this week.</Text>
+          </Card>
         )}
-        {/* ─────────────────────────────────────────────────────────────── */}
 
-        <TouchableOpacity style={styles.primaryButton} onPress={() => router.push('/pharmacy/inventory')}>
-          <Feather name="plus" size={20} color="#fff" />
-          <Text style={styles.primaryButtonText}>Manage Inventory</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push('/pharmacy/orders')}>
-          <Feather name="list" size={20} color="#7C3AED" />
-          <Text style={styles.secondaryButtonText}>View All Orders</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.secondaryButton, { borderColor: '#A7F3D0', backgroundColor: '#ECFDF5' }]}
-          onPress={() => router.push('/pharmacy/catalog')}
-        >
-          <Feather name="shopping-cart" size={20} color="#059669" />
-          <Text style={[styles.secondaryButtonText, { color: '#059669' }]}>Browse Catalog</Text>
-        </TouchableOpacity>
-
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Assigned Distributors</Text>
-        </View>
+        <SectionHeader icon="truck" title="Your distributors" />
 
         {distributors.length > 0 ? (
-          <View style={{ gap: 12 }}>
+          <View style={{ gap: 10 }}>
             {distributors.map((item) => (
-              <TouchableOpacity
+              <Pressable
                 key={item.id}
-                style={styles.listItem}
+                accessibilityRole="button"
+                style={({ pressed }) => [styles.listItem, pressed && { opacity: 0.85 }]}
                 onPress={() => setSelectedDistributor(item)}
               >
                 <View style={styles.distIcon}>
-                  <Feather name="truck" size={20} color="#7C3AED" />
+                  <Feather name="truck" size={18} color={Palette.lavenderText} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.listItemTitle}>{item.display_name || item.contact_name}</Text>
-                  <Text style={styles.listItemSubtitle}>
-                    {[item.city, item.state].filter(Boolean).join(', ')}
-                  </Text>
+                  <Text style={styles.listItemSubtitle}>{[item.city, item.state].filter(Boolean).join(', ')}</Text>
                 </View>
-                <Feather name="chevron-right" size={20} color="#9CA3AF" />
-              </TouchableOpacity>
+                <Feather name="chevron-right" size={18} color="#94A3B8" />
+              </Pressable>
             ))}
           </View>
         ) : (
-          <View style={styles.noDistributor}>
-            <Feather name="users" size={48} color="#D1D5DB" />
-            <Text style={styles.noDistributorText}>
-              No distributor assigned yet. Please contact admin.
-            </Text>
-          </View>
+          <Card style={styles.noDistributor}>
+            <Feather name="users" size={28} color="#CBD5E1" />
+            <Text style={styles.noDistributorText}>No distributor assigned yet. Orders go to the admin queue.</Text>
+          </Card>
         )}
       </ScrollView>
 
@@ -379,7 +376,7 @@ export default function PharmacyDashboard() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Distributor Details</Text>
               <TouchableOpacity onPress={() => setSelectedDistributor(null)}>
-                <Feather name="x" size={24} color="#111827" />
+                <Feather name="x" size={24} color={Palette.ink} />
               </TouchableOpacity>
             </View>
             <View style={styles.detailContainer}>
@@ -407,92 +404,61 @@ export default function PharmacyDashboard() {
               </View>
             </View>
             <View style={styles.modalActions}>
-              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: '#7C3AED' }]} onPress={() => setSelectedDistributor(null)}>
+              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: Palette.lavenderText }]} onPress={() => setSelectedDistributor(null)}>
                 <Feather name="phone" size={18} color="#fff" />
                 <Text style={styles.actionText}>Call</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: '#F5F3FF' }]} onPress={() => setSelectedDistributor(null)}>
-                <Feather name="message-square" size={18} color="#7C3AED" />
-                <Text style={[styles.actionText, { color: '#7C3AED' }]}>Message</Text>
+              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: Palette.lavenderSoft }]} onPress={() => setSelectedDistributor(null)}>
+                <Feather name="message-square" size={18} color={Palette.lavenderText} />
+                <Text style={[styles.actionText, { color: Palette.lavenderText }]}>Message</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
 // ─── ML Styles (new) ──────────────────────────────────────────────────────────
 const mlStyles = StyleSheet.create({
-  sectionHeader:    { marginBottom: 12 },
-  sectionTitleRow:  { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 2 },
-  sectionTitle:     { fontSize: 17, fontWeight: '800', color: '#111827' },
-  sectionSubtitle:  { fontSize: 12, color: '#6B7280', marginLeft: 26 },
-  mlLoadingBox:     { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#F5F3FF', borderRadius: 12, padding: 16, marginBottom: 20 },
-  mlLoadingText:    { color: '#7C3AED', fontSize: 14 },
-  reorderCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 14,
-    borderLeftWidth: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  reorderHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
-  productName:  { flex: 1, fontSize: 15, fontWeight: '700', color: '#111827' },
-  urgencyBadge: { borderRadius: 999, paddingHorizontal: 8, paddingVertical: 4 },
-  urgencyBadgeText: { color: '#fff', fontSize: 10, fontWeight: '800' },
-  urgencyText:  { fontSize: 12, fontWeight: '700', marginBottom: 4 },
-  detailText:   { fontSize: 12, color: '#6B7280' },
-  badge:        { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, alignItems: 'center' },
-  badgeText:    { fontSize: 13, fontWeight: '800' },
-  orderNowBtn:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#7C3AED', borderRadius: 12, paddingVertical: 14, gap: 8, marginTop: 4 },
-  orderNowText: { color: '#fff', fontWeight: '700', fontSize: 15 },
-  allGoodBox:   { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#ECFDF5', borderRadius: 12, padding: 16, marginBottom: 20 },
-  allGoodText:  { color: '#065F46', fontSize: 14, fontWeight: '600' },
+  reorderCard: { gap: 6 },
+  reorderHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  productName: { fontFamily: Fonts.body.bold, flex: 1, fontSize: 15, color: Palette.ink },
+  urgencyText: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#64748B' },
+  metrics: { flexDirection: 'row', marginTop: 6, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#F1F5F9' },
+  metricValue: { fontFamily: Fonts.label.bold, fontSize: 16, color: Palette.ink },
+  metricLabel: { fontFamily: Fonts.label.regular, fontSize: 11, color: '#64748B', marginTop: 1 },
+  orderValue: { fontFamily: Fonts.label.semiBold, fontSize: 12, color: Palette.tealText, marginTop: 4 },
+  stateBox: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  stateText: { fontFamily: Fonts.body.regular, color: '#475569', fontSize: 14, flex: 1 },
 });
 
 // ─── Original Styles (unchanged) ─────────────────────────────────────────────
 const styles = StyleSheet.create({
-  container:        { flex: 1, backgroundColor: '#F8FAFC' },
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header:           { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 50, paddingBottom: 20, paddingHorizontal: 20, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  headerTitle:      { fontSize: 22, fontWeight: '800', color: '#111827' },
-  headerSubtitle:   { fontSize: 13, color: '#6B7280', marginTop: 2 },
-  logoutBtn:        { padding: 8, backgroundColor: '#FEF2F2', borderRadius: 12 },
-  content:          { padding: 20, paddingBottom: 40 },
-  statsGrid:        { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 20 },
-  statCard:         { width: '48%', backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 16, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 },
-  statIcon:         { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
-  statValue:        { fontSize: 20, fontWeight: '800', color: '#111827' },
-  statTitle:        { fontSize: 12, color: '#6B7280', marginTop: 4, textAlign: 'center' },
-  primaryButton:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#7C3AED', borderRadius: 12, paddingVertical: 16, marginBottom: 12, gap: 10, elevation: 2 },
-  primaryButtonText:{ color: '#fff', fontSize: 16, fontWeight: '700' },
-  secondaryButton:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', borderRadius: 12, paddingVertical: 16, marginBottom: 24, gap: 10, borderWidth: 1, borderColor: '#DDD6FE' },
-  secondaryButtonText:{ color: '#7C3AED', fontSize: 16, fontWeight: '700' },
-  sectionHeader:    { marginBottom: 16 },
-  sectionTitle:     { fontSize: 18, fontWeight: '800', color: '#111827' },
-  listItem:         { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 16, padding: 16, gap: 12, shadowColor: '#000', shadowOpacity: 0.03, shadowRadius: 5, elevation: 1 },
-  distIcon:         { width: 40, height: 40, borderRadius: 20, backgroundColor: '#F5F3FF', alignItems: 'center', justifyContent: 'center' },
-  listItemTitle:    { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 2 },
-  listItemSubtitle: { fontSize: 13, color: '#6B7280' },
-  noDistributor:    { alignItems: 'center', paddingVertical: 32, gap: 12 },
-  noDistributorText:{ textAlign: 'center', color: '#9CA3AF', fontSize: 14 },
+  container:        { flex: 1, backgroundColor: Palette.canvas },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Palette.canvas },
+  statCell:         { width: '48%' },
+  actions:          { flexDirection: 'row', gap: 10 },
+  content:          { padding: 16, paddingBottom: 40 },
+  statsGrid:        { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12, marginBottom: 12 },
+  primaryButtonText:{ fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
+  secondaryButtonText:{ fontFamily: Fonts.body.bold, color: Palette.lavenderText, fontSize: 16 },
+  listItem:         { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, padding: 14, gap: 12, shadowColor: Palette.ink, shadowOpacity: 0.06, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 2 },
+  distIcon:         { width: 38, height: 38, borderRadius: 10, backgroundColor: Palette.lavenderSoft, alignItems: 'center', justifyContent: 'center' },
+  listItemTitle:    { fontFamily: Fonts.heading.bold, fontSize: 15, color: Palette.ink, marginBottom: 2 },
+  listItemSubtitle: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280' },
+  noDistributor:    { alignItems: 'center', paddingVertical: 24, gap: 10 },
+  noDistributorText:{ fontFamily: Fonts.body.regular, textAlign: 'center', color: '#9CA3AF', fontSize: 14 },
   modalOverlay:     { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalCard:        { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
   modalHeader:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 },
-  modalTitle:       { fontSize: 20, fontWeight: '800', color: '#111827' },
+  modalTitle:       { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
   detailContainer:  { gap: 16, marginBottom: 24 },
   detailRow:        { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', borderBottomWidth: 1, borderBottomColor: '#F3F4F6', paddingBottom: 12 },
-  detailLabel:      { fontSize: 14, color: '#6B7280', width: 120 },
-  detailValue:      { fontSize: 15, fontWeight: '600', color: '#111827', flex: 1, textAlign: 'right' },
+  detailLabel:      { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', width: 120 },
+  detailValue:      { fontFamily: Fonts.label.semiBold, fontSize: 15, color: Palette.ink, flex: 1, textAlign: 'right' },
   modalActions:     { flexDirection: 'row', gap: 12 },
   actionBtn:        { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: 12 },
-  actionText:       { color: '#fff', fontWeight: '700', fontSize: 15 },
+  actionText:       { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 15 },
 });

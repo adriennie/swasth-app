@@ -3,6 +3,8 @@ import { supabase } from '@/lib/supabase';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface PharmacyProfile {
   business_legal_name: string;
@@ -82,7 +84,7 @@ export default function SettingsScreen() {
   if (loading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#7C3AED" />
+        <ActivityIndicator size="large" color={Palette.lavenderText} />
       </SafeAreaView>
     );
   }
@@ -93,7 +95,7 @@ export default function SettingsScreen() {
         <Text style={styles.headerTitle}>Settings</Text>
         <TouchableOpacity onPress={() => editing ? handleSave() : setEditing(true)} disabled={saving}>
           {saving ? (
-            <ActivityIndicator size="small" color="#7C3AED" />
+            <ActivityIndicator size="small" color={Palette.lavenderText} />
           ) : (
             <Text style={styles.editBtn}>{editing ? 'Save' : 'Edit'}</Text>
           )}
@@ -201,19 +203,19 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: { paddingHorizontal: 16, paddingVertical: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#E5E7EB' },
-  headerTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
-  editBtn: { color: '#7C3AED', fontWeight: '700', fontSize: 16 },
+  headerTitle: { fontFamily: Fonts.heading.bold, fontSize: 18, color: Palette.ink },
+  editBtn: { fontFamily: Fonts.body.bold, color: Palette.lavenderText, fontSize: 16 },
   content: { padding: 16, paddingBottom: 40 },
   section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 14, fontWeight: '700', color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 0.5 },
+  sectionTitle: { fontFamily: Fonts.heading.bold, fontSize: 14, color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 0.5 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 16, gap: 16, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 3 },
   inputGroup: { gap: 6 },
-  label: { fontSize: 13, fontWeight: '600', color: '#4B5563' },
-  input: { backgroundColor: '#F9FAFB', borderColor: '#E5E7EB', borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: '#111827', fontSize: 15 },
+  label: { fontFamily: Fonts.body.semiBold, fontSize: 13, color: '#4B5563' },
+  input: { fontFamily: Fonts.body.regular, backgroundColor: Palette.canvas, borderColor: '#E5E7EB', borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: Palette.ink, fontSize: 15 },
   inputDisabled: { backgroundColor: '#F3F4F6', color: '#9CA3AF' },
   logoutBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, paddingVertical: 16, marginTop: 10 },
-  logoutText: { color: '#EF4444', fontWeight: '700', fontSize: 16 },
+  logoutText: { fontFamily: Fonts.heading.bold, color: '#EF4444', fontSize: 16 },
 });

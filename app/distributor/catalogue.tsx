@@ -15,6 +15,8 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Product {
     id: string;
@@ -148,11 +150,11 @@ export default function DistributorCatalogue() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-                    <Feather name="chevron-left" size={24} color="#1F2937" />
+                    <Feather name="chevron-left" size={24} color={Palette.ink} />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Master Catalogue</Text>
                 <TouchableOpacity onPress={() => router.push('/distributor/cart')} style={styles.cartBtn}>
-                    <Feather name="shopping-cart" size={24} color="#1F2937" />
+                    <Feather name="shopping-cart" size={24} color={Palette.ink} />
                 </TouchableOpacity>
             </View>
 
@@ -172,7 +174,7 @@ export default function DistributorCatalogue() {
 
             {loading ? (
                 <View style={styles.center}>
-                    <ActivityIndicator size="large" color="#4F46E5" />
+                    <ActivityIndicator size="large" color={Palette.lavenderText} />
                     <Text style={styles.loadingText}>Loading catalogue...</Text>
                 </View>
             ) : (
@@ -200,7 +202,7 @@ export default function DistributorCatalogue() {
 
                             {item.moq && item.moq > 1 && (
                                 <View style={styles.moqBadge}>
-                                    <Feather name="info" size={11} color="#4338CA" />
+                                    <Feather name="info" size={11} color={Palette.lavenderDeep} />
                                     <Text style={styles.moqText}>MOQ {item.moq}</Text>
                                 </View>
                             )}
@@ -249,9 +251,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     headerTitle: {
+        fontFamily: Fonts.heading.extraBold,
         fontSize: 22,
-        fontWeight: '800',
-        color: '#111827',
+        color: Palette.ink,
     },
     searchContainer: {
         paddingHorizontal: 24,
@@ -269,9 +271,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#E5E7EB',
     },
-    searchInput: { flex: 1, marginLeft: 12, fontSize: 18, color: '#1F2937' },
+    searchInput: { fontFamily: Fonts.body.regular, flex: 1, marginLeft: 12, fontSize: 18, color: Palette.ink },
     center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    loadingText: { marginTop: 12, color: '#6B7280', fontWeight: '600' },
+    loadingText: { fontFamily: Fonts.body.semiBold, marginTop: 12, color: '#6B7280' },
     list: { paddingHorizontal: 26, paddingBottom: 32, paddingTop: 18 },
     emptyList: { flexGrow: 1 },
     cardRow: { justifyContent: 'space-between', marginBottom: 26 },
@@ -296,56 +298,56 @@ const styles = StyleSheet.create({
         height: 112,
         borderRadius: 12,
         overflow: 'hidden',
-        backgroundColor: '#F9FAFB',
+        backgroundColor: Palette.canvas,
         marginBottom: 14,
     },
     productImage: { width: '100%', height: '100%', resizeMode: 'cover' },
     placeholderImage: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F3F4F6' },
     name: {
+        fontFamily: Fonts.body.extraBold,
         fontSize: 15,
-        fontWeight: '800',
-        color: '#111827',
+        color: Palette.ink,
         lineHeight: 19,
         textAlign: 'center',
         minHeight: 40,
         marginBottom: 12,
     },
     price: {
+        fontFamily: Fonts.heading.extraBold,
         fontSize: 20,
-        fontWeight: '800',
-        color: '#2563EB',
+        color: Palette.tealText,
         marginBottom: 10,
     },
     moqBadge: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 4,
-        backgroundColor: '#EEF2FF',
+        backgroundColor: Palette.lavenderSoft,
         borderRadius: 999,
         paddingHorizontal: 8,
         paddingVertical: 4,
         marginBottom: 10,
     },
     moqText: {
+        fontFamily: Fonts.body.extraBold,
         fontSize: 10,
-        color: '#4338CA',
-        fontWeight: '800',
+        color: Palette.lavenderDeep,
     },
     addBtn: {
         width: '100%',
         minHeight: 44,
         borderRadius: 10,
-        backgroundColor: '#7C3AED',
+        backgroundColor: Palette.lavenderText,
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
         gap: 8,
         elevation: 2,
-        shadowColor: '#7C3AED',
+        shadowColor: Palette.lavenderText,
         shadowOpacity: 0.22,
         shadowRadius: 4,
     },
-    addBtnText: { color: '#fff', fontWeight: '800', fontSize: 14 },
+    addBtnText: { fontFamily: Fonts.body.extraBold, color: '#fff', fontSize: 14 },
     emptyState: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
-    emptyText: { marginTop: 12, color: '#9CA3AF', fontSize: 16 },
+    emptyText: { fontFamily: Fonts.body.regular, marginTop: 12, color: '#9CA3AF', fontSize: 16 },
 });

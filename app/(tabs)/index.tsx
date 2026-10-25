@@ -16,6 +16,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 const { width } = Dimensions.get('window');
 
@@ -214,7 +216,7 @@ export default function ShopScreen() {
           <Ionicons
             name={wishlist.includes(product.id) ? "heart" : "heart-outline"}
             size={20}
-            color={wishlist.includes(product.id) ? "#FF6B9D" : "#666"}
+            color={wishlist.includes(product.id) ? Palette.lavenderText : "#666"}
           />
         </TouchableOpacity>
       </View>
@@ -249,7 +251,7 @@ export default function ShopScreen() {
           onPress={() => addToCart(product)}
         >
           <LinearGradient
-            colors={['#FF6B9D', '#FF8E53']}
+            colors={[Palette.lavenderText, Palette.lavender]}
             style={styles.addToCartGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
@@ -269,7 +271,7 @@ export default function ShopScreen() {
         <View style={styles.headerTop}>
           <View style={styles.logoContainer}>
             <LinearGradient
-              colors={['#FF6B9D', '#FF8E53']}
+              colors={[Palette.lavenderText, Palette.lavender]}
               style={styles.logoGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
@@ -331,7 +333,7 @@ export default function ShopScreen() {
               <Ionicons
                 name={category.icon as any}
                 size={20}
-                color={selectedCategory === category.id ? '#FF6B9D' : '#666'}
+                color={selectedCategory === category.id ? Palette.lavenderText : '#666'}
               />
               <Text style={[
                 styles.categoryText,
@@ -352,7 +354,7 @@ export default function ShopScreen() {
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <LinearGradient
-            colors={['#FF6B9D', '#FF8E53']}
+            colors={[Palette.lavenderText, Palette.lavender]}
             style={styles.heroGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
@@ -402,7 +404,7 @@ export default function ShopScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: Palette.canvas,
   },
   header: {
     backgroundColor: '#fff',
@@ -434,9 +436,9 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   logoText: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 24,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    color: Palette.ink,
   },
   headerActions: {
     flexDirection: 'row',
@@ -453,7 +455,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: '#FF6B9D',
+    backgroundColor: Palette.lavenderText,
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -461,9 +463,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cartBadgeText: {
+    fontFamily: Fonts.body.bold,
     color: '#fff',
     fontSize: 12,
-    fontWeight: '700',
   },
   searchContainer: {
     paddingHorizontal: 20,
@@ -472,7 +474,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8F9FA',
+    backgroundColor: Palette.canvas,
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -483,6 +485,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   searchInput: {
+    fontFamily: Fonts.body.regular,
     flex: 1,
     fontSize: 16,
     color: '#333',
@@ -497,18 +500,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: Palette.canvas,
     borderWidth: 1,
     borderColor: '#E9ECEF',
     gap: 8,
   },
   categoryButtonActive: {
-    backgroundColor: '#FF6B9D',
-    borderColor: '#FF6B9D',
+    backgroundColor: Palette.lavenderText,
+    borderColor: Palette.lavenderText,
   },
   categoryText: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 14,
-    fontWeight: '600',
     color: '#666',
   },
   categoryTextActive: {
@@ -540,12 +543,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 24,
-    fontWeight: '700',
     color: '#fff',
     marginBottom: 8,
   },
   heroSubtitle: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: 'rgba(255,255,255,0.9)',
     marginBottom: 20,
@@ -561,8 +565,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heroButtonText: {
+    fontFamily: Fonts.heading.semiBold,
     fontSize: 14,
-    fontWeight: '600',
     color: '#fff',
   },
   heroImage: {
@@ -581,14 +585,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 20,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    color: Palette.ink,
   },
   viewAllText: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 16,
-    fontWeight: '600',
-    color: '#FF6B9D',
+    color: Palette.lavenderText,
   },
   productRow: {
     justifyContent: 'space-between',
@@ -639,8 +643,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   badgeText: {
+    fontFamily: Fonts.body.bold,
     fontSize: 10,
-    fontWeight: '700',
     color: '#fff',
   },
   wishlistButton: {
@@ -655,15 +659,15 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   productBrand: {
+    fontFamily: Fonts.heading.semiBold,
     fontSize: 12,
-    fontWeight: '600',
     color: '#666',
     marginBottom: 4,
   },
   productName: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 14,
-    fontWeight: '600',
-    color: '#1A1A1A',
+    color: Palette.ink,
     marginBottom: 8,
     lineHeight: 18,
   },
@@ -679,11 +683,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   ratingText: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 12,
-    fontWeight: '600',
-    color: '#1A1A1A',
+    color: Palette.ink,
   },
   reviewCount: {
+    fontFamily: Fonts.body.regular,
     fontSize: 11,
     color: '#666',
   },
@@ -691,14 +696,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   originalPrice: {
+    fontFamily: Fonts.body.regular,
     fontSize: 11,
     color: '#999',
     textDecorationLine: 'line-through',
   },
   currentPrice: {
+    fontFamily: Fonts.body.bold,
     fontSize: 16,
-    fontWeight: '700',
-    color: '#FF6B9D',
+    color: Palette.lavenderText,
   },
   addToCartButton: {
     borderRadius: 12,
@@ -712,8 +718,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   addToCartText: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 12,
-    fontWeight: '600',
     color: '#fff',
   },
 }); 

@@ -1,0 +1,1 @@
+Pharmacies run out of medicines because reordering is guesswork. Swasthya forecasts 7-day demand, sends orders straight to the pharmacy's distributor, verifies every delivery with a one-time code, and flags unusual orders for review.

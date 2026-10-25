@@ -4,13 +4,15 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function NotFoundScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />
       <ThemedView style={styles.container}>
-        <LinearGradient colors={['#3B82F6', '#06B6D4']} style={styles.gradient} />
+        <LinearGradient colors={[Palette.teal, Palette.teal]} style={styles.gradient} />
 
         <View style={styles.header}>
           <ThemedText type="title" style={styles.title}>Page Not Found</ThemedText>
@@ -55,8 +57,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   title: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 28,
-    fontWeight: '700',
     color: '#fff',
     marginBottom: 8,
   },
@@ -77,6 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: '#374151',
     textAlign: 'center',
@@ -90,13 +93,13 @@ const styles = StyleSheet.create({
   },
   linkButton: {
     flex: 1,
-    backgroundColor: '#3B82F6',
+    backgroundColor: Palette.teal,
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  linkButtonText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+  linkButtonText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
   ghostButton: {
     flex: 1,
     borderWidth: 1,
@@ -106,5 +109,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ghostButtonText: { color: '#059669', fontWeight: '700', fontSize: 16 },
+  ghostButtonText: { fontFamily: Fonts.body.bold, color: '#059669', fontSize: 16 },
 });

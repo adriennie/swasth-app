@@ -16,6 +16,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 const { width, height } = Dimensions.get('window');
 
@@ -211,14 +213,14 @@ export default function FlowBotScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={['#FF6B9D', '#FF8E53']}
+        colors={[Palette.lavenderText, Palette.lavender]}
         style={styles.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
       >
         <View style={styles.headerContent}>
           <View style={styles.botAvatar}>
-            <Ionicons name="medical" size={24} color="#FF6B9D" />
+            <Ionicons name="medical" size={24} color={Palette.lavenderText} />
           </View>
           <Text style={styles.headerTitle}>FlowBot</Text>
           <Text style={styles.headerSubtitle}>Your AI Health Companion</Text>
@@ -243,7 +245,7 @@ export default function FlowBotScreen() {
           
           {isTyping && (
             <View style={styles.typingIndicator}>
-              <ActivityIndicator size="small" color="#FF6B9D" />
+              <ActivityIndicator size="small" color={Palette.lavenderText} />
               <Text style={styles.typingText}>FlowBot is typing...</Text>
             </View>
           )}
@@ -268,7 +270,7 @@ export default function FlowBotScreen() {
               disabled={!inputText.trim()}
             >
               <LinearGradient
-                colors={inputText.trim() ? ['#FF6B9D', '#FF8E53'] : ['#E5E7EB', '#D1D5DB']}
+                colors={inputText.trim() ? [Palette.lavenderText, Palette.lavender] : ['#E5E7EB', '#D1D5DB']}
                 style={styles.sendButtonGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -294,7 +296,7 @@ export default function FlowBotScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: Palette.canvas,
   },
   header: {
     paddingTop: 20,
@@ -319,12 +321,13 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   headerTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 28,
-    fontWeight: '700',
     color: '#fff',
     marginBottom: 4,
   },
   headerSubtitle: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
@@ -347,7 +350,7 @@ const styles = StyleSheet.create({
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#FF6B9D',
+    backgroundColor: Palette.lavenderText,
     borderBottomRightRadius: 4,
   },
   userMessageLast: {
@@ -373,18 +376,20 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   senderText: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 12,
-    fontWeight: '600',
     color: '#666',
   },
   timestampText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 11,
     color: '#999',
   },
   messageText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     lineHeight: 22,
-    color: '#1A1A1A',
+    color: Palette.ink,
   },
   citationsContainer: {
     marginTop: 12,
@@ -398,9 +403,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   citationText: {
+    fontFamily: Fonts.body.medium,
     fontSize: 12,
     color: '#374151',
-    fontWeight: '500',
   },
   typingIndicator: {
     flexDirection: 'row',
@@ -418,6 +423,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   typingText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 14,
     color: '#666',
     fontStyle: 'italic',
@@ -434,8 +440,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   textInput: {
+    fontFamily: Fonts.body.regular,
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: Palette.canvas,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -458,6 +465,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inputHint: {
+    fontFamily: Fonts.body.regular,
     fontSize: 12,
     color: '#999',
     textAlign: 'center',

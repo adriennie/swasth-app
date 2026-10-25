@@ -2,7 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { router } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import React, { useState } from 'react';
@@ -21,6 +21,8 @@ import {
     View,
 } from 'react-native';
 import * as XLSX from 'xlsx';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 type Flow = 'select' | 'manual' | 'bulk' | 'review';
 
@@ -183,7 +185,7 @@ export default function AddInventoryScreen() {
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()}>
-                        <Ionicons name="arrow-back" size={24} color="#111827" />
+                        <Ionicons name="arrow-back" size={24} color={Palette.ink} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Add Inventory</Text>
                     <View style={{ width: 24 }} />
@@ -193,8 +195,8 @@ export default function AddInventoryScreen() {
                     <Text style={styles.selectionTitle}>How would you like to add stock?</Text>
 
                     <TouchableOpacity style={styles.selectionCard} onPress={() => setFlow('manual')}>
-                        <View style={[styles.iconCircle, { backgroundColor: '#EDE9FE' }]}>
-                            <Feather name="edit" size={24} color="#7C3AED" />
+                        <View style={[styles.iconCircle, { backgroundColor: Palette.lavenderSoft }]}>
+                            <Feather name="edit" size={24} color={Palette.lavenderText} />
                         </View>
                         <View style={styles.cardText}>
                             <Text style={styles.cardTitle}>Manual Entry</Text>
@@ -204,8 +206,8 @@ export default function AddInventoryScreen() {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.selectionCard} onPress={() => setFlow('bulk')}>
-                        <View style={[styles.iconCircle, { backgroundColor: '#E0F2FE' }]}>
-                            <Feather name="file-text" size={24} color="#0EA5E9" />
+                        <View style={[styles.iconCircle, { backgroundColor: Palette.tealSoft }]}>
+                            <Feather name="file-text" size={24} color={Palette.teal} />
                         </View>
                         <View style={styles.cardText}>
                             <Text style={styles.cardTitle}>Bulk Upload (Excel/CSV)</Text>
@@ -224,7 +226,7 @@ export default function AddInventoryScreen() {
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
                     <View style={styles.header}>
                         <TouchableOpacity onPress={() => setFlow('select')}>
-                            <Ionicons name="arrow-back" size={24} color="#111827" />
+                            <Ionicons name="arrow-back" size={24} color={Palette.ink} />
                         </TouchableOpacity>
                         <Text style={styles.headerTitle}>Manual Entry</Text>
                         <View style={{ width: 24 }} />
@@ -289,7 +291,7 @@ export default function AddInventoryScreen() {
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => setFlow('select')}>
-                        <Ionicons name="arrow-back" size={24} color="#111827" />
+                        <Ionicons name="arrow-back" size={24} color={Palette.ink} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Bulk Upload</Text>
                     <View style={{ width: 24 }} />
@@ -297,20 +299,20 @@ export default function AddInventoryScreen() {
 
                 <View style={styles.bulkContent}>
                     <View style={styles.infoBox}>
-                        <Feather name="info" size={20} color="#7C3AED" />
+                        <Feather name="info" size={20} color={Palette.lavenderText} />
                         <Text style={styles.infoText}>
                             Upload an Excel (.xlsx) or CSV file with headers: product_name, sku, stock_quantity, reorder_level.
                         </Text>
                     </View>
 
                     <TouchableOpacity style={styles.templateBtn} onPress={downloadTemplate}>
-                        <Feather name="download" size={18} color="#7C3AED" />
+                        <Feather name="download" size={18} color={Palette.lavenderText} />
                         <Text style={styles.templateBtnText}>Download Excel Template</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.uploadBox} onPress={handlePickDocument}>
                         <View style={styles.uploadIconCircle}>
-                            <Feather name="upload-cloud" size={32} color="#7C3AED" />
+                            <Feather name="upload-cloud" size={32} color={Palette.lavenderText} />
                         </View>
                         <Text style={styles.uploadTitle}>Choose Excel/CSV File</Text>
                         <Text style={styles.uploadSubtitle}>Select a file from your device</Text>
@@ -325,7 +327,7 @@ export default function AddInventoryScreen() {
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => setFlow(reviewItems.length > 1 ? 'bulk' : 'manual')}>
-                        <Ionicons name="arrow-back" size={24} color="#111827" />
+                        <Ionicons name="arrow-back" size={24} color={Palette.ink} />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Review Items</Text>
                     <View style={{ width: 24 }} />
@@ -370,7 +372,7 @@ export default function AddInventoryScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F8FAFC' },
+    container: { flex: 1, backgroundColor: Palette.canvas },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -381,9 +383,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E5E7EB'
     },
-    headerTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
+    headerTitle: { fontFamily: Fonts.heading.bold, fontSize: 18, color: Palette.ink },
     selectionContent: { padding: 24, flex: 1 },
-    selectionTitle: { fontSize: 20, fontWeight: '800', color: '#111827', marginBottom: 24 },
+    selectionTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink, marginBottom: 24 },
     selectionCard: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -398,12 +400,13 @@ const styles = StyleSheet.create({
     },
     iconCircle: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', marginRight: 16 },
     cardText: { flex: 1 },
-    cardTitle: { fontSize: 16, fontWeight: '700', color: '#111827' },
-    cardDesc: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+    cardTitle: { fontFamily: Fonts.heading.bold, fontSize: 16, color: Palette.ink },
+    cardDesc: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginTop: 2 },
     formScroll: { padding: 24 },
     formGroup: { marginBottom: 20 },
-    label: { fontSize: 14, fontWeight: '600', color: '#4B5563', marginBottom: 8 },
+    label: { fontFamily: Fonts.body.semiBold, fontSize: 14, color: '#4B5563', marginBottom: 8 },
     input: {
+        fontFamily: Fonts.body.regular,
         backgroundColor: '#fff',
         borderWidth: 1,
         borderColor: '#E5E7EB',
@@ -411,33 +414,33 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 12,
         fontSize: 16,
-        color: '#111827'
+        color: Palette.ink
     },
     row: { flexDirection: 'row' },
     primaryBtn: {
-        backgroundColor: '#7C3AED',
+        backgroundColor: Palette.lavenderText,
         borderRadius: 12,
         paddingVertical: 16,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#7C3AED',
+        shadowColor: Palette.lavenderText,
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 4
     },
-    primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+    primaryBtnText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
     btnDisabled: { opacity: 0.6 },
     bulkContent: { padding: 24, flex: 1 },
     infoBox: {
         flexDirection: 'row',
-        backgroundColor: '#F5F3FF',
+        backgroundColor: Palette.lavenderSoft,
         padding: 16,
         borderRadius: 12,
         alignItems: 'center',
         gap: 12,
         marginBottom: 24
     },
-    infoText: { flex: 1, fontSize: 13, color: '#5B21B6', lineHeight: 18 },
+    infoText: { fontFamily: Fonts.body.regular, flex: 1, fontSize: 13, color: Palette.lavenderDeep, lineHeight: 18 },
     templateBtn: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -445,11 +448,11 @@ const styles = StyleSheet.create({
         gap: 8,
         marginBottom: 24
     },
-    templateBtnText: { color: '#7C3AED', fontWeight: '700', fontSize: 14 },
+    templateBtnText: { fontFamily: Fonts.body.bold, color: Palette.lavenderText, fontSize: 14 },
     uploadBox: {
         flex: 1,
         borderWidth: 2,
-        borderColor: '#DDD6FE',
+        borderColor: Palette.lavenderBorder,
         borderStyle: 'dashed',
         borderRadius: 24,
         backgroundColor: '#fff',
@@ -457,11 +460,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 40
     },
-    uploadIconCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#F5F3FF', alignItems: 'center', justifyContent: 'center', marginBottom: 16 },
-    uploadTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
-    uploadSubtitle: { fontSize: 14, color: '#6B7280', marginTop: 4 },
+    uploadIconCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: Palette.lavenderSoft, alignItems: 'center', justifyContent: 'center', marginBottom: 16 },
+    uploadTitle: { fontFamily: Fonts.heading.bold, fontSize: 18, color: Palette.ink },
+    uploadSubtitle: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', marginTop: 4 },
     reviewHeader: { padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#F3F4F6' },
-    reviewCount: { fontSize: 14, fontWeight: '600', color: '#6B7280' },
+    reviewCount: { fontFamily: Fonts.label.semiBold, fontSize: 14, color: '#6B7280' },
     reviewList: { padding: 16, gap: 12 },
     reviewCard: {
         flexDirection: 'row',
@@ -474,10 +477,10 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 1
     },
-    reviewName: { fontSize: 15, fontWeight: '700', color: '#111827' },
-    reviewMeta: { fontSize: 12, color: '#6B7280', marginTop: 2 },
+    reviewName: { fontFamily: Fonts.body.bold, fontSize: 15, color: Palette.ink },
+    reviewMeta: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', marginTop: 2 },
     reviewStats: { alignItems: 'flex-end' },
-    reviewStatValue: { fontSize: 16, fontWeight: '800', color: '#7C3AED' },
-    reviewStatLabel: { fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase' },
+    reviewStatValue: { fontFamily: Fonts.label.extraBold, fontSize: 16, color: Palette.lavenderText },
+    reviewStatLabel: { fontFamily: Fonts.label.regular, fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase' },
     footer: { padding: 16, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#E5E7EB' },
 });

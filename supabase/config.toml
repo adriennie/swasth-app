@@ -1,0 +1,8 @@
+# Supabase CLI configuration for local development.
+# Unlisted settings use the CLI defaults (API on 54321, Studio on 54323,
+# email confirmation off). `supabase db reset` applies migrations/ then seed.sql.
+project_id = "swasthya"
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql", "./catalog.sql"]

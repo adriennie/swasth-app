@@ -15,6 +15,8 @@ import {
     View
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 const { width, height } = Dimensions.get('window');
 
@@ -136,21 +138,21 @@ export default function TrackerScreen() {
     const log = logs[date];
     
     let backgroundColor = 'transparent';
-    let textColor = '#1A1A1A';
+    let textColor = Palette.ink;
     
     if (log) {
       if (log.flow === 'heavy' || log.flow === 'flooding') {
-        backgroundColor = '#FF6B9D';
+        backgroundColor = Palette.lavenderText;
         textColor = '#fff';
       } else if (log.flow === 'medium') {
         backgroundColor = '#FFB3D1';
-        textColor = '#1A1A1A';
+        textColor = Palette.ink;
       } else if (log.flow === 'light') {
         backgroundColor = '#FFE6F0';
-        textColor = '#1A1A1A';
+        textColor = Palette.ink;
       } else if (log.flow === 'spotting') {
-        backgroundColor = '#FFF0F5';
-        textColor = '#1A1A1A';
+        backgroundColor = Palette.blushSoft;
+        textColor = Palette.ink;
       }
     }
 
@@ -187,7 +189,7 @@ export default function TrackerScreen() {
             {/* Flow Intensity */}
             <View style={styles.loggingSection}>
               <Text style={styles.sectionTitle}>
-                <Ionicons name="water" size={16} color="#FF6B9D" /> Flow Intensity
+                <Ionicons name="water" size={16} color={Palette.lavenderText} /> Flow Intensity
               </Text>
               <View style={styles.optionsContainer}>
                 {['spotting', 'light', 'medium', 'heavy', 'flooding'].map((flow) => (
@@ -245,7 +247,7 @@ export default function TrackerScreen() {
             {/* Mood */}
             <View style={styles.loggingSection}>
               <Text style={styles.sectionTitle}>
-                <Ionicons name="heart" size={16} color="#A78BFA" /> Mood
+                <Ionicons name="heart" size={16} color={Palette.lavender} /> Mood
               </Text>
               <View style={styles.optionsContainer}>
                 {MOODS.map((mood) => (
@@ -349,7 +351,7 @@ export default function TrackerScreen() {
             {/* Lifestyle Factors */}
             <View style={styles.loggingSection}>
               <Text style={styles.sectionTitle}>
-                <Ionicons name="fitness" size={16} color="#8B5CF6" /> Lifestyle Factors
+                <Ionicons name="fitness" size={16} color={Palette.lavender} /> Lifestyle Factors
               </Text>
               <View style={styles.optionsContainer}>
                 {LIFESTYLE.map((factor) => (
@@ -381,7 +383,7 @@ export default function TrackerScreen() {
             {/* Notes */}
             <View style={styles.loggingSection}>
               <Text style={styles.sectionTitle}>
-                <Ionicons name="create" size={16} color="#06B6D4" /> Notes
+                <Ionicons name="create" size={16} color={Palette.lavender} /> Notes
               </Text>
               <TextInput
                 style={styles.notesInput}
@@ -400,7 +402,7 @@ export default function TrackerScreen() {
             onPress={handleSaveLog}
           >
             <LinearGradient
-              colors={['#FF6B9D', '#FF8E53']}
+              colors={[Palette.lavenderText, Palette.lavender]}
               style={styles.saveButtonGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
@@ -430,7 +432,7 @@ export default function TrackerScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={['#FF6B9D', '#FF8E53']}
+        colors={[Palette.lavenderText, Palette.lavender]}
         style={styles.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -448,7 +450,7 @@ export default function TrackerScreen() {
           <Text style={styles.insightsTitle}>Your Cycle Insights</Text>
           <View style={styles.insightsGrid}>
             <View style={styles.insightCard}>
-              <Ionicons name="information-circle" size={24} color="#FF6B9D" />
+              <Ionicons name="information-circle" size={24} color={Palette.lavenderText} />
               <Text style={styles.insightValue}>{insights.avgCycleLength}</Text>
               <Text style={styles.insightLabel}>Avg Cycle Length</Text>
             </View>
@@ -458,7 +460,7 @@ export default function TrackerScreen() {
               <Text style={styles.insightLabel}>Tracked Periods</Text>
             </View>
             <View style={styles.insightCard}>
-              <Ionicons name="time" size={24} color="#A78BFA" />
+              <Ionicons name="time" size={24} color={Palette.lavender} />
               <Text style={styles.insightValue}>
                 {new Date(insights.nextPredictedPeriod).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </Text>
@@ -475,17 +477,17 @@ export default function TrackerScreen() {
             theme={{
               backgroundColor: '#ffffff',
               calendarBackground: '#ffffff',
-              textSectionTitleColor: '#1A1A1A',
-              selectedDayBackgroundColor: '#FF6B9D',
+              textSectionTitleColor: Palette.ink,
+              selectedDayBackgroundColor: Palette.lavenderText,
               selectedDayTextColor: '#ffffff',
-              todayTextColor: '#FF6B9D',
-              dayTextColor: '#1A1A1A',
+              todayTextColor: Palette.lavenderText,
+              dayTextColor: Palette.ink,
               textDisabledColor: '#d9e1e8',
-              dotColor: '#FF6B9D',
+              dotColor: Palette.lavenderText,
               selectedDotColor: '#ffffff',
-              arrowColor: '#FF6B9D',
-              monthTextColor: '#1A1A1A',
-              indicatorColor: '#FF6B9D',
+              arrowColor: Palette.lavenderText,
+              monthTextColor: Palette.ink,
+              indicatorColor: Palette.lavenderText,
               textDayFontWeight: '300',
               textMonthFontWeight: 'bold',
               textDayHeaderFontWeight: '300',
@@ -502,7 +504,7 @@ export default function TrackerScreen() {
           <Text style={styles.predictionsTitle}>Predictions</Text>
           <View style={styles.predictionRow}>
             <View style={styles.predictionItem}>
-              <View style={[styles.predictionDot, { backgroundColor: '#FF6B9D' }]} />
+              <View style={[styles.predictionDot, { backgroundColor: Palette.lavenderText }]} />
               <Text style={styles.predictionText}>
                 Next Period: {new Date(predictions.nextPeriod).toLocaleDateString()}
               </Text>
@@ -527,7 +529,7 @@ export default function TrackerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: Palette.canvas,
   },
   header: {
     paddingTop: 20,
@@ -538,13 +540,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 28,
-    fontWeight: '700',
     color: '#fff',
     marginTop: 8,
     marginBottom: 4,
   },
   headerSubtitle: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
@@ -558,6 +561,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 18,
     color: '#666',
   },
@@ -573,9 +577,9 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   insightsTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 18,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    color: Palette.ink,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -588,13 +592,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   insightValue: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 24,
-    fontWeight: '700',
-    color: '#FF6B9D',
+    color: Palette.lavenderText,
     marginTop: 8,
     marginBottom: 4,
   },
   insightLabel: {
+    fontFamily: Fonts.body.regular,
     fontSize: 12,
     color: '#666',
     textAlign: 'center',
@@ -622,8 +627,8 @@ const styles = StyleSheet.create({
     margin: 2,
   },
   dayText: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 14,
-    fontWeight: '600',
   },
   predictionsContainer: {
     margin: 16,
@@ -637,9 +642,9 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   predictionsTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 18,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    color: Palette.ink,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -657,6 +662,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   predictionText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 14,
     color: '#666',
   },
@@ -680,9 +686,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E9ECEF',
   },
   modalTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 20,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    color: Palette.ink,
   },
   closeButton: {
     padding: 4,
@@ -694,9 +700,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
+    fontFamily: Fonts.heading.semiBold,
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1A1A1A',
+    color: Palette.ink,
     marginBottom: 12,
   },
   optionsContainer: {
@@ -713,19 +719,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   optionButtonSelected: {
-    backgroundColor: '#FF6B9D',
-    borderColor: '#FF6B9D',
+    backgroundColor: Palette.lavenderText,
+    borderColor: Palette.lavenderText,
   },
   optionButtonText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 14,
     color: '#666',
   },
   optionButtonTextSelected: {
+    fontFamily: Fonts.body.semiBold,
     color: '#fff',
-    fontWeight: '600',
   },
   notesInput: {
-    backgroundColor: '#F8F9FA',
+    fontFamily: Fonts.body.regular,
+    backgroundColor: Palette.canvas,
     borderRadius: 12,
     padding: 16,
     fontSize: 14,
@@ -744,8 +752,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   saveButtonText: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 16,
-    fontWeight: '600',
     color: '#fff',
   },
 });

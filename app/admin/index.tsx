@@ -1,22 +1,30 @@
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Feather } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Dimensions,
+  Pressable,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-
-const { width } = Dimensions.get('window');
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
+import {
+  ActionTile,
+  Badge,
+  Card,
+  FadeIn,
+  HeroHeader,
+  HeroIconButton,
+  SectionHeader,
+  StatTile,
+  type Tone,
+} from '@/components/ui/kit';
 
 interface DashboardStats {
   totalRevenue: number;
@@ -124,570 +132,191 @@ export default function AdminDashboard() {
     fetchDashboardStats();
   }, []);
 
-  const getStatusColor = (status: string) => {
+  const statusTone = (status: string): Tone => {
     switch (status?.toLowerCase()) {
-      case 'pending': return '#F59E0B';
-      case 'completed': return '#10B981';
-      case 'processing': return '#3B82F6';
-      case 'shipped': return '#8B5CF6';
-      case 'cancelled': return '#EF4444';
-      default: return '#6B7280';
+      case 'pending': return 'amber';
+      case 'completed':
+      case 'delivered': return 'teal';
+      case 'processing':
+      case 'shipped': return 'lavender';
+      case 'cancelled':
+      case 'rejected': return 'rose';
+      default: return 'slate';
     }
   };
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#4F46E5" />
-          <Text style={styles.loadingText}>Loading Dashboard...</Text>
-        </View>
-      </SafeAreaView>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Palette.lavenderText} />
+        <Text style={styles.loadingText}>Loading network overview…</Text>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Premium Header */}
-      <LinearGradient
-        colors={['#4F46E5', '#6366F1', '#818CF8']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}>
-        <View>
-          <Text style={styles.headerGreeting}>Welcome back,</Text>
-          <Text style={styles.headerTitle}>Admin Dashboard</Text>
-        </View>
-        <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-          <Feather name="log-out" size={20} color="#fff" />
-        </TouchableOpacity>
-      </LinearGradient>
+    <View style={styles.container}>
+      <HeroHeader
+        eyebrow="Admin console"
+        title="Network overview"
+        subtitle={
+          stats.pendingApprovals > 0
+            ? `${stats.pendingApprovals} ${stats.pendingApprovals === 1 ? 'business is' : 'businesses are'} waiting for approval`
+            : 'All businesses are reviewed'
+        }
+        right={<HeroIconButton icon="log-out" label="Sign out" onPress={logout} />}
+      />
 
       <ScrollView
-        style={styles.scrollView}
         contentContainerStyle={styles.content}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#4F46E5" />
-        }>
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Palette.lavenderText} />}
+      >
+        <View style={styles.statsRow}>
+          <FadeIn index={0} style={{ flex: 1 }}>
+            <StatTile
+              icon="trending-up"
+              tone="teal"
+              value={`₹${stats.totalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
+              label="Distributor purchases"
+            />
+          </FadeIn>
+          <FadeIn index={1} style={{ flex: 1 }}>
+            <Pressable accessibilityRole="button" onPress={() => router.push('/admin/orders')}>
+              <StatTile icon="shopping-bag" tone="lavender" value={stats.totalOrders} label="Purchase orders" />
+            </Pressable>
+          </FadeIn>
+        </View>
+        <View style={[styles.statsRow, { marginTop: 12 }]}>
+          <FadeIn index={2} style={{ flex: 1 }}>
+            <Pressable accessibilityRole="button" onPress={() => router.push('/admin/pharmacies')}>
+              <StatTile icon="home" tone="teal" value={stats.approvedPharmacies} label="Pharmacies" />
+            </Pressable>
+          </FadeIn>
+          <FadeIn index={3} style={{ flex: 1 }}>
+            <Pressable accessibilityRole="button" onPress={() => router.push('/admin/distributors')}>
+              <StatTile icon="truck" tone="lavender" value={stats.approvedDistributors} label="Distributors" />
+            </Pressable>
+          </FadeIn>
+          <FadeIn index={4} style={{ flex: 1 }}>
+            <StatTile icon="box" tone="slate" value={stats.activeProducts} label="Products" />
+          </FadeIn>
+        </View>
 
-        {/* Stats Grid */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statRow}>
-            <TouchableOpacity style={styles.statCardSimple}>
-              <View style={[styles.statIconCircle, { backgroundColor: '#D1FAE5' }]}>
-                <Feather name="dollar-sign" size={24} color="#10B981" />
+        {stats.pendingApprovals > 0 ? (
+          <FadeIn index={5}>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => router.push(stats.pendingPharmacies > 0 ? '/admin/pharmacies' : '/admin/distributors')}
+              style={({ pressed }) => [styles.approvalBanner, pressed && { opacity: 0.9 }]}
+            >
+              <View style={styles.approvalIcon}>
+                <Feather name="user-check" size={18} color="#B45309" />
               </View>
-              <View style={styles.statContentSimple}>
-                <Text
-                  style={styles.statValueSimple}
-                  numberOfLines={1}
-                  adjustsFontSizeToFit>
-                  ₹{(stats.totalRevenue / 1000).toFixed(1)}K
+              <View style={{ flex: 1 }}>
+                <Text style={styles.approvalTitle}>Approvals waiting</Text>
+                <Text style={styles.approvalText}>
+                  {stats.pendingPharmacies} {stats.pendingPharmacies === 1 ? 'pharmacy' : 'pharmacies'} ·{' '}
+                  {stats.pendingDistributors} {stats.pendingDistributors === 1 ? 'distributor' : 'distributors'}
                 </Text>
-                <Text style={styles.statLabelSimple}>Total Revenue</Text>
               </View>
-            </TouchableOpacity>
+              <Feather name="chevron-right" size={18} color="#B45309" />
+            </Pressable>
+          </FadeIn>
+        ) : null}
 
-            <TouchableOpacity
-              style={styles.statCardSimple}
-              onPress={() => router.push('/admin/orders')}>
-              <View style={[styles.statIconCircle, { backgroundColor: '#DBEAFE' }]}>
-                <Feather name="shopping-bag" size={24} color="#3B82F6" />
-              </View>
-              <View style={styles.statContentSimple}>
-                <Text
-                  style={styles.statValueSimple}
-                  numberOfLines={1}
-                  adjustsFontSizeToFit>
-                  {stats.totalOrders}
-                </Text>
-                <Text style={styles.statLabelSimple}>Total Orders</Text>
-              </View>
-            </TouchableOpacity>
+        <SectionHeader title="Manage" />
+        <FadeIn index={6}>
+          <View style={styles.actionsRow}>
+            <ActionTile icon="box" tone="amber" title="Products" subtitle={`${stats.activeProducts} in catalog`} onPress={() => router.push('/admin/management/products')} />
+            <ActionTile icon="link" tone="lavender" title="Mapping" subtitle="Pharmacy ↔ distributor" onPress={() => router.push('/admin/management/mapping')} />
           </View>
-
-          <View style={styles.statRow}>
-            <TouchableOpacity
-              style={styles.statCardSmall}
-              onPress={() => router.push('/admin/distributors')}>
-              <View style={[styles.statIconSmall, { backgroundColor: '#EDE9FE' }]}>
-                <Feather name="truck" size={20} color="#7C3AED" />
-              </View>
-              <Text style={styles.statValueSmall}>{stats.totalDistributors}</Text>
-              <Text style={styles.statLabelSmall} numberOfLines={1} adjustsFontSizeToFit>Distributors</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.statCardSmall}
-              onPress={() => router.push('/admin/pharmacies')}>
-              <View style={[styles.statIconSmall, { backgroundColor: '#DBEAFE' }]}>
-                <Feather name="home" size={20} color="#3B82F6" />
-              </View>
-              <Text style={styles.statValueSmall}>{stats.totalPharmacies}</Text>
-              <Text style={styles.statLabelSmall} numberOfLines={1} adjustsFontSizeToFit>Pharmacies</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.statCardSmall}>
-              <View style={[styles.statIconSmall, { backgroundColor: '#FEF3C7' }]}>
-                <Feather name="alert-circle" size={20} color="#D97706" />
-              </View>
-              <Text style={styles.statValueSmall}>{stats.pendingApprovals}</Text>
-              <Text style={styles.statLabelSmall} numberOfLines={1} adjustsFontSizeToFit>Pending</Text>
-            </TouchableOpacity>
+          <View style={[styles.actionsRow, { marginTop: 10 }]}>
+            <ActionTile icon="clipboard" tone="teal" title="Orders" subtitle="Purchase orders" onPress={() => router.push('/admin/orders')} />
+            <ActionTile icon="cpu" tone="slate" title="ML checks" subtitle="Forecast and anomaly" onPress={() => router.push('/admin/management/ml-test')} />
           </View>
-        </View>
+        </FadeIn>
 
-        {/* Quick Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.actionsGrid}>
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => router.push('/admin/management/products')}>
-              <LinearGradient
-                colors={['#F59E0B', '#D97706']}
-                style={styles.actionGradient}>
-                <Feather name="box" size={24} color="#fff" />
-                <Text style={styles.actionText}>Products</Text>
-                <Text style={styles.actionSubtext}>{stats.activeProducts} active</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+        <SectionHeader
+          icon="inbox"
+          title="Recent purchase orders"
+          action={{ label: 'See all', onPress: () => router.push('/admin/orders') }}
+        />
 
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => router.push('/admin/distributors')}>
-              <LinearGradient
-                colors={['#8B5CF6', '#7C3AED']}
-                style={styles.actionGradient}>
-                <Feather name="users" size={24} color="#fff" />
-                <Text style={styles.actionText}>Distributors</Text>
-                <Text style={styles.actionSubtext}>{stats.pendingDistributors} pending</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => router.push('/admin/pharmacies')}>
-              <LinearGradient
-                colors={['#10B981', '#059669']}
-                style={styles.actionGradient}>
-                <Feather name="map-pin" size={24} color="#fff" />
-                <Text style={styles.actionText}>Pharmacies</Text>
-                <Text style={styles.actionSubtext}>{stats.pendingPharmacies} pending</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => router.push('/admin/management/mapping')}>
-              <LinearGradient
-                colors={['#EC4899', '#DB2777']}
-                style={styles.actionGradient}>
-                <Feather name="link" size={24} color="#fff" />
-                <Text style={styles.actionText}>Mapping</Text>
-                <Text style={styles.actionSubtext}>Assign distributors</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* ✅ ML TEST BUTTON ADDED */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ML Testing</Text>
-
-          <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 10,
-            padding: 16,
-            backgroundColor: '#7C3AED',
-            borderRadius: 14,
-            marginTop: 8,
-            elevation: 3,
-            shadowColor: '#7C3AED',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-          }}
-          onPress={() => router.push('/admin/management/ml-test')}
-        >
-          <Feather name="cpu" size={20} color="#fff" />
-          <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>
-            Test ML Models
-          </Text>
-          <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12 }}>
-            4 checks
-          </Text>
-        </TouchableOpacity>
-        </View>
-
-        {/* Recent Orders */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Orders</Text>
-            <TouchableOpacity onPress={() => router.push('/admin/orders')}>
-              <Text style={styles.seeAll}>See All</Text>
-            </TouchableOpacity>
-          </View>
-
-          {recentOrders.length === 0 ? (
-            <View style={styles.emptyState}>
-              <Feather name="inbox" size={48} color="#D1D5DB" />
-              <Text style={styles.emptyText}>No recent orders</Text>
-            </View>
-          ) : (
-            recentOrders.map((order) => (
-              <TouchableOpacity
-                key={order.id}
-                style={styles.orderCard}
-                onPress={() => router.push(`/admin/orders`)}>
-                <View style={styles.orderHeader}>
-                  <View>
-                    <Text style={styles.orderNumber}>#{order.id.slice(0, 8).toUpperCase()}</Text>
+        {recentOrders.length === 0 ? (
+          <Card style={styles.emptyState}>
+            <Feather name="inbox" size={28} color="#CBD5E1" />
+            <Text style={styles.emptyText}>No purchase orders yet</Text>
+          </Card>
+        ) : (
+          <View style={{ gap: 10 }}>
+            {recentOrders.map((order, i) => (
+              <FadeIn key={order.id} index={i + 7}>
+                <Pressable
+                  accessibilityRole="button"
+                  style={({ pressed }) => [styles.orderCard, pressed && { opacity: 0.85 }]}
+                  onPress={() => router.push('/admin/orders')}
+                >
+                  <View style={{ flex: 1 }}>
                     <Text style={styles.orderDistributor}>
-                      {order.distributor_profiles?.display_name ||
-                        order.distributor_profiles?.contact_name ||
-                        'Unknown Distributor'}
+                      {order.distributor_profiles?.display_name || order.distributor_profiles?.contact_name || 'Unknown distributor'}
+                    </Text>
+                    <Text style={styles.orderMeta}>
+                      #{order.id.slice(0, 8).toUpperCase()} · {new Date(order.order_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                     </Text>
                   </View>
-                  <View style={[styles.statusBadge, { backgroundColor: getStatusColor(order.status) + '20' }]}>
-                    <Text style={[styles.statusText, { color: getStatusColor(order.status) }]}>
-                      {order.status}
+                  <View style={{ alignItems: 'flex-end', gap: 6 }}>
+                    <Text style={styles.orderAmount}>
+                      ₹{Number(order.total_amount || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </Text>
+                    <Badge label={order.status} tone={statusTone(order.status)} />
                   </View>
-                </View>
-                <View style={styles.orderFooter}>
-                  <Text style={styles.orderDate}>
-                    {new Date(order.order_date).toLocaleDateString()}
-                  </Text>
-                  <Text style={styles.orderAmount}>₹{Number(order.total_amount || 0).toFixed(2)}</Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          )}
-        </View>
-
-        {/* Network Overview */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Network Overview</Text>
-          <View style={styles.performanceCard}>
-            <View style={styles.performanceRow}>
-              <View style={styles.performanceItem}>
-                <View style={[styles.performanceIcon, { backgroundColor: '#DBEAFE' }]}>
-                  <Feather name="truck" size={20} color="#3B82F6" />
-                </View>
-                <View style={styles.performanceContent}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text style={styles.performanceValue}>{stats.approvedDistributors}</Text>
-                    <Text style={{ fontSize: 12, color: '#F59E0B', fontWeight: '600' }}>{stats.pendingDistributors} Pending</Text>
-                  </View>
-                  <Text style={styles.performanceLabel}>Distributors (Approved vs Pending)</Text>
-                </View>
-              </View>
-
-              <View style={styles.performanceItem}>
-                <View style={[styles.performanceIcon, { backgroundColor: '#D1FAE5' }]}>
-                  <Feather name="home" size={20} color="#10B981" />
-                </View>
-                <View style={styles.performanceContent}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text style={styles.performanceValue}>{stats.approvedPharmacies}</Text>
-                    <Text style={{ fontSize: 12, color: '#F59E0B', fontWeight: '600' }}>{stats.pendingPharmacies} Pending</Text>
-                  </View>
-                  <Text style={styles.performanceLabel}>Pharmacies (Approved vs Pending)</Text>
-                </View>
-              </View>
-            </View>
+                </Pressable>
+              </FadeIn>
+            ))}
           </View>
-        </View>
-
+        )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#6B7280',
-    fontWeight: '600',
-  },
-  header: {
-    paddingTop: 60,
-    paddingBottom: 24,
-    paddingHorizontal: 24,
+  container: { flex: 1, backgroundColor: Palette.canvas },
+  loadingContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, backgroundColor: Palette.canvas },
+  loadingText: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#64748B' },
+  content: { padding: 16, paddingBottom: 40 },
+  statsRow: { flexDirection: 'row', gap: 12 },
+  actionsRow: { flexDirection: 'row', gap: 10 },
+  approvalBanner: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  headerGreeting: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#fff',
-  },
-  logoutBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 100,
-  },
-  statsContainer: {
-    marginBottom: 24,
-  },
-  statRow: {
-    flexDirection: 'row',
     gap: 12,
-    marginBottom: 12,
-  },
-  statCardSimple: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  },
-  statIconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  statContentSimple: {
-    flex: 1,
-  },
-  statValueSimple: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#111827',
-  },
-  statLabelSimple: {
-    fontSize: 12,
-    color: '#6B7280',
-    fontWeight: '600',
-    marginTop: 2,
-  },
-  statCardSmall: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-  },
-  statIconSmall: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  statValueSmall: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#111827',
-  },
-  statLabelSmall: {
-    fontSize: 11,
-    color: '#6B7280',
-    marginTop: 2,
-    textAlign: 'center',
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  seeAll: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4F46E5',
-  },
-  actionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  actionCard: {
-    width: (width - 52) / 2,
-    height: 120,
-    borderRadius: 16,
-    overflow: 'hidden',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  },
-  actionGradient: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 6,
-  },
-  actionText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#fff',
-    marginTop: 4,
-  },
-  actionSubtext: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: '600',
-  },
-  orderCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-  },
-  orderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  orderNumber: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  orderDistributor: {
-    fontSize: 13,
-    color: '#6B7280',
-    marginTop: 2,
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: '800',
-    textTransform: 'uppercase',
-  },
-  orderFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#F3F4F6',
-  },
-  orderDate: {
-    fontSize: 12,
-    color: '#9CA3AF',
-  },
-  orderAmount: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#4F46E5',
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
-  },
-  emptyText: {
     marginTop: 12,
-    fontSize: 14,
-    color: '#9CA3AF',
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: '#FFFBEB',
+    borderWidth: 1,
+    borderColor: '#FDE68A',
   },
-  performanceCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-  },
-  performanceRow: {
-    gap: 16,
-  },
-  performanceItem: {
+  approvalIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: '#FEF3C7', alignItems: 'center', justifyContent: 'center' },
+  approvalTitle: { fontFamily: Fonts.heading.bold, fontSize: 14, color: '#78350F' },
+  approvalText: { fontFamily: Fonts.label.medium, fontSize: 12, color: '#92400E', marginTop: 2 },
+  orderCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12,
     gap: 12,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 14,
+    shadowColor: Palette.ink,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
-  performanceIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  performanceContent: {
-    flex: 1,
-  },
-  performanceValue: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#111827',
-  },
-  performanceLabel: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginTop: 2,
-  },
+  orderDistributor: { fontFamily: Fonts.heading.bold, fontSize: 15, color: Palette.ink },
+  orderMeta: { fontFamily: Fonts.label.regular, fontSize: 12, color: '#64748B', marginTop: 2 },
+  orderAmount: { fontFamily: Fonts.label.bold, fontSize: 15, color: Palette.ink },
+  emptyState: { alignItems: 'center', paddingVertical: 24, gap: 10 },
+  emptyText: { fontFamily: Fonts.body.regular, color: '#64748B' },
 });

@@ -1,0 +1,5 @@
+Dockerfile.lambda
+lambda_function.py(old)
+PROJECT_UNDERSTANDING.md
+__pycache__
+*.pyc

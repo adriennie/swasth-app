@@ -30,8 +30,12 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
+# local env files (hold secrets: never commit)
+.env
 .env*.local
+
+# Hyperframes check/snapshot artifacts
+brag-output/composition/.hyperframes/
 
 # typescript
 *.tsbuildinfo

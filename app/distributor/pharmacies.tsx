@@ -1,4 +1,4 @@
-import { Colors } from '@/constants/Colors';
+import { Colors, Palette } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Feather } from '@expo/vector-icons';
@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Fonts } from '@/constants/Fonts';
 
 interface Pharmacy {
   id: string;
@@ -225,7 +226,7 @@ export default function DistributorPharmacies() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   header: {
     paddingTop: 50,
     paddingBottom: 16,
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  headerTitle: { fontSize: 20, fontWeight: '800', color: '#111827' },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -259,7 +260,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 5,
   },
-  searchInput: { flex: 1, height: 50, marginLeft: 10, fontSize: 16, color: '#111827' },
+  searchInput: { fontFamily: Fonts.body.regular, flex: 1, height: 50, marginLeft: 10, fontSize: 16, color: Palette.ink },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   row: {
     flexDirection: 'row',
@@ -277,25 +278,25 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: Palette.tealSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 2 },
-  subtitle: { fontSize: 13, color: '#6B7280' },
+  title: { fontFamily: Fonts.heading.bold, fontSize: 16, color: Palette.ink, marginBottom: 2 },
+  subtitle: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280' },
   empty: { alignItems: 'center', paddingTop: 60 },
-  emptyText: { color: '#9CA3AF', marginTop: 16, fontSize: 16 },
+  emptyText: { fontFamily: Fonts.body.regular, color: '#9CA3AF', marginTop: 16, fontSize: 16 },
 
   // Modal
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalCard: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
   modalHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 },
-  modalTitle: { fontSize: 20, fontWeight: '800', color: '#111827' },
+  modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
   detailContainer: { gap: 16, marginBottom: 24 },
   detailRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', borderBottomWidth: 1, borderBottomColor: '#F3F4F6', paddingBottom: 12 },
-  detailLabel: { fontSize: 14, color: '#6B7280', width: 120 },
-  detailValue: { fontSize: 15, fontWeight: '600', color: '#111827', flex: 1, textAlign: 'right' },
+  detailLabel: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', width: 120 },
+  detailValue: { fontFamily: Fonts.label.semiBold, fontSize: 15, color: Palette.ink, flex: 1, textAlign: 'right' },
   modalActions: { flexDirection: 'row', gap: 12 },
   actionBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: 12 },
-  actionText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  actionText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 15 },
 });

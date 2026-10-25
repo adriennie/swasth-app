@@ -1,275 +1,299 @@
+<div align="center">
+
+<img src="assets/images/splash-icon.png" alt="Swasthya logo" width="96" />
+
 # Swasthya
 
-Swasthya is a multi-role healthcare and pharmaceutical operations app built with Expo Router, Supabase, and TypeScript. It combines menstrual-health education, symptom tracking, AI-assisted product recommendations, pharmacy inventory management, distributor ordering, and admin oversight in one mobile-first codebase.
+**Keep every shelf stocked with the medicines your community needs.**
 
-The project is organized around a deterministic health assistant and a direct Supabase data model rather than a separate custom backend. That keeps the system auditable, fast to iterate on, and easier to reason about in a regulated domain.
+A pharmacy supply network that connects pharmacies, distributors and admins so medicine stock is forecast, reordered and delivered before it runs out.
 
-## What’s In The App
+![Expo SDK 58](https://img.shields.io/badge/Expo_SDK-58-000020?logo=expo&logoColor=white)
+![React Native 0.88](https://img.shields.io/badge/React_Native-0.88-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres_+_RLS-3FCF8E?logo=supabase&logoColor=white)
+![FastAPI](https://img.shields.io/badge/ML_API-FastAPI-009688?logo=fastapi&logoColor=white)
+![Platforms](https://img.shields.io/badge/platforms-Android_·_iOS_·_Web-6B55A8)
 
-The codebase currently supports these roles and flows:
+[**▶ Watch the demo**](https://youtu.be/3o5NiLXtHKs) · [Features](#features) · [Architecture](#architecture) · [Getting started](#getting-started) · [Docs](#documentation)
 
-- Customer onboarding, login, and health quiz flow.
-- Consumer dashboards for learning content, period tracking, FlowBot Q&A, and profile management.
-- Pharmacy workflows for catalog browsing, carting, order placement, inventory management, and dashboard insights.
-- Distributor workflows for stock management, pharmacy relationships, carting, and distributor-to-admin orders.
-- Admin workflows for user oversight, product management, order review, distributor/pharmacy management, and ML-backed anomaly checking.
+</div>
+
+---
+
+## Demo
+
+<div align="center">
+
+<a href="https://youtu.be/3o5NiLXtHKs" title="Watch the Swasthya demo on YouTube">
+  <img src="docs/assets/demo-thumbnail.jpg" alt="Swasthya one-minute product demo: click to watch on YouTube" width="100%" />
+</a>
+
+**[Watch the one-minute narrated demo on YouTube →](https://youtu.be/3o5NiLXtHKs)**
+
+</div>
+
+---
+
+## The problem
+
+A patient walks into a neighbourhood pharmacy for a medicine they need today, and the shelf is empty. It keeps happening for three reasons:
+
+| | Problem | How Swasthya addresses it |
+|---|---|---|
+| 📉 | **Stockouts.** Reorders are guessed, so fast-moving medicines run out. | A 7-day demand forecast flags what will run out before the next delivery and suggests how much to reorder. |
+| 📅 | **Expiry losses.** Near-expiry batches sit unnoticed until they are wasted. | Batch and expiry tracking on pharmacy and distributor stock. |
+| ☎️ | **Manual reordering.** Orders to distributors still go out by phone call. | One-tap ordering from a 250-product catalog, routed straight to the pharmacy's mapped distributor. |
+
+## Features
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/assets/demo-pharmacy.jpg" alt="Pharmacy dashboard with AI reorder suggestions" />
+      <h3>💊 Pharmacy</h3>
+      <ul>
+        <li>"Today at a glance" dashboard with low-stock and out-of-stock counts</li>
+        <li>AI reorder suggestions from a 7-day demand forecast, ranked by urgency</li>
+        <li>Inventory with reorder levels, batches and expiry dates</li>
+        <li>Order tracking with delivery-code verification</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/assets/demo-ordering.jpg" alt="Catalog with search, category filters and cart" />
+      <h3>🛒 Ordering</h3>
+      <ul>
+        <li>Catalog of 250 general medicines and essentials across 17 categories</li>
+        <li>Search by name, salt, SKU or manufacturer; filter by category</li>
+        <li>Price, MRP and margin on every row; live cart total</li>
+        <li>Orders routed to the pharmacy's mapped distributor</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/assets/demo-distributor.jpg" alt="Distributor order timeline with delivery code" />
+      <h3>🚚 Distributor</h3>
+      <ul>
+        <li>Fulfilment hub with pending pharmacy orders</li>
+        <li>Order lifecycle: placed → confirmed → shipped → delivered</li>
+        <li>One-time delivery code verified at the pharmacy</li>
+        <li>Stock management and purchase orders to admin</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/assets/demo-admin.jpg" alt="Admin network overview with anomaly alert" />
+      <h3>🛡️ Admin</h3>
+      <ul>
+        <li>Network overview: purchases, orders, pharmacies, distributors, products</li>
+        <li>Approval queue for new pharmacies and distributors</li>
+        <li>Pharmacy ↔ distributor mapping and catalog management</li>
+        <li>Isolation Forest anomaly checks that flag unusually large orders for review</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+The app also includes customer-facing screens (cycle tracker, health quiz, learning content and the rule-based FlowBot assistant). They share the same design system but sit outside the B2B pilot scope.
 
 ## Architecture
 
-### Three-Layer Architecture
-
-```mermaid
-flowchart TB
-  A[Client Layer\nExpo Router UI\nRole-based screens\nAsyncStorage session cache] --> B[Data Layer\nSupabase PostgreSQL\nAuth, tables, RLS, storage]
-  A --> C[Reasoning Layer\nFlowBot rules\nPersonalization ranking\nCycle forecasting\nML anomaly checks]
-  C --> B
-  B --> A
-```
-
-The app keeps presentation, persistence, and decision logic separated:
-
-- Client Layer: everything under `app/`, plus shared components and auth context.
-- Data Layer: Supabase tables, auth, and file storage.
-- Reasoning Layer: heuristics and ML integration in `services/swasthyaML.ts`.
-
-### Data Flow Architecture
-
 ```mermaid
 flowchart LR
-  U[User] --> UI[Expo screen]
-  UI --> AC[AuthContext / ProtectedRoute]
-  AC --> SB[Supabase query]
-  SB --> DB[(PostgreSQL tables)]
-  UI --> RS[Rule engine / heuristics]
-  RS --> UI
-  UI --> ML[ML API\nforecast + anomaly]
-  ML --> UI
-  UI --> LS[AsyncStorage local state]
+    App["📱 Expo app<br/>Android · iOS · Web"] -->|supabase-js + JWT| DB[("Supabase<br/>Postgres + RLS")]
+    App -->|HTTPS| ML["🧠 ML API<br/>FastAPI · Docker"]
+    ML --> F["LightGBM<br/>demand forecast"]
+    ML --> A["Isolation Forest<br/>anomaly detection"]
+    DB --> Auth["Supabase Auth"]
+    DB --> Storage["Storage<br/>product images"]
 ```
 
-Typical request flow:
+- **Client.** Expo Router screens grouped by role under `app/`, with a shared UI kit in `components/ui/kit.tsx`.
+- **Data.** Supabase Postgres. Row-level security limits every table to its owner, mapped partners and admins. A business's profile id is its auth user id, so ownership checks are consistent across tables.
+- **ML.** `swasthya-api/` serves the forecasting and anomaly models over HTTP. The same Docker image runs locally or on a Hugging Face Space (`Dockerfile.lambda` keeps the AWS Lambda build).
 
-1. The user opens a role-specific screen under `app/`.
-2. `AuthContext` restores or clears the local session state.
-3. Screens query Supabase directly for the needed tables.
-4. Business logic runs locally for recommendations, FlowBot responses, MOQ checks, and cycle estimation.
-5. Pharmacy/admin screens call the external ML API through `services/swasthyaML.ts` for reorder forecasting and anomaly detection.
-6. Results are rendered immediately and some session data is cached in AsyncStorage for a smoother reload experience.
-
-### Entity-Relationship Diagram
+<details>
+<summary><b>Data model</b></summary>
 
 ```mermaid
 erDiagram
-  auth_users ||--o{ orders : places
-  auth_users ||--o{ distributor_admin_orders : submits
-  auth_users ||--o{ pharmacy_profiles : owns
-  auth_users ||--o{ distributor_profiles : owns
-
-  products ||--o{ order_items : referenced_by
-  products ||--o{ distributor_admin_order_items : referenced_by
-  products ||--o{ pharmacy_inventory : stocked_in
-  products ||--o{ distributor_stock : stocked_in
-  products ||--o{ distributor_cart_items : added_to
-
-  orders ||--o{ order_items : contains
-  distributor_admin_orders ||--o{ distributor_admin_order_items : contains
-
-  pharmacy_profiles ||--o{ pharmacy_inventory : manages
-  pharmacy_profiles ||--o{ orders : creates
-  pharmacy_profiles ||--o{ pharmacy_distributors : mapped_to
-
-  distributor_profiles ||--o{ distributor_stock : manages
-  distributor_profiles ||--o{ distributor_cart_items : builds
-  distributor_profiles ||--o{ distributor_admin_orders : creates
-  distributor_profiles ||--o{ pharmacy_distributors : mapped_to
-
-  pharmacy_distributors }o--|| pharmacy_profiles : links
-  pharmacy_distributors }o--|| distributor_profiles : links
+    pharmacy_profiles ||--o{ pharmacy_inventory : stocks
+    pharmacy_profiles ||--o{ orders : places
+    pharmacy_profiles ||--o{ pharmacy_distributors : "mapped to"
+    distributor_profiles ||--o{ pharmacy_distributors : "mapped to"
+    distributor_profiles ||--o{ orders : fulfils
+    distributor_profiles ||--o{ distributor_stock : stocks
+    distributor_profiles ||--o{ distributor_cart_items : builds
+    distributor_profiles ||--o{ distributor_admin_orders : "buys from admin"
+    orders ||--o{ order_items : contains
+    distributor_admin_orders ||--o{ distributor_admin_order_items : contains
+    products ||--o{ order_items : ""
+    products ||--o{ pharmacy_inventory : ""
+    products ||--o{ distributor_stock : ""
 ```
 
-Compact table view of the main entities:
+| Table | Purpose |
+|---|---|
+| `admins` | Users with admin rights, checked by `is_admin()` |
+| `pharmacy_profiles`, `distributor_profiles` | Business accounts and approval status |
+| `pharmacy_distributors` | Which distributors supply which pharmacies |
+| `products` | Master catalog: price, distributor price, MRP, MOQ, HSN code |
+| `pharmacy_inventory`, `distributor_stock` | Stock with batch and expiry |
+| `orders`, `order_items` | Pharmacy → distributor orders with delivery code |
+| `distributor_admin_orders`, `distributor_admin_order_items` | Distributor → admin purchase orders |
 
-| Entity                          | Purpose                                                                  |
-| ------------------------------- | ------------------------------------------------------------------------ |
-| `products`                      | Master catalog with name, SKU, image, distributor price, price, and MOQ. |
-| `orders`                        | Pharmacy-to-admin order header.                                          |
-| `order_items`                   | Line items for pharmacy orders.                                          |
-| `distributor_admin_orders`      | Distributor-to-admin order header.                                       |
-| `distributor_admin_order_items` | Line items for distributor-admin orders.                                 |
-| `pharmacy_profiles`             | Pharmacy identity, status, and contact data.                             |
-| `distributor_profiles`          | Distributor identity, status, and contact data.                          |
-| `pharmacy_inventory`            | Pharmacy inventory, reorder level, and stock quantity.                   |
-| `distributor_stock`             | Distributor stock and local warehouse inventory.                         |
-| `pharmacy_distributors`         | Many-to-many mapping between pharmacies and distributors.                |
-| `distributor_cart_items`        | Saved distributor cart state.                                            |
-| `hercircle_assets`              | Uploaded assets used by product management.                              |
+Full schema and policies: [`supabase/migrations/20261025000000_init_schema.sql`](supabase/migrations/20261025000000_init_schema.sql).
 
-## Key Modules
+</details>
 
-### Client Shell
+## Tech stack
 
-- `app/_layout.tsx` mounts `AuthProvider`, a loading gate, a root error boundary, and the Expo Router stack.
-- `context/AuthContext.tsx` stores the current user payload in AsyncStorage.
-- `context/ProtectedRoute.tsx` keeps role access aligned with the current session.
+| Layer | Technology |
+|---|---|
+| App | Expo SDK 58, React Native 0.88, React 19, Expo Router, TypeScript |
+| UI | Custom design system (Plus Jakarta Sans, Inter, DM Sans), Reanimated, Feather icons |
+| Backend | Supabase: Postgres, Auth, Storage, row-level security |
+| ML | FastAPI, LightGBM (demand forecasting), scikit-learn Isolation Forest (anomaly detection) |
+| Infrastructure | Docker, Hugging Face Spaces (or AWS Lambda) |
 
-### Role Areas
-
-- `app/(tabs)/` contains the consumer-facing home, tracker, FlowBot, learn, and profile screens.
-- `app/pharmacy/` contains inventory, cart, catalog, dashboard, order history, and settings.
-- `app/distributor/` contains catalog, cart, stock, orders, pharmacy mapping, and settings.
-- `app/admin/` contains overview, user management, product management, order review, and support pages.
-
-### Reasoning And ML
-
-- `services/swasthyaML.ts` maps local UUIDs into the ML system’s expected IDs and calls the forecast and anomaly endpoints.
-- The app uses deterministic heuristics for health content, cycle prediction, and urgency handling rather than an LLM.
-
-## Tech Stack
-
-| Layer                 | Stack                                                 |
-| --------------------- | ----------------------------------------------------- |
-| Client                | Expo, Expo Router, React Native, React 19             |
-| Language              | TypeScript                                            |
-| State                 | React hooks, AsyncStorage                             |
-| Data                  | Supabase, PostgreSQL                                  |
-| Integrations          | Supabase Auth, Expo file/image tools, external ML API |
-| Charts / UI utilities | React Native Calendars, Expo icons, Lucide            |
-
-## Setup
+## Getting started
 
 ### Prerequisites
 
-- Node.js 18 or newer.
-- A Supabase project.
-- Expo CLI or `npx expo`.
+- Node.js 20+
+- A Supabase project
+- Docker Desktop (for the ML API)
+- The [Expo Go](https://expo.dev/go) app, or an iOS/Android simulator
 
-### Install
+### 1. Install
 
 ```bash
+git clone https://github.com/adriennie/swasth-app.git
+cd swasth-app
 npm install
 ```
 
-### Environment
+### 2. Configure environment
 
-Create a local environment file with your Supabase credentials:
+Create `.env` for server-side keys and `.env.local` for values the app bundles. Both are local only; never commit secrets.
 
 ```env
-EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# .env
+EXPO_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+SUPABASE_SECRET_KEY=sb_secret_...          # used only by the seed scripts
+
+# .env.local
+EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+EXPO_PUBLIC_ML_API_URL=http://<your-lan-ip>:7860
+SUPABASE_DB_HOST=aws-0-<region>.pooler.supabase.com
+SUPABASE_DB_PASSWORD=<database password>
 ```
 
-### Run
+### 3. Set up the database
+
+Run [`supabase/migrations/20261025000000_init_schema.sql`](supabase/migrations/20261025000000_init_schema.sql) in the Supabase SQL editor, then load the demo data:
+
+```bash
+npm run seed:users     # demo accounts via the Auth Admin API
+npm run seed:data      # 30 products, stock and 90 days of order history
+npm run seed:catalog   # 220 more products (safe to re-run)
+```
+
+### 4. Start the ML API
+
+```bash
+npm run ml:docker
+```
+
+### 5. Run the app
 
 ```bash
 npm start
 ```
 
-Useful commands:
+Scan the QR code with Expo Go, or press `w` for the web version. Demo accounts for each role are listed in [`docs/supabase_setup.md`](docs/supabase_setup.md).
 
-- `npm run android`
-- `npm run ios`
-- `npm run web`
-- `npm run lint`
+### Scripts
 
-## Database And Schema Notes
+| Command | What it does |
+|---|---|
+| `npm start` | Start Expo (scan the QR code with Expo Go) |
+| `npm run web` / `android` / `ios` | Open a specific platform |
+| `npm run lint` | Lint the project |
+| `npm run seed:users` | Create demo login accounts |
+| `npm run seed:data` | Load demo data into an empty project |
+| `npm run seed:catalog` | Load the extended product catalog |
+| `npm run ml:docker` | Build and run the ML API container on port 7860 |
+| `npm run ml:deploy` | Deploy the ML API to a Hugging Face Space |
 
-The repository includes SQL scripts for the database shape and maintenance steps:
-
-- `CREATE_ORDERS_TABLES.sql` creates distributor-admin order tables.
-- `ADD_OTP_COLUMN.sql` adds delivery OTP support to order tables.
-- `UPDATE_DB.sql` adds product image, SKU, MOQ, and distributor price columns.
-- `SET_MOQ_VALUES.sql` provides example MOQ update queries.
-
-The app queries Supabase directly from the client, so row-level security and table policies matter. That design keeps the MVP simple, but it also means schema and permissions need to stay in sync with the UI flows.
-
-## Repository Structure
+## Project structure
 
 ```text
-app/         Expo Router screens grouped by role
-components/  Shared UI building blocks
-context/     Auth and local data helpers
-lib/         Supabase client setup
-services/    ML orchestration and forecasting helpers
-docs/        System design, testing, and implementation notes
-ML/          Jupyter notebooks and sample data
+swasth-app/
+├── app/                 Expo Router screens, grouped by role
+│   ├── (auth)/          Welcome, sign-in and registration
+│   ├── pharmacy/        Dashboard, catalog, cart, inventory, orders
+│   ├── distributor/     Fulfilment hub, stock, catalogue, orders
+│   ├── admin/           Network overview, approvals, mapping, products
+│   └── (tabs)/          Customer screens: tracker, FlowBot, learn
+├── components/ui/       Shared UI kit (hero header, stat tiles, badges)
+├── constants/           Design tokens, fonts, navigation helpers
+├── lib/                 Supabase client
+├── services/            ML API client and ID mapping
+├── supabase/            Schema migration, seed data, CLI config
+├── swasthya-api/        FastAPI ML service, Dockerfiles, trained models
+├── ML/                  Training notebooks
+├── scripts/             Seed, catalog and deployment scripts
+└── docs/                Design, setup and architecture documentation
 ```
 
 ## Documentation
 
-The following docs are the best companion files for the codebase:
+| Topic | Document |
+|---|---|
+| Database setup and demo accounts | [`docs/supabase_setup.md`](docs/supabase_setup.md) |
+| ML API (Docker and Hugging Face) | [`docs/ml_api.md`](docs/ml_api.md) |
+| UI design system | [`docs/ui_design_system.md`](docs/ui_design_system.md) |
+| AI feature roadmap | [`docs/ai_features.md`](docs/ai_features.md) |
+| System design | [`docs/system_design.md`](docs/system_design.md) |
+| Requirements | [`docs/system_requirements.md`](docs/system_requirements.md) |
+| Implementation notes | [`docs/implementation.md`](docs/implementation.md) |
+| Testing | [`docs/testing.md`](docs/testing.md) |
+| Challenges | [`docs/challenges.md`](docs/challenges.md) |
 
-- `docs/system_design.md`
-- `docs/system_requirements.md`
-- `docs/implementation.md`
-- `docs/testing.md`
-- `docs/challenges.md`
+## Roadmap
 
-## Known Constraints
+- [x] Role-based workflows for pharmacies, distributors and admins
+- [x] Supabase schema with row-level security and demo data
+- [x] Demand forecasting and anomaly detection API (Docker / Hugging Face ready)
+- [ ] Business copilot over inventory and orders (Hugging Face models)
+- [ ] Invoice and stock-document extraction with human review
+- [ ] Simulated payment gateway with server-side order lifecycle
+- [ ] Forecast evaluation with WAPE and an MLflow model registry
 
-- The app relies on direct Supabase queries instead of a custom API server.
-- The health assistant is rule-based, not generative.
-- The forecasting service is external and expects the project-specific ID mapping handled in `services/swasthyaML.ts`.
-- Session state is intentionally lightweight and stored locally with AsyncStorage.
+See [`docs/ai_features.md`](docs/ai_features.md) for the full AI roadmap.
 
-## Why This Design Works
+## Known limitations
 
-This project is strongest when viewed as a layered system: the UI stays thin, the data model stays explicit, and the reasoning layer stays deterministic. That gives the app enough structure to support multiple roles without turning the codebase into a generic backend-heavy platform.
+- Demo data is synthetic; forecasts and anomaly results on it do not reflect real-world accuracy.
+- The forecasting model's reported MAPE is unreliable on zero-sales days; WAPE-based evaluation is planned.
+- The app queries Supabase directly, so access control relies on row-level security rather than an API server.
+- Customer screens store their session locally and are outside the B2B pilot.
+
+## Author
+
+**Adrika Pradhan** — Final-year B.Tech (AI & ML)
+
+- Google Cloud GenAI Internship: production ML systems, prompt engineering
+- Astronomical object detection research: IoU improved from 0.51 to 0.69 with ensemble methods
+
+📧 [adrika2607@gmail.com](mailto:adrika2607@gmail.com) · 💻 [github.com/adriennie](https://github.com/adriennie)
 
 ## License
 
-No explicit license is included in this repository.
+No license has been chosen yet, so all rights are reserved by default. Add a `LICENSE` file to allow reuse.
 
-**Adrika Pradhan**  
-Final-year B.Tech (AI & ML).
+## Acknowledgments
 
-**Relevant Experience**:
-
-- **Google Cloud GenAI Internship** — Production ML systems, prompt engineering.
-- **Astronomical Object Detection Research** — IoU improvement from 0.51 → 0.69 via ensemble methods.
-- **AI Solutions Architecture** — Career goal; target role post-MSc in DACH region (EU Blue Card pathway).
-
-**Contact**: <adrika2607@gmail.com>
-
----
-
-## 📄 License
-
-MIT License — See LICENSE file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Framework**: Expo, React Native, Supabase.
-- **Inspiration**: Women's health equity, accessible supply-chain technology, applied AI in healthcare.
-
----
-
-## 📊 Project Stats
-
-- **Codebase**: ~5,000+ lines (React Native + TypeScript).
-- **Supported Roles**: 4 (Customer, Pharmacy, Distributor, Admin).
-- **Data Entities**: 10+ (Products, Orders, Inventory, Profiles, Mappings, Cycle Logs).
-- **Core Algorithms**: 8 (all with pseudocode and validation design).
-- **Test Cases**: 16+ (unit, integration, UAT, AI validation).
-- **Documentation**: 5 detailed technical documents.
-
----
-
-**Last Updated**: May 2026  
-**Status**: MVP + Capstone Portfolio Project  
-**Target Audience**: MSc Data Science & AI Program Evaluators
-
----
-
-## 🔗 Quick Links
-
-| Resource                 | Link                                                 |
-| ------------------------ | ---------------------------------------------------- |
-| **System Design**        | [system_design.md](system_design.md)                 |
-| **Test Strategy**        | [testing.md](testing.md)                             |
-| **Implementation**       | [implementation.md](implementation.md)               |
-| **Technical Challenges** | [challenges.md](challenges.md)                       |
-| **Requirements**         | [system_requirements.md](system_requirements.md)     |
-| **GitHub**               | [repo-link](https://github.com/adriennie/swasth-app) |
-| **Live Demo**            | [available on request]                               |
+Built with [Expo](https://expo.dev), [React Native](https://reactnative.dev) and [Supabase](https://supabase.com). Demo video produced with [Hyperframes](https://hyperframes.heygen.com), with music from [ende.app](https://ende.app/en) ("Happy Beats / Business Moves") and CC0 sound effects by [Kenney](https://kenney.nl).

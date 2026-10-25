@@ -16,6 +16,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Distributor {
     id: string;
@@ -168,7 +170,7 @@ export default function DistributorsTab() {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#4F46E5" />
+                    <ActivityIndicator size="large" color={Palette.lavenderText} />
                     <Text style={styles.loadingText}>Loading Distributors...</Text>
                 </View>
             </SafeAreaView>
@@ -179,7 +181,7 @@ export default function DistributorsTab() {
         <SafeAreaView style={styles.container}>
             {/* Header */}
             <LinearGradient
-                colors={['#8B5CF6', '#7C3AED']}
+                colors={[Palette.lavender, Palette.lavenderText]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}>
@@ -197,7 +199,7 @@ export default function DistributorsTab() {
             <ScrollView
                 style={styles.scrollView}
                 refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#4F46E5" />
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Palette.lavenderText} />
                 }>
 
                 {/* Stats Cards */}
@@ -205,8 +207,8 @@ export default function DistributorsTab() {
                     <TouchableOpacity
                         style={[styles.statCard, filter === 'all' && styles.statCardActive]}
                         onPress={() => setFilter('all')}>
-                        <View style={[styles.statIconContainer, { backgroundColor: '#EDE9FE' }]}>
-                            <Feather name="users" size={20} color="#7C3AED" />
+                        <View style={[styles.statIconContainer, { backgroundColor: Palette.lavenderSoft }]}>
+                            <Feather name="users" size={20} color={Palette.lavenderText} />
                         </View>
                         <Text style={styles.statValue}>{stats.total}</Text>
                         <Text style={styles.statLabel}>All</Text>
@@ -266,7 +268,7 @@ export default function DistributorsTab() {
                                 <View style={styles.cardHeader}>
                                     <View style={styles.avatarContainer}>
                                         <LinearGradient
-                                            colors={['#8B5CF6', '#7C3AED']}
+                                            colors={[Palette.lavender, Palette.lavenderText]}
                                             style={styles.avatar}>
                                             <Text style={styles.avatarText}>
                                                 {(dist.display_name || dist.contact_name || dist.email)?.[0]?.toUpperCase()}
@@ -300,7 +302,7 @@ export default function DistributorsTab() {
 
                                 <View style={styles.viewDetailsBtn}>
                                     <Text style={styles.viewDetailsText}>View Complete Details</Text>
-                                    <Feather name="chevron-right" size={16} color="#4F46E5" />
+                                    <Feather name="chevron-right" size={16} color={Palette.lavenderText} />
                                 </View>
                             </TouchableOpacity>
                         ))
@@ -327,7 +329,7 @@ export default function DistributorsTab() {
                             <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
                                 <View style={styles.profileSection}>
                                     <LinearGradient
-                                        colors={['#8B5CF6', '#7C3AED']}
+                                        colors={[Palette.lavender, Palette.lavenderText]}
                                         style={styles.largeAvatar}>
                                         <Text style={styles.largeAvatarText}>
                                             {(selectedDist.display_name || selectedDist.contact_name || selectedDist.email)?.[0]?.toUpperCase()}
@@ -430,68 +432,68 @@ export default function DistributorsTab() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F8FAFC' },
+    container: { flex: 1, backgroundColor: Palette.canvas },
     loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    loadingText: { marginTop: 16, fontSize: 16, color: '#6B7280', fontWeight: '600' },
+    loadingText: { fontFamily: Fonts.body.semiBold, marginTop: 16, fontSize: 16, color: '#6B7280' },
     header: { paddingTop: 60, paddingBottom: 24, paddingHorizontal: 24 },
     headerTop: { flexDirection: 'row', alignItems: 'center', gap: 16 },
     backBtn: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.2)' },
-    headerTitle: { fontSize: 28, fontWeight: '800', color: '#fff' },
-    headerSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.9)', fontWeight: '600' },
+    headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 28, color: '#fff' },
+    headerSubtitle: { fontFamily: Fonts.body.semiBold, fontSize: 14, color: 'rgba(255,255,255,0.9)' },
     scrollView: { flex: 1 },
     statsRow: { flexDirection: 'row', paddingHorizontal: 20, paddingTop: 20, gap: 12 },
     statCard: { flex: 1, backgroundColor: '#fff', borderRadius: 16, padding: 16, alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4 },
-    statCardActive: { borderWidth: 2, borderColor: '#4F46E5' },
+    statCardActive: { borderWidth: 2, borderColor: Palette.lavenderText },
     statIconContainer: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
-    statValue: { fontSize: 20, fontWeight: '800', color: '#111827' },
-    statLabel: { fontSize: 11, color: '#6B7280', marginTop: 2 },
+    statValue: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
+    statLabel: { fontFamily: Fonts.label.regular, fontSize: 11, color: '#6B7280', marginTop: 2 },
     searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', marginHorizontal: 20, marginTop: 20, marginBottom: 16, paddingHorizontal: 16, height: 48, borderRadius: 12, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4 },
     searchIcon: { marginRight: 12 },
-    searchInput: { flex: 1, fontSize: 16, color: '#111827' },
+    searchInput: { fontFamily: Fonts.body.regular, flex: 1, fontSize: 16, color: Palette.ink },
     listContainer: { paddingHorizontal: 20, paddingBottom: 100 },
     distributorCard: { backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 12, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4 },
     cardHeader: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 12 },
     avatarContainer: { marginRight: 12 },
     avatar: { width: 50, height: 50, borderRadius: 25, alignItems: 'center', justifyContent: 'center' },
-    avatarText: { fontSize: 20, fontWeight: '800', color: '#fff' },
+    avatarText: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: '#fff' },
     cardInfo: { flex: 1 },
-    distributorName: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 4 },
-    distributorEmail: { fontSize: 13, color: '#6B7280', marginBottom: 2 },
-    distributorPhone: { fontSize: 13, color: '#6B7280' },
+    distributorName: { fontFamily: Fonts.body.bold, fontSize: 16, color: Palette.ink, marginBottom: 4 },
+    distributorEmail: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginBottom: 2 },
+    distributorPhone: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280' },
     statusBadge: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, alignSelf: 'flex-start' },
-    statusText: { fontSize: 11, fontWeight: '800', textTransform: 'uppercase' },
+    statusText: { fontFamily: Fonts.label.extraBold, fontSize: 11, textTransform: 'uppercase' },
     locationRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 6 },
-    locationText: { fontSize: 13, color: '#6B7280' },
+    locationText: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280' },
     viewDetailsBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#F3F4F6' },
-    viewDetailsText: { fontSize: 14, fontWeight: '600', color: '#4F46E5' },
+    viewDetailsText: { fontFamily: Fonts.body.semiBold, fontSize: 14, color: Palette.lavenderText },
     emptyState: { alignItems: 'center', justifyContent: 'center', paddingVertical: 60 },
-    emptyText: { marginTop: 16, fontSize: 16, color: '#9CA3AF' },
+    emptyText: { fontFamily: Fonts.body.regular, marginTop: 16, fontSize: 16, color: '#9CA3AF' },
 
     // Modal Styles
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
     modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 32, borderTopRightRadius: 32, height: '90%' },
     modalHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 24, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' },
-    modalTitle: { fontSize: 20, fontWeight: '800', color: '#111827' },
+    modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
     modalBody: { padding: 24 },
     profileSection: { alignItems: 'center', marginBottom: 32 },
     largeAvatar: { width: 100, height: 100, borderRadius: 50, alignItems: 'center', justifyContent: 'center', marginBottom: 16, elevation: 4, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10 },
-    largeAvatarText: { fontSize: 40, fontWeight: '800', color: '#fff' },
-    profileName: { fontSize: 24, fontWeight: '800', color: '#111827', marginBottom: 4 },
-    profileEmail: { fontSize: 16, color: '#6B7280', marginBottom: 12 },
+    largeAvatarText: { fontFamily: Fonts.heading.extraBold, fontSize: 40, color: '#fff' },
+    profileName: { fontFamily: Fonts.heading.extraBold, fontSize: 24, color: Palette.ink, marginBottom: 4 },
+    profileEmail: { fontFamily: Fonts.body.regular, fontSize: 16, color: '#6B7280', marginBottom: 12 },
     profileStatusBadge: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20 },
-    profileStatusText: { fontSize: 12, fontWeight: '800', letterSpacing: 1 },
+    profileStatusText: { fontFamily: Fonts.label.extraBold, fontSize: 12, letterSpacing: 1 },
     infoSection: { marginBottom: 32 },
-    sectionLabel: { fontSize: 12, fontWeight: '800', color: '#9CA3AF', letterSpacing: 1, marginBottom: 16 },
+    sectionLabel: { fontFamily: Fonts.body.extraBold, fontSize: 12, color: '#9CA3AF', letterSpacing: 1, marginBottom: 16 },
     infoRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 20, gap: 16 },
     infoTextContainer: { flex: 1 },
-    infoLabel: { fontSize: 12, color: '#9CA3AF', marginBottom: 2 },
-    infoValue: { fontSize: 16, color: '#111827', fontWeight: '600' },
+    infoLabel: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#9CA3AF', marginBottom: 2 },
+    infoValue: { fontFamily: Fonts.label.semiBold, fontSize: 16, color: Palette.ink },
     modalActions: { gap: 12, marginTop: 8 },
     approvalRow: { flexDirection: 'row', gap: 12 },
     modalActionBtn: { flex: 1, height: 56, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
     modalApproveBtn: { backgroundColor: '#10B981' },
     modalRejectBtn: { backgroundColor: '#EF4444' },
-    modalActionText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+    modalActionText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
     removeBtn: { height: 56, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderWidth: 1, borderColor: '#FEE2E2', backgroundColor: '#FFF5F5' },
-    removeBtnText: { color: '#EF4444', fontSize: 16, fontWeight: '700' },
+    removeBtnText: { fontFamily: Fonts.body.bold, color: '#EF4444', fontSize: 16 },
 });

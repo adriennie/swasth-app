@@ -1,5 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { hiddenTab } from '@/constants/navigation';
 import { Platform } from 'react-native';
 
 export default function DistributorLayout() {
@@ -26,7 +27,7 @@ export default function DistributorLayout() {
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="grid" size={focused ? 24 : 22} color={color} />
+            <Feather name="grid" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -35,7 +36,7 @@ export default function DistributorLayout() {
         options={{
           title: 'Stock',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="package" size={focused ? 24 : 22} color={color} />
+            <Feather name="package" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -44,7 +45,7 @@ export default function DistributorLayout() {
         options={{
           title: 'Admin Orders',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="shopping-cart" size={focused ? 24 : 22} color={color} />
+            <Feather name="shopping-cart" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -53,38 +54,38 @@ export default function DistributorLayout() {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="settings" size={focused ? 24 : 22} color={color} />
+            <Feather name="settings" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
       <Tabs.Screen
         name="pharmacies"
         options={{
-          href: null, // Hide from tab bar but keep accessible
+          ...hiddenTab,
         }}
       />
       <Tabs.Screen
         name="catalogue"
         options={{
-          href: null, // Hide from tab bar but keep accessible
+          ...hiddenTab,
         }}
       />
       <Tabs.Screen
         name="cart"
         options={{
-          href: null, // Hide from tab bar but keep accessible
+          ...hiddenTab,
         }}
       />
       <Tabs.Screen
         name="add-stock"
         options={{
-          href: null, // Hide from tab bar but keep accessible
+          ...hiddenTab,
         }}
       />
       <Tabs.Screen
         name="orders"
         options={{
-          href: null, // Hide from tab bar but keep accessible
+          ...hiddenTab,
         }}
       />
     </Tabs>

@@ -14,6 +14,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface AdminOrder {
   id: string;
@@ -105,7 +107,7 @@ export default function AdminOrdersStatus() {
       case 'rejected':
       case 'cancelled': return '#EF4444';
       case 'fulfilled':
-      case 'delivered': return '#3B82F6';
+      case 'delivered': return Palette.teal;
       default: return '#6B7280';
     }
   };
@@ -114,7 +116,7 @@ export default function AdminOrdersStatus() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Feather name="chevron-left" size={24} color="#111827" />
+          <Feather name="chevron-left" size={24} color={Palette.ink} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Admin Orders</Text>
         <View style={{ width: 24 }} />
@@ -152,7 +154,7 @@ export default function AdminOrdersStatus() {
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Order Details</Text>
             <TouchableOpacity onPress={() => setSelectedOrder(null)} style={styles.closeBtn}>
-              <Feather name="x" size={24} color="#111827" />
+              <Feather name="x" size={24} color={Palette.ink} />
             </TouchableOpacity>
           </View>
 
@@ -168,7 +170,7 @@ export default function AdminOrdersStatus() {
               </View>
               <View style={styles.detailRow}>
                 <Text style={styles.detailLabel}>Status:</Text>
-                <Text style={[styles.detailValue, { color: getStatusColor(selectedOrder.status), fontWeight: '700' }]}>
+                <Text style={[styles.detailValue, { fontFamily: Fonts.body.bold, color: getStatusColor(selectedOrder.status) }]}>
                   {selectedOrder.status}
                 </Text>
               </View>
@@ -231,7 +233,7 @@ export default function AdminOrdersStatus() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   header: {
     paddingTop: 50,
     paddingBottom: 16,
@@ -243,7 +245,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
   },
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
   list: { padding: 16, gap: 12 },
   card: {
     backgroundColor: '#fff',
@@ -255,16 +257,16 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  orderId: { fontSize: 16, fontWeight: '700', color: '#111827' },
+  orderId: { fontFamily: Fonts.body.bold, fontSize: 16, color: Palette.ink },
   badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
-  badgeText: { fontSize: 12, fontWeight: '700' },
-  date: { fontSize: 14, color: '#6B7280', marginBottom: 4 },
-  amount: { fontSize: 16, fontWeight: '700', color: '#059669' },
+  badgeText: { fontFamily: Fonts.label.bold, fontSize: 12 },
+  date: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', marginBottom: 4 },
+  amount: { fontFamily: Fonts.label.bold, fontSize: 16, color: '#059669' },
   emptyState: { alignItems: 'center', marginTop: 40 },
-  emptyText: { color: '#9CA3AF', fontSize: 16 },
+  emptyText: { fontFamily: Fonts.body.regular, color: '#9CA3AF', fontSize: 16 },
 
   // Modal Styles
-  modalContainer: { flex: 1, backgroundColor: '#F8FAFC' },
+  modalContainer: { flex: 1, backgroundColor: Palette.canvas },
   modalHeader: {
     padding: 20,
     backgroundColor: '#fff',
@@ -274,12 +276,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
   },
-  modalTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+  modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
   closeBtn: { padding: 4 },
   orderDetails: { padding: 20, backgroundColor: '#fff' },
   detailRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  detailLabel: { fontSize: 14, color: '#6B7280' },
-  detailValue: { fontSize: 14, color: '#111827', fontWeight: '500' },
+  detailLabel: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280' },
+  detailValue: { fontFamily: Fonts.label.medium, fontSize: 14, color: Palette.ink },
   divider: { height: 1, backgroundColor: '#E5E7EB' },
   itemsList: { padding: 16, gap: 12 },
   itemCard: {
@@ -302,12 +304,12 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   itemInfo: { flex: 1 },
-  itemName: { fontSize: 14, fontWeight: '600', color: '#111827' },
-  itemSku: { fontSize: 12, color: '#6B7280', marginTop: 2 },
+  itemName: { fontFamily: Fonts.body.semiBold, fontSize: 14, color: Palette.ink },
+  itemSku: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', marginTop: 2 },
   itemMeta: { flexDirection: 'row', gap: 8, marginTop: 4 },
-  itemQty: { fontSize: 12, fontWeight: '600', color: '#4B5563' },
-  itemPrice: { fontSize: 12, color: '#6B7280' },
-  itemTotal: { fontSize: 14, fontWeight: '700', color: '#111827' },
+  itemQty: { fontFamily: Fonts.label.semiBold, fontSize: 12, color: '#4B5563' },
+  itemPrice: { fontFamily: Fonts.label.regular, fontSize: 12, color: '#6B7280' },
+  itemTotal: { fontFamily: Fonts.label.bold, fontSize: 14, color: Palette.ink },
   footer: {
     padding: 20,
     backgroundColor: '#fff',
@@ -316,10 +318,10 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  totalLabel: { fontSize: 16, fontWeight: '600', color: '#111827' },
-  totalValue: { fontSize: 20, fontWeight: '800', color: '#059669' },
-  otpContainer: { marginTop: 12, padding: 12, backgroundColor: '#EFF6FF', borderRadius: 8, borderColor: '#BFDBFE', borderWidth: 1 },
-  otpLabel: { fontSize: 13, color: '#1E40AF', fontWeight: '600' },
-  otpValue: { fontSize: 24, fontWeight: 'bold', color: '#1E3A8A', marginVertical: 4, letterSpacing: 4 },
-  otpNote: { fontSize: 12, color: '#60A5FA' },
+  totalLabel: { fontFamily: Fonts.label.semiBold, fontSize: 16, color: Palette.ink },
+  totalValue: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: '#059669' },
+  otpContainer: { marginTop: 12, padding: 12, backgroundColor: Palette.tealSoft, borderRadius: 8, borderColor: Palette.tealBorder, borderWidth: 1 },
+  otpLabel: { fontFamily: Fonts.body.semiBold, fontSize: 13, color: Palette.tealDeep },
+  otpValue: { fontFamily: Fonts.heading.bold, fontSize: 24, color: '#1E3A8A', marginVertical: 4, letterSpacing: 4 },
+  otpNote: { fontFamily: Fonts.body.regular, fontSize: 12, color: Palette.teal },
 });

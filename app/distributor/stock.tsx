@@ -18,6 +18,8 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface StockItem {
   id: string;
@@ -159,11 +161,11 @@ export default function DistributorStock() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Feather name="chevron-left" size={24} color="#111827" />
+          <Feather name="chevron-left" size={24} color={Palette.ink} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Stock</Text>
         <TouchableOpacity onPress={() => router.push('/distributor/add-stock')}>
-          <Feather name="plus" size={24} color="#111827" />
+          <Feather name="plus" size={24} color={Palette.ink} />
         </TouchableOpacity>
       </View>
 
@@ -178,7 +180,7 @@ export default function DistributorStock() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#4F46E5" style={{ marginTop: 20 }} />
+        <ActivityIndicator size="large" color={Palette.lavenderText} style={{ marginTop: 20 }} />
       ) : (
         <FlatList
           data={filtered}
@@ -292,7 +294,7 @@ export default function DistributorStock() {
                   <Text style={[styles.actionText, { color: '#EF4444' }]}>Delete</Text>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: '#4F46E5', flex: 1 }]} onPress={submit}>
+              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: Palette.lavenderText, flex: 1 }]} onPress={submit}>
                 <Text style={styles.actionText}>Save Changes</Text>
               </TouchableOpacity>
             </View>
@@ -304,11 +306,11 @@ export default function DistributorStock() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   header: { paddingTop: 50, paddingBottom: 16, paddingHorizontal: 16, backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#E5E7EB' },
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
   searchRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#E5E7EB', margin: 16, paddingHorizontal: 12 },
-  searchInput: { flex: 1, height: 48, paddingHorizontal: 8, fontSize: 16 },
+  searchInput: { fontFamily: Fonts.body.regular, flex: 1, height: 48, paddingHorizontal: 8, fontSize: 16 },
 
   card: {
     backgroundColor: '#fff',
@@ -342,29 +344,31 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   cardTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 16,
-    fontWeight: '700',
-    color: '#111827',
+    color: Palette.ink,
     flex: 1,
     marginRight: 8,
   },
   badge: {
-    backgroundColor: '#E0E7FF',
+    backgroundColor: Palette.lavenderSoft,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
   },
   badgeText: {
+    fontFamily: Fonts.label.bold,
     fontSize: 12,
-    fontWeight: '700',
-    color: '#4338CA',
+    color: Palette.lavenderDeep,
   },
   sku: {
+    fontFamily: Fonts.body.regular,
     fontSize: 13,
     color: '#6B7280',
     marginBottom: 8,
   },
   desc: {
+    fontFamily: Fonts.body.regular,
     fontSize: 13,
     color: '#4B5563',
     marginBottom: 12,
@@ -383,8 +387,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   moqLabel: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 13,
-    fontWeight: '600',
     color: '#6B7280',
   },
   errorText: {
@@ -394,12 +398,12 @@ const styles = StyleSheet.create({
   modalWrap: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalCard: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, gap: 16 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  modalTitle: { fontSize: 20, fontWeight: '800', color: '#111827' },
+  modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
   closeBtn: { padding: 4 },
   formGroup: { gap: 8 },
-  label: { fontSize: 14, fontWeight: '600', color: '#374151' },
-  modalInput: { height: 48, borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 12, paddingHorizontal: 16, fontSize: 16, backgroundColor: '#F9FAFB' },
+  label: { fontFamily: Fonts.body.semiBold, fontSize: 14, color: '#374151' },
+  modalInput: { fontFamily: Fonts.body.regular, height: 48, borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 12, paddingHorizontal: 16, fontSize: 16, backgroundColor: Palette.canvas },
   modalActions: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 16 },
   actionBtn: { height: 50, borderRadius: 12, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8 },
-  actionText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+  actionText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
 });

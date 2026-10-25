@@ -1,0 +1,8 @@
+01|A patient walks into a neighbourhood pharmacy for a medicine they need today. And the shelf is empty.
+02|Pharmacies guess what to reorder. Stock expires without anyone noticing. And orders still go out by phone call.
+03|Swasthya fixes that. It connects pharmacies, distributors and admins in one supply network.
+04|Every morning, the pharmacy sees what needs restocking. A seven-day demand forecast flags what will run out before the next delivery, and exactly how much to reorder.
+05|Ordering takes seconds. Search two hundred and fifty medicines, filter by category, check price and margin, and the order goes straight to the pharmacy's distributor.
+06|The distributor confirms and ships, and every delivery is verified with a one-time code.
+07|Admins approve new businesses, and unusually large orders are flagged for manual review.
+08|Swasthya. Keep every shelf stocked.

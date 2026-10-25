@@ -16,6 +16,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function DistributorSettings() {
     const { auth, logout } = useAuth();
@@ -211,7 +213,7 @@ export default function DistributorSettings() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F8FAFC' },
+    container: { flex: 1, backgroundColor: Palette.canvas },
     loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     header: {
         paddingTop: 50,
@@ -224,20 +226,21 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E5E7EB',
     },
-    headerTitle: { fontSize: 24, fontWeight: 'bold', color: '#111827' },
+    headerTitle: { fontFamily: Fonts.heading.bold, fontSize: 24, color: Palette.ink },
     content: { padding: 20 },
     section: { marginBottom: 24, backgroundColor: '#fff', padding: 16, borderRadius: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, elevation: 2 },
-    sectionTitle: { fontSize: 18, fontWeight: '700', color: '#111827', marginBottom: 16 },
-    label: { fontSize: 14, fontWeight: '600', color: '#4B5563', marginBottom: 6 },
+    sectionTitle: { fontFamily: Fonts.heading.bold, fontSize: 18, color: Palette.ink, marginBottom: 16 },
+    label: { fontFamily: Fonts.body.semiBold, fontSize: 14, color: '#4B5563', marginBottom: 6 },
     input: {
-        backgroundColor: '#F9FAFB',
+        fontFamily: Fonts.body.regular,
+        backgroundColor: Palette.canvas,
         borderWidth: 1,
         borderColor: '#E5E7EB',
         borderRadius: 8,
         paddingHorizontal: 12,
         paddingVertical: 10,
         fontSize: 16,
-        color: '#111827',
+        color: Palette.ink,
         marginBottom: 16,
     },
     row: { flexDirection: 'row', gap: 12 },
@@ -254,5 +257,5 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     disabledBtn: { opacity: 0.7 },
-    saveBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+    saveBtnText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
 });

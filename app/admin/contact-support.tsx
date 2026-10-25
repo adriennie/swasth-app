@@ -11,6 +11,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function ContactSupportScreen() {
   const router = useRouter();
@@ -59,7 +61,7 @@ export default function ContactSupportScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Feather name="arrow-left" size={24} color="#111827" />
+          <Feather name="arrow-left" size={24} color={Palette.ink} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Contact & Support</Text>
         <View style={styles.spacer} />
@@ -72,7 +74,7 @@ export default function ContactSupportScreen() {
           {contactMethods.map((method, idx) => (
             <TouchableOpacity key={idx} style={styles.contactCard} onPress={method.action}>
               <View style={styles.contactIcon}>
-                <Feather name={method.icon as any} size={24} color="#3B82F6" />
+                <Feather name={method.icon as any} size={24} color={Palette.teal} />
               </View>
               <View style={styles.contactContent}>
                 <Text style={styles.contactTitle}>{method.title}</Text>
@@ -107,7 +109,7 @@ export default function ContactSupportScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Community</Text>
           <View style={styles.communityCard}>
-            <Feather name="users" size={24} color="#7C3AED" />
+            <Feather name="users" size={24} color={Palette.lavenderText} />
             <View style={styles.communityContent}>
               <Text style={styles.communityTitle}>Join Our Community</Text>
               <Text style={styles.communityDesc}>Connect with other pharmacy owners and learn best practices</Text>
@@ -138,15 +140,15 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827', flex: 1, textAlign: 'center' },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink, flex: 1, textAlign: 'center' },
   spacer: { width: 38 },
   scroll: { paddingHorizontal: 16, paddingVertical: 16, gap: 24, paddingBottom: 40 },
   section: { gap: 12 },
-  sectionTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+  sectionTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
   contactCard: {
     backgroundColor: '#fff',
     borderRadius: 14,
@@ -162,13 +164,13 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 10,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: Palette.tealSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
   contactContent: { flex: 1 },
-  contactTitle: { fontSize: 15, fontWeight: '700', color: '#111827' },
-  contactDesc: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+  contactTitle: { fontFamily: Fonts.heading.bold, fontSize: 15, color: Palette.ink },
+  contactDesc: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginTop: 2 },
   infoBox: {
     backgroundColor: '#ECFDF5',
     borderRadius: 14,
@@ -180,8 +182,8 @@ const styles = StyleSheet.create({
     borderColor: '#BBFAF0',
   },
   infoContent: { flex: 1 },
-  infoTitle: { fontSize: 14, fontWeight: '700', color: '#065F46' },
-  infoDesc: { fontSize: 13, color: '#047857', marginTop: 2 },
+  infoTitle: { fontFamily: Fonts.heading.bold, fontSize: 14, color: '#065F46' },
+  infoDesc: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#047857', marginTop: 2 },
   faqCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -190,8 +192,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
-  faqQuestion: { fontSize: 14, fontWeight: '700', color: '#111827', marginBottom: 8 },
-  faqAnswer: { fontSize: 13, color: '#6B7280', lineHeight: 20 },
+  faqQuestion: { fontFamily: Fonts.body.bold, fontSize: 14, color: Palette.ink, marginBottom: 8 },
+  faqAnswer: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', lineHeight: 20 },
   communityCard: {
     backgroundColor: '#fff',
     borderRadius: 14,
@@ -203,6 +205,6 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
   },
   communityContent: { flex: 1 },
-  communityTitle: { fontSize: 15, fontWeight: '700', color: '#111827' },
-  communityDesc: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+  communityTitle: { fontFamily: Fonts.heading.bold, fontSize: 15, color: Palette.ink },
+  communityDesc: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginTop: 2 },
 });

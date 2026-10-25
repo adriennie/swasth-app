@@ -4,6 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import * as RN from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface InventoryItem {
   id: string;
@@ -128,7 +130,7 @@ export default function InventoryScreen() {
         )}
       </RN.View>
       <RN.TouchableOpacity style={styles.iconBtn} onPress={() => openEdit(item)}>
-        <Ionicons name="create-outline" size={18} color="#111827" />
+        <Ionicons name="create-outline" size={18} color={Palette.ink} />
       </RN.TouchableOpacity>
       <RN.TouchableOpacity style={[styles.iconBtn, { backgroundColor: '#FEE2E2' }]} onPress={() => remove(item.id)}>
         <Ionicons name="trash-outline" size={18} color="#DC2626" />
@@ -147,7 +149,7 @@ export default function InventoryScreen() {
       </RN.View>
 
       {loading ? (
-        <RN.ActivityIndicator size="large" color="#7C3AED" style={{ marginTop: 20 }} />
+        <RN.ActivityIndicator size="large" color={Palette.lavenderText} style={{ marginTop: 20 }} />
       ) : (
         <RN.FlatList
           data={inventory}
@@ -188,26 +190,26 @@ export default function InventoryScreen() {
 }
 
 const styles = RN.StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   header: { paddingHorizontal: 16, paddingVertical: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#E5E7EB' },
-  headerTitle: { fontSize: 18, fontWeight: '700', color: '#111827' },
-  addBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#7C3AED', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8, gap: 6 },
-  addText: { color: '#fff', fontWeight: '700' },
+  headerTitle: { fontFamily: Fonts.heading.bold, fontSize: 18, color: Palette.ink },
+  addBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: Palette.lavenderText, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8, gap: 6 },
+  addText: { fontFamily: Fonts.body.bold, color: '#fff' },
   item: { backgroundColor: '#fff', padding: 14, borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 10, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 3 },
-  itemName: { fontSize: 16, fontWeight: '700', color: '#111827' },
-  itemMeta: { fontSize: 12, color: '#6B7280' },
-  lowStock: { fontSize: 12, color: '#DC2626', fontWeight: '700', marginTop: 4 },
-  iconBtn: { backgroundColor: '#EEF2FF', padding: 8, borderRadius: 8 },
+  itemName: { fontFamily: Fonts.body.bold, fontSize: 16, color: Palette.ink },
+  itemMeta: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280' },
+  lowStock: { fontFamily: Fonts.body.bold, fontSize: 12, color: '#DC2626', marginTop: 4 },
+  iconBtn: { backgroundColor: Palette.lavenderSoft, padding: 8, borderRadius: 8 },
   emptyText: { textAlign: 'center', marginTop: 40, color: '#6B7280' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 16 },
   modalContent: { backgroundColor: '#fff', borderRadius: 16, padding: 20 },
-  modalTitle: { fontSize: 18, fontWeight: '700', color: '#111827', marginBottom: 8 },
-  editingName: { fontSize: 14, color: '#6B7280', marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '600', color: '#4B5563', marginBottom: 6 },
-  input: { backgroundColor: '#F9FAFB', borderColor: '#E5E7EB', borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 16, color: '#111827' },
+  modalTitle: { fontFamily: Fonts.heading.bold, fontSize: 18, color: Palette.ink, marginBottom: 8 },
+  editingName: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', marginBottom: 16 },
+  label: { fontFamily: Fonts.body.semiBold, fontSize: 14, color: '#4B5563', marginBottom: 6 },
+  input: { backgroundColor: Palette.canvas, borderColor: '#E5E7EB', borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, marginBottom: 16, color: Palette.ink },
   modalActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12, marginTop: 10 },
   cancelBtn: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 10, backgroundColor: '#F3F4F6' },
-  cancelText: { color: '#374151', fontWeight: '700' },
-  saveBtn: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 10, backgroundColor: '#7C3AED' },
-  saveText: { color: '#fff', fontWeight: '700' },
+  cancelText: { fontFamily: Fonts.body.bold, color: '#374151' },
+  saveBtn: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 10, backgroundColor: Palette.lavenderText },
+  saveText: { fontFamily: Fonts.body.bold, color: '#fff' },
 });

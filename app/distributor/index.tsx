@@ -1,19 +1,21 @@
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Feather } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
   Modal,
+  Pressable,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
+import { ActionTile, Card, FadeIn, HeroHeader, HeroIconButton, SectionHeader, StatTile } from '@/components/ui/kit';
 
 interface Pharmacy {
   id: string;
@@ -123,140 +125,87 @@ export default function DistributorDashboard() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.headerSubtitle}>Welcome back,</Text>
-          <Text style={styles.headerTitle}>Distributor Hub</Text>
-        </View>
-        <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-          <Feather name="log-out" size={20} color="#EF4444" />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <HeroHeader
+        eyebrow="Distributor workspace"
+        title="Fulfilment hub"
+        subtitle={
+          stats.pendingOrders > 0
+            ? `${stats.pendingOrders} pharmacy ${stats.pendingOrders === 1 ? 'order is' : 'orders are'} waiting for you`
+            : 'No pharmacy orders waiting'
+        }
+        right={<HeroIconButton icon="log-out" label="Sign out" onPress={logout} />}
+      />
 
       <ScrollView
         contentContainerStyle={styles.content}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Palette.lavenderText} />}
       >
-        {/* Stats Section */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: '#E0E7FF' }]}>
-              <Feather name="dollar-sign" size={20} color="#4F46E5" />
-            </View>
-            <View>
-              <Text style={styles.statValue}>${stats.totalSales.toLocaleString()}</Text>
-              <Text style={styles.statLabel}>Total Sales</Text>
-            </View>
-          </View>
-          <View style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: '#FEF3C7' }]}>
-              <Feather name="clock" size={20} color="#D97706" />
-            </View>
-            <View>
-              <Text style={styles.statValue}>{stats.pendingOrders}</Text>
-              <Text style={styles.statLabel}>Pending Orders</Text>
-            </View>
-          </View>
-          <View style={styles.statCard}>
-            <View style={[styles.statIcon, { backgroundColor: '#D1FAE5' }]}>
-              <Feather name="package" size={20} color="#059669" />
-            </View>
-            <View>
-              <Text style={styles.statValue}>{stats.stockCount}</Text>
-              <Text style={styles.statLabel}>Stock Items</Text>
-            </View>
-          </View>
+        <View style={styles.statsRow}>
+          <FadeIn index={0} style={{ flex: 1 }}>
+            <StatTile icon="clock" tone={stats.pendingOrders ? 'amber' : 'slate'} value={stats.pendingOrders} label="Pending orders" />
+          </FadeIn>
+          <FadeIn index={1} style={{ flex: 1 }}>
+            <StatTile icon="package" tone="teal" value={stats.stockCount} label="SKUs in stock" />
+          </FadeIn>
         </View>
+        <FadeIn index={2}>
+          <StatTile
+            icon="trending-up"
+            tone="lavender"
+            value={`₹${stats.totalSales.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
+            label="Order value from pharmacies (excludes cancelled)"
+            style={{ marginTop: 12 }}
+          />
+        </FadeIn>
 
-        {/* Quick Actions Grid */}
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.grid}>
-          {/* Catalogue */}
-          <TouchableOpacity style={styles.card} onPress={() => router.push('/distributor/catalogue')}>
-            <LinearGradient colors={['#8B5CF6', '#7C3AED']} style={styles.cardGradient}>
-              <View style={styles.iconCircle}>
-                <Feather name="book-open" size={24} color="#7C3AED" />
-              </View>
-              <Text style={styles.cardTitle}>Catalogue</Text>
-              <Text style={styles.cardDesc}>Browse Master List</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          {/* Cart */}
-          <TouchableOpacity style={styles.card} onPress={() => router.push('/distributor/cart')}>
-            <LinearGradient colors={['#F59E0B', '#D97706']} style={styles.cardGradient}>
-              <View style={styles.iconCircle}>
-                <Feather name="shopping-cart" size={24} color="#D97706" />
-              </View>
-              <Text style={styles.cardTitle}>My Cart</Text>
-              <Text style={styles.cardDesc}>View Cart Items</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          {/* Pharmacy Orders */}
-          <TouchableOpacity style={styles.card} onPress={() => router.push('/distributor/orders')}>
-            <LinearGradient colors={['#10B981', '#059669']} style={styles.cardGradient}>
-              <View style={styles.iconCircle}>
-                <Feather name="clipboard" size={24} color="#059669" />
-              </View>
-              <Text style={styles.cardTitle}>Orders</Text>
-              <Text style={styles.cardDesc}>From Pharmacies</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          {/* Pharmacies */}
-          <TouchableOpacity style={styles.card} onPress={() => router.push('/distributor/pharmacies')}>
-            <LinearGradient colors={['#3B82F6', '#2563EB']} style={styles.cardGradient}>
-              <View style={styles.iconCircle}>
-                <Feather name="users" size={24} color="#2563EB" />
-              </View>
-              <Text style={styles.cardTitle}>Pharmacies</Text>
-              <Text style={styles.cardDesc}>Manage Clients</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-
-        {/* Assigned Pharmacies Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Assigned Pharmacies</Text>
-            <TouchableOpacity onPress={() => router.push('/distributor/pharmacies')}>
-              <Text style={styles.seeAll}>See All</Text>
-            </TouchableOpacity>
+        <SectionHeader title="Quick actions" />
+        <FadeIn index={3}>
+          <View style={styles.actionsRow}>
+            <ActionTile icon="clipboard" tone="amber" title="Orders" subtitle="From pharmacies" onPress={() => router.push('/distributor/orders')} />
+            <ActionTile icon="book-open" tone="lavender" title="Catalogue" subtitle="Buy from admin" onPress={() => router.push('/distributor/catalogue')} />
           </View>
+          <View style={[styles.actionsRow, { marginTop: 10 }]}>
+            <ActionTile icon="shopping-cart" tone="teal" title="Cart" subtitle="Review purchase" onPress={() => router.push('/distributor/cart')} />
+            <ActionTile icon="users" tone="slate" title="Pharmacies" subtitle="Your clients" onPress={() => router.push('/distributor/pharmacies')} />
+          </View>
+        </FadeIn>
 
-          {assignedPharmacies.length > 0 ? (
-            <View style={{ gap: 12 }}>
-              {assignedPharmacies.map((pharm) => (
-                <TouchableOpacity
-                  key={pharm.id}
-                  style={styles.pharmacyCard}
+        <SectionHeader
+          icon="home"
+          title="Assigned pharmacies"
+          action={{ label: 'See all', onPress: () => router.push('/distributor/pharmacies') }}
+        />
+
+        {assignedPharmacies.length > 0 ? (
+          <View style={{ gap: 10 }}>
+            {assignedPharmacies.map((pharm, i) => (
+              <FadeIn key={pharm.id} index={i + 4}>
+                <Pressable
+                  accessibilityRole="button"
+                  style={({ pressed }) => [styles.pharmacyCard, pressed && { opacity: 0.85 }]}
                   onPress={() => setSelectedPharmacy(pharm)}
                 >
                   <View style={styles.pharmacyIcon}>
-                    <Feather name="home" size={20} color="#4F46E5" />
+                    <Feather name="home" size={18} color={Palette.lavenderText} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.pharmacyName}>
                       {pharm.trade_name || pharm.business_legal_name || 'Unnamed Pharmacy'}
                     </Text>
-                    <Text style={styles.pharmacyLoc}>
-                      {[pharm.city, pharm.state].filter(Boolean).join(', ')}
-                    </Text>
+                    <Text style={styles.pharmacyLoc}>{[pharm.city, pharm.state].filter(Boolean).join(', ')}</Text>
                   </View>
-                  <Feather name="chevron-right" size={20} color="#9CA3AF" />
-                </TouchableOpacity>
-              ))}
-            </View>
-          ) : (
-            <View style={styles.emptyState}>
-              <Feather name="users" size={32} color="#D1D5DB" />
-              <Text style={styles.emptyText}>No pharmacies assigned yet.</Text>
-            </View>
-          )}
-        </View>
-
+                  <Feather name="chevron-right" size={18} color="#94A3B8" />
+                </Pressable>
+              </FadeIn>
+            ))}
+          </View>
+        ) : (
+          <Card style={styles.emptyState}>
+            <Feather name="users" size={28} color="#CBD5E1" />
+            <Text style={styles.emptyText}>No pharmacies assigned yet.</Text>
+          </Card>
+        )}
       </ScrollView>
 
       {/* Pharmacy Details Modal */}
@@ -271,7 +220,7 @@ export default function DistributorDashboard() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Pharmacy Details</Text>
               <TouchableOpacity onPress={() => setSelectedPharmacy(null)}>
-                <Feather name="x" size={24} color="#111827" />
+                <Feather name="x" size={24} color={Palette.ink} />
               </TouchableOpacity>
             </View>
 
@@ -306,202 +255,68 @@ export default function DistributorDashboard() {
 
             <View style={styles.modalActions}>
               <TouchableOpacity
-                style={[styles.actionBtn, { backgroundColor: '#7C3AED' }]}
+                style={[styles.actionBtn, { backgroundColor: Palette.lavenderText }]}
                 onPress={() => setSelectedPharmacy(null)}
               >
                 <Feather name="phone" size={18} color="#fff" />
                 <Text style={styles.actionText}>Call Now</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.actionBtn, { backgroundColor: '#F5F3FF' }]}
+                style={[styles.actionBtn, { backgroundColor: Palette.lavenderSoft }]}
                 onPress={() => setSelectedPharmacy(null)}
               >
-                <Feather name="mail" size={18} color="#7C3AED" />
-                <Text style={[styles.actionText, { color: '#7C3AED' }]}>Email</Text>
+                <Feather name="mail" size={18} color={Palette.lavenderText} />
+                <Text style={[styles.actionText, { color: Palette.lavenderText }]}>Email</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 24,
-    paddingHorizontal: 24,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#111827',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  logoutBtn: {
-    padding: 10,
-    backgroundColor: '#FEF2F2',
-    borderRadius: 12,
-  },
-  content: {
-    padding: 24,
-    paddingBottom: 40,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 32,
-    gap: 12,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
-    alignItems: 'center',
-    gap: 8,
-  },
-  statIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  statValue: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#111827',
-    textAlign: 'center',
-  },
-  statLabel: {
-    fontSize: 11,
-    color: '#6B7280',
-    textAlign: 'center',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 16,
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  card: {
-    width: '47%',
-    height: 140,
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  cardGradient: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 8,
-  },
-  iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#fff',
-  },
-  cardDesc: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: '500',
-  },
-  section: {
-    marginTop: 32,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  seeAll: {
-    color: '#059669',
-    fontWeight: '600',
-  },
+  container: { flex: 1, backgroundColor: Palette.canvas },
+  content: { padding: 16, paddingBottom: 40 },
+  statsRow: { flexDirection: 'row', gap: 12 },
+  actionsRow: { flexDirection: 'row', gap: 10 },
   pharmacyCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 12,
     gap: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.03,
-    shadowRadius: 5,
-    elevation: 1,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 14,
+    shadowColor: Palette.ink,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
   pharmacyIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F3F4F6',
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: Palette.lavenderSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pharmacyName: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  pharmacyLoc: {
-    fontSize: 13,
-    color: '#6B7280',
-  },
-  emptyState: { alignItems: 'center', padding: 24 },
-  emptyText: { color: '#9CA3AF', marginTop: 12 },
+  pharmacyName: { fontFamily: Fonts.heading.bold, fontSize: 15, color: Palette.ink },
+  pharmacyLoc: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#64748B', marginTop: 2 },
+  emptyState: { alignItems: 'center', paddingVertical: 24, gap: 10 },
+  emptyText: { fontFamily: Fonts.body.regular, color: '#64748B' },
 
   // Modal
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalCard: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
   modalHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 },
-  modalTitle: { fontSize: 20, fontWeight: '800', color: '#111827' },
+  modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
   detailContainer: { gap: 16, marginBottom: 24 },
   detailRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', borderBottomWidth: 1, borderBottomColor: '#F3F4F6', paddingBottom: 12 },
-  detailLabel: { fontSize: 14, color: '#6B7280', width: 120 },
-  detailValue: { fontSize: 15, fontWeight: '600', color: '#111827', flex: 1, textAlign: 'right' },
+  detailLabel: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', width: 120 },
+  detailValue: { fontFamily: Fonts.label.semiBold, fontSize: 15, color: Palette.ink, flex: 1, textAlign: 'right' },
   modalActions: { flexDirection: 'row', gap: 12 },
   actionBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: 12 },
-  actionText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  actionText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 15 },
 });

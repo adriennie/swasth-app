@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import { Feather } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -20,6 +20,8 @@ import {
   View,
 } from 'react-native';
 import * as XLSX from 'xlsx';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Product {
   id: string;
@@ -31,11 +33,6 @@ interface Product {
   price: number;
   sku?: string;
   created_at?: string;
-}
-
-// Simple atob polyfill for React Native if not present
-if (typeof atob === 'undefined') {
-  global.atob = (str: string) => Buffer.from(str, 'base64').toString('binary');
 }
 
 export default function ManageProductsScreen() {
@@ -314,7 +311,7 @@ export default function ManageProductsScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Feather name="chevron-left" size={24} color="#1F2937" />
+          <Feather name="chevron-left" size={24} color={Palette.ink} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Product Management</Text>
         <TouchableOpacity onPress={openCreate} style={styles.addBtn}>
@@ -337,7 +334,7 @@ export default function ManageProductsScreen() {
 
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color="#4F46E5" />
+          <ActivityIndicator size="large" color={Palette.lavenderText} />
           <Text style={styles.loadingText}>Processing...</Text>
         </View>
       ) : (
@@ -383,7 +380,7 @@ export default function ManageProductsScreen() {
 
                   <View style={styles.cardFooter}>
                     <View style={styles.moqBadge}>
-                      <Feather name="layers" size={12} color="#4F46E5" />
+                      <Feather name="layers" size={12} color={Palette.lavenderText} />
                       <Text style={styles.moqBadgeText}>MOQ: {item.moq}</Text>
                     </View>
                     <TouchableOpacity onPress={() => remove(item.id)}>
@@ -417,8 +414,8 @@ export default function ManageProductsScreen() {
                 setChoiceModalVisible(false);
                 setModalVisible(true);
               }}>
-              <View style={[styles.choiceIcon, { backgroundColor: '#EEF2FF' }]}>
-                <Feather name="edit-3" size={20} color="#4F46E5" />
+              <View style={[styles.choiceIcon, { backgroundColor: Palette.lavenderSoft }]}>
+                <Feather name="edit-3" size={20} color={Palette.lavenderText} />
               </View>
               <View>
                 <Text style={styles.choiceBtnText}>Manual Entry</Text>
@@ -468,7 +465,7 @@ export default function ManageProductsScreen() {
                 ) : (
                   <View style={styles.imagePlaceholder}>
                     {uploading ? (
-                      <ActivityIndicator color="#4F46E5" />
+                      <ActivityIndicator color={Palette.lavenderText} />
                     ) : (
                       <>
                         <Feather name="camera" size={32} color="#9CA3AF" />
@@ -568,7 +565,7 @@ export default function ManageProductsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -587,16 +584,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#F3F4F6',
   },
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
   addBtn: {
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: '#4F46E5',
+    backgroundColor: Palette.lavenderText,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 2,
-    shadowColor: '#4F46E5',
+    shadowColor: Palette.lavenderText,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -613,9 +610,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 48,
   },
-  searchInput: { flex: 1, marginLeft: 8, fontSize: 15, color: '#1F2937' },
+  searchInput: { fontFamily: Fonts.body.regular, flex: 1, marginLeft: 8, fontSize: 15, color: Palette.ink },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { marginTop: 12, color: '#6B7280', fontWeight: '600' },
+  loadingText: { fontFamily: Fonts.body.semiBold, marginTop: 12, color: '#6B7280' },
   list: { padding: 16, paddingBottom: 40 },
   card: {
     backgroundColor: '#fff',
@@ -634,35 +631,35 @@ const styles = StyleSheet.create({
     width: 100,
     height: 120,
     borderRadius: 12,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     overflow: 'hidden',
   },
   productImage: { width: '100%', height: '100%', resizeMode: 'cover' },
   placeholderImage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   infoContainer: { flex: 1, marginLeft: 16, justifyContent: 'space-between' },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  productName: { fontSize: 16, fontWeight: '700', color: '#111827', flex: 1 },
+  productName: { fontFamily: Fonts.body.bold, fontSize: 16, color: Palette.ink, flex: 1 },
   skuBadge: { backgroundColor: '#F3F4F6', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  skuText: { fontSize: 10, fontWeight: '700', color: '#6B7280' },
-  description: { fontSize: 13, color: '#6B7280', marginTop: 4, lineHeight: 18 },
+  skuText: { fontFamily: Fonts.body.bold, fontSize: 10, color: '#6B7280' },
+  description: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginTop: 4, lineHeight: 18 },
   priceRow: { flexDirection: 'row', marginTop: 12, gap: 16 },
   priceItem: { flex: 1 },
-  priceLabel: { fontSize: 10, color: '#9CA3AF', fontWeight: '600', textTransform: 'uppercase' },
-  distPrice: { fontSize: 15, fontWeight: '700', color: '#111827' },
-  retailPrice: { fontSize: 15, fontWeight: '700', color: '#4F46E5' },
+  priceLabel: { fontFamily: Fonts.label.semiBold, fontSize: 10, color: '#9CA3AF', textTransform: 'uppercase' },
+  distPrice: { fontFamily: Fonts.label.bold, fontSize: 15, color: Palette.ink },
+  retailPrice: { fontFamily: Fonts.label.bold, fontSize: 15, color: Palette.lavenderText },
   cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 },
   moqBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EEF2FF',
+    backgroundColor: Palette.lavenderSoft,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
     gap: 4,
   },
-  moqBadgeText: { fontSize: 11, fontWeight: '700', color: '#4F46E5' },
+  moqBadgeText: { fontFamily: Fonts.label.bold, fontSize: 11, color: Palette.lavenderText },
   emptyState: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
-  emptyText: { marginTop: 12, color: '#9CA3AF', fontSize: 16 },
+  emptyText: { fontFamily: Fonts.body.regular, marginTop: 12, color: '#9CA3AF', fontSize: 16 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, height: '85%' },
   modalHeader: {
@@ -673,13 +670,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6'
   },
-  modalTitle: { fontSize: 20, fontWeight: '800', color: '#111827' },
+  modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
   modalBody: { padding: 24 },
   imagePickerBtn: {
     width: '100%',
     height: 200,
     borderRadius: 16,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     borderWidth: 2,
     borderColor: '#E5E7EB',
     borderStyle: 'dashed',
@@ -689,12 +686,12 @@ const styles = StyleSheet.create({
   },
   pickedImage: { width: '100%', height: '100%', resizeMode: 'cover' },
   imagePlaceholder: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  imagePlaceholderText: { marginTop: 12, color: '#9CA3AF', fontSize: 14, fontWeight: '600' },
+  imagePlaceholderText: { fontFamily: Fonts.body.semiBold, marginTop: 12, color: '#9CA3AF', fontSize: 14 },
   editImageBadge: {
     position: 'absolute',
     bottom: 12,
     right: 12,
-    backgroundColor: '#4F46E5',
+    backgroundColor: Palette.lavenderText,
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -703,16 +700,17 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   inputGroup: { marginBottom: 20 },
-  inputLabel: { fontSize: 14, fontWeight: '700', color: '#374151', marginBottom: 8 },
+  inputLabel: { fontFamily: Fonts.body.bold, fontSize: 14, color: '#374151', marginBottom: 8 },
   input: {
+    fontFamily: Fonts.body.regular,
     height: 52,
     borderWidth: 1,
     borderColor: '#E5E7EB',
     borderRadius: 12,
     paddingHorizontal: 16,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     fontSize: 15,
-    color: '#111827',
+    color: Palette.ink,
   },
   row: { flexDirection: 'row', gap: 12 },
   modalFooter: {
@@ -731,16 +729,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB'
   },
-  cancelBtnText: { fontSize: 16, fontWeight: '600', color: '#6B7280' },
+  cancelBtnText: { fontFamily: Fonts.body.semiBold, fontSize: 16, color: '#6B7280' },
   saveBtn: {
     flex: 2,
     height: 52,
     borderRadius: 12,
-    backgroundColor: '#4F46E5',
+    backgroundColor: Palette.lavenderText,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  saveBtnText: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  saveBtnText: { fontFamily: Fonts.body.bold, fontSize: 16, color: '#fff' },
   choiceCard: {
     backgroundColor: '#fff',
     marginHorizontal: 20,
@@ -749,13 +747,13 @@ const styles = StyleSheet.create({
     gap: 16,
     marginBottom: 100, // Center it a bit more
   },
-  choiceTitle: { fontSize: 20, fontWeight: '800', color: '#111827', marginBottom: 8, textAlign: 'center' },
+  choiceTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink, marginBottom: 8, textAlign: 'center' },
   choiceBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
     borderRadius: 16,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     borderWidth: 1,
     borderColor: '#F3F4F6',
     gap: 16,
@@ -767,6 +765,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  choiceBtnText: { fontSize: 16, fontWeight: '700', color: '#111827' },
-  choiceSubtext: { fontSize: 12, color: '#6B7280', marginTop: 2 },
+  choiceBtnText: { fontFamily: Fonts.body.bold, fontSize: 16, color: Palette.ink },
+  choiceSubtext: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', marginTop: 2 },
 });

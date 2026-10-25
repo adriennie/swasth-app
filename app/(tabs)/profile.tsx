@@ -12,6 +12,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function ProfileScreen() {
   const { auth, logout } = useAuth();
@@ -39,7 +41,7 @@ export default function ProfileScreen() {
   const QuickActions = () => (
     <View style={styles.quickActionsSection}>
       <TouchableOpacity style={styles.quickActionButton} onPress={() => router.push('/(tabs)/')}>
-        <Feather name="shopping-bag" size={24} color="#3B82F6" />
+        <Feather name="shopping-bag" size={24} color={Palette.lavender} />
         <Text style={styles.quickActionButtonText}>Shop</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.quickActionButton} onPress={() => router.push('/(tabs)/tracker')}>
@@ -55,7 +57,7 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#3B82F6', '#1D4ED8']} style={styles.header}>
+      <LinearGradient colors={[Palette.lavenderText, Palette.lavender]} style={styles.header}>
         <View style={styles.avatar}>
           <Feather name="user" size={40} color="#fff" />
         </View>
@@ -106,11 +108,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   profileName: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 22,
-    fontWeight: 'bold',
     color: '#fff',
   },
   profileRole: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: 'rgba(255,255,255,0.8)',
     marginTop: 4,
@@ -130,9 +133,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quickActionButtonText: {
+    fontFamily: Fonts.body.semiBold,
     marginTop: 8,
     fontSize: 12,
-    fontWeight: '600',
     color: '#4B5563',
   },
   menuContainer: {
@@ -148,10 +151,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#F3F4F6',
   },
   menuItemText: {
+    fontFamily: Fonts.body.semiBold,
     flex: 1,
     marginLeft: 15,
     fontSize: 16,
-    fontWeight: '600',
     color: '#374151',
   },
   logoutButton: {
@@ -164,9 +167,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   logoutText: {
+    fontFamily: Fonts.heading.semiBold,
     marginLeft: 10,
     fontSize: 16,
-    fontWeight: '600',
     color: '#EF4444',
   },
 }); 

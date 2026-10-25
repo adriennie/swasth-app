@@ -1,4 +1,4 @@
-import { Colors } from '@/constants/Colors';
+import { Colors, Palette } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Feather } from '@expo/vector-icons';
@@ -18,6 +18,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Fonts } from '@/constants/Fonts';
 
 interface CartItem {
     product_id: string;
@@ -311,7 +312,7 @@ export default function PharmacyCartScreen() {
 
             {loading && !checkoutVisible && (
                 <View style={styles.loadingOverlay}>
-                    <ActivityIndicator size="large" color="#7C3AED" />
+                    <ActivityIndicator size="large" color={Palette.lavenderText} />
                 </View>
             )}
         </SafeAreaView>
@@ -319,7 +320,7 @@ export default function PharmacyCartScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F8FAFC' },
+    container: { flex: 1, backgroundColor: Palette.canvas },
     header: {
         padding: 20,
         paddingTop: 50,
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#fff',
     },
-    headerTitle: { fontSize: 20, fontWeight: 'bold' },
+    headerTitle: { fontFamily: Fonts.heading.bold, fontSize: 20 },
     list: { padding: 16 },
     empty: { alignItems: 'center', marginTop: 60 },
     emptyText: { color: '#9CA3AF', marginTop: 16 },
@@ -341,32 +342,32 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         elevation: 2,
     },
-    name: { fontSize: 16, fontWeight: '600', color: '#111827' },
-    price: { fontSize: 14, color: '#7C3AED', fontWeight: 'bold', marginTop: 4 },
+    name: { fontFamily: Fonts.body.semiBold, fontSize: 16, color: Palette.ink },
+    price: { fontFamily: Fonts.label.bold, fontSize: 14, color: Palette.lavenderText, marginTop: 4 },
     controls: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#F3F4F6', borderRadius: 8, padding: 4 },
     qtyBtn: { padding: 8, backgroundColor: '#fff', borderRadius: 6 },
-    qty: { fontWeight: 'bold', minWidth: 20, textAlign: 'center' },
+    qty: { fontFamily: Fonts.label.bold, minWidth: 20, textAlign: 'center' },
     footer: { padding: 20, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#E2E8F0' },
     totalRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
-    totalLabel: { fontSize: 16, color: '#64748B' },
-    totalValue: { fontSize: 20, fontWeight: 'bold', color: '#111827' },
-    checkoutBtn: { backgroundColor: '#7C3AED', padding: 16, borderRadius: 12, alignItems: 'center' },
-    checkoutText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+    totalLabel: { fontFamily: Fonts.label.regular, fontSize: 16, color: '#64748B' },
+    totalValue: { fontFamily: Fonts.heading.bold, fontSize: 20, color: Palette.ink },
+    checkoutBtn: { backgroundColor: Palette.lavenderText, padding: 16, borderRadius: 12, alignItems: 'center' },
+    checkoutText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
 
     // Modal
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
     modalCard: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
     closeBtn: { alignSelf: 'flex-end', padding: 4 },
-    modalTitle: { fontSize: 20, fontWeight: 'bold', marginTop: 8 },
+    modalTitle: { fontFamily: Fonts.heading.bold, fontSize: 20, marginTop: 8 },
     modalSubtitle: { color: '#64748B', marginTop: 4, marginBottom: 16 },
     distOption: { flexDirection: 'row', alignItems: 'center', padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', marginBottom: 12, gap: 12 },
-    distSelected: { borderColor: '#7C3AED', backgroundColor: '#F5F3FF' },
+    distSelected: { borderColor: Palette.lavenderText, backgroundColor: Palette.lavenderSoft },
     radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: '#CBD5E1', alignItems: 'center', justifyContent: 'center' },
-    radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#7C3AED' },
-    distName: { fontWeight: '600', color: '#1E293B' },
-    distSub: { fontSize: 12, color: '#64748B' },
+    radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: Palette.lavenderText },
+    distName: { fontFamily: Fonts.body.semiBold, color: Palette.ink },
+    distSub: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#64748B' },
     placeBtn: { backgroundColor: '#059669', padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 8 },
-    placeText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+    placeText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
 
-    loadingOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255,255,255,0.7)', justifyContent: 'center', alignItems: 'center' }
+    loadingOverlay: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(255,255,255,0.7)', justifyContent: 'center', alignItems: 'center' }
 });

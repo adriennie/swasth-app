@@ -6,6 +6,8 @@ import React, { useState } from 'react';
 import { Alert, FlatList, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/context/AuthContext';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Product {
   id: string;
@@ -171,7 +173,7 @@ function ImageGallery() {
             onPress={() => setCurrentIndex(index)}
             style={[
               styles.thumbnail,
-              { borderColor: index === currentIndex ? '#6366F1' : '#E2E8F0' }
+              { borderColor: index === currentIndex ? Palette.lavenderText : '#E2E8F0' }
             ]}
           >
             <View style={styles.thumbnailImage} />
@@ -313,7 +315,7 @@ export default function ProductDetail() {
 
         {/* Product Info */}
         <View style={styles.productInfo}>
-          <ThemedText type="default" style={{ color: '#6366F1', fontWeight: '600', textTransform: 'uppercase' }}>
+          <ThemedText type="default" style={{ fontFamily: Fonts.body.semiBold, color: Palette.lavenderText, textTransform: 'uppercase' }}>
             {PRODUCT.brand}
           </ThemedText>
           
@@ -324,7 +326,7 @@ export default function ProductDetail() {
           <View style={styles.ratingRow}>
             <Rating value={PRODUCT.rating} />
             <ThemedText type="defaultSemiBold">{PRODUCT.rating}</ThemedText>
-            <ThemedText type="default" style={{ color: '#6366F1' }}>
+            <ThemedText type="default" style={{ color: Palette.lavenderText }}>
               {PRODUCT.reviewCount.toLocaleString()} reviews
             </ThemedText>
           </View>
@@ -338,7 +340,7 @@ export default function ProductDetail() {
                   ${PRODUCT.originalPrice}
                 </ThemedText>
                 <View style={styles.discountBadge}>
-                  <ThemedText type="default" style={{ color: '#FFFFFF', fontWeight: '700' }}>
+                  <ThemedText type="default" style={{ fontFamily: Fonts.body.bold, color: '#FFFFFF' }}>
                     Save {discountPercent}%
                   </ThemedText>
                 </View>
@@ -368,8 +370,8 @@ export default function ProductDetail() {
                   style={[
                     styles.absorbencyOption,
                     { 
-                      backgroundColor: selectedAbsorbency === level ? '#1F2937' : '#FFFFFF',
-                      borderColor: selectedAbsorbency === level ? '#1F2937' : '#E5E7EB'
+                      backgroundColor: selectedAbsorbency === level ? Palette.ink : '#FFFFFF',
+                      borderColor: selectedAbsorbency === level ? Palette.ink : '#E5E7EB'
                     }
                   ]}
                 >
@@ -413,7 +415,7 @@ export default function ProductDetail() {
           </Pressable>
 
           {auth?.role === 'pharmacy' && (
-            <Pressable style={[styles.addToCartButton, { backgroundColor: '#7C3AED' }]} onPress={addToPharmacyInventory}>
+            <Pressable style={[styles.addToCartButton, { backgroundColor: Palette.lavenderText }]} onPress={addToPharmacyInventory}>
               <ThemedText type="defaultSemiBold" style={{ color: '#FFFFFF', fontSize: 16 }}>
                 ➕ Add to Inventory
               </ThemedText>
@@ -449,11 +451,11 @@ export default function ProductDetail() {
                 onPress={() => setActiveTab(tab.id as typeof activeTab)}
                 style={[
                   styles.tab,
-                  { borderBottomColor: activeTab === tab.id ? '#6366F1' : 'transparent' }
+                  { borderBottomColor: activeTab === tab.id ? Palette.lavenderText : 'transparent' }
                 ]}
               >
                 <ThemedText type="defaultSemiBold" style={{ 
-                  color: activeTab === tab.id ? '#6366F1' : '#6B7280' 
+                  color: activeTab === tab.id ? Palette.lavenderText : '#6B7280' 
                 }}>
                   {tab.label}
                 </ThemedText>
@@ -476,7 +478,7 @@ export default function ProductDetail() {
                 </ThemedText>
                 {PRODUCT.keyFeatures.map((feature, index) => (
                   <View key={index} style={styles.featureRow}>
-                    <ThemedText type="default" style={{ color: '#6366F1' }}>⚡</ThemedText>
+                    <ThemedText type="default" style={{ color: Palette.lavenderText }}>⚡</ThemedText>
                     <ThemedText type="default" style={{ color: '#374151', flex: 1 }}>{feature}</ThemedText>
                   </View>
                 ))}
@@ -652,7 +654,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   benefitsBox: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: Palette.canvas,
     padding: 20,
     borderRadius: 20,
     marginBottom: 24,
@@ -687,7 +689,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   addToCartButton: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Palette.ink,
     paddingVertical: 16,
     borderRadius: 20,
     alignItems: 'center',
@@ -764,7 +766,7 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 12,
     padding: 16,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: Palette.canvas,
     borderRadius: 16,
   },
   ingredientRow: {
@@ -796,7 +798,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   writeReviewButton: {
-    backgroundColor: '#1F2937',
+    backgroundColor: Palette.ink,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 16,

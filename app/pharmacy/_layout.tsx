@@ -1,6 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { hiddenTab } from '@/constants/navigation';
 import { Platform } from 'react-native';
+import { Palette } from '@/constants/Colors';
 
 export default function PharmacyLayout() {
   return (
@@ -18,13 +20,13 @@ export default function PharmacyLayout() {
           paddingBottom: Platform.OS === 'ios' ? 25 : 10,
           paddingTop: 10,
         },
-        tabBarActiveTintColor: '#7C3AED',
+        tabBarActiveTintColor: Palette.lavenderText,
         tabBarInactiveTintColor: '#6B7280',
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          href: null,
+          ...hiddenTab,
         }}
       />
       <Tabs.Screen
@@ -32,7 +34,7 @@ export default function PharmacyLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="home" size={focused ? 24 : 22} color={color} />
+            <Feather name="home" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -41,7 +43,7 @@ export default function PharmacyLayout() {
         options={{
           title: 'Inventory',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="box" size={focused ? 24 : 22} color={color} />
+            <Feather name="box" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -50,7 +52,7 @@ export default function PharmacyLayout() {
         options={{
           title: 'Orders',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="list" size={focused ? 24 : 22} color={color} />
+            <Feather name="list" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -59,26 +61,26 @@ export default function PharmacyLayout() {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="settings" size={focused ? 24 : 22} color={color} />
+            <Feather name="settings" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
       <Tabs.Screen
         name="catalog"
         options={{
-          href: null,
+          ...hiddenTab,
         }}
       />
       <Tabs.Screen
         name="add-inventory"
         options={{
-          href: null,
+          ...hiddenTab,
         }}
       />
       <Tabs.Screen
         name="cart"
         options={{
-          href: null,
+          ...hiddenTab,
           tabBarStyle: { display: 'none' }, // Hide tab bar on cart screen if desired
         }}
       />

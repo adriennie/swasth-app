@@ -5,19 +5,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
-  Dimensions,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
-
-const { height } = Dimensions.get('window');
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
+import { Shadow } from '@/components/ui/kit';
 
 type Role = 'admin' | 'distributor' | 'pharmacy';
 
@@ -25,7 +27,9 @@ export default function SupplierLoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<Role>('distributor');
+  const [role, setRole] = useState<Role>('pharmacy');
+  const [submitting, setSubmitting] = useState(false);
+  const insets = useSafeAreaInsets();
   const { login } = useAuth();
 
   const handleSupplierLogin = async () => {
@@ -34,6 +38,7 @@ export default function SupplierLoginScreen() {
       return;
     }
 
+    setSubmitting(true);
     try {
       // 1. Authenticate with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
@@ -99,238 +104,207 @@ export default function SupplierLoginScreen() {
     } catch (e) {
       console.error(e);
       Alert.alert('Error', 'An unexpected error occurred while logging in.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const RoleSelector = () => (
-    <View>
-      <Text style={styles.roleSelectorLabel}>Select your role</Text>
-      <View style={styles.roleSelectorContainer}>
-        {[
-          { id: 'distributor', name: 'Distributor', icon: 'truck' },
-          { id: 'pharmacy', name: 'Pharmacy', icon: 'home' },
-          { id: 'admin', name: 'Admin', icon: 'shield' },
-        ].map((r) => (
-          <TouchableOpacity
-            key={r.id}
-            style={[styles.roleButton, role === r.id && styles.roleButtonActive]}
-            onPress={() => setRole(r.id as Role)}>
-            <Feather name={r.icon as any} size={18} color={role === r.id ? '#fff' : '#4B5563'} />
-            <Text style={[styles.roleButtonText, role === r.id && styles.roleButtonTextActive]}>
-              {r.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-  );
-
   return (
-    <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#059669', '#10B981']} style={styles.gradient} />
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <LinearGradient
+          colors={[Palette.ink, Palette.lavenderDeep]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.hero, { paddingTop: insets.top + 12 }]}
+        >
+          <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={() => router.back()} style={styles.back}>
+            <Feather name="chevron-left" size={20} color="#fff" />
+          </Pressable>
+          <Text style={styles.title}>Welcome back</Text>
+          <Text style={styles.subtitle}>Sign in to your Swasthya workspace.</Text>
+        </LinearGradient>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Supplier Portal</Text>
-          <Text style={styles.subtitle}>
-            Access your dashboard, manage inventory, and view orders.
-          </Text>
-        </View>
+        <View style={styles.form}>
+          <Text style={styles.label}>I am signing in as</Text>
+          <View style={styles.roles}>
+            {ROLES.map((r) => {
+              const active = role === r.id;
+              return (
+                <Pressable
+                  key={r.id}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: active }}
+                  onPress={() => setRole(r.id)}
+                  style={[styles.role, active && styles.roleActive]}
+                >
+                  <View style={[styles.roleIcon, active && styles.roleIconActive]}>
+                    <Feather name={r.icon} size={16} color={active ? '#fff' : Palette.lavenderText} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.roleName}>{r.name}</Text>
+                    <Text style={styles.roleDesc}>{r.description}</Text>
+                  </View>
+                  <View style={[styles.radio, active && styles.radioActive]}>{active ? <View style={styles.radioDot} /> : null}</View>
+                </Pressable>
+              );
+            })}
+          </View>
 
-        <View style={styles.formContainer}>
-          <RoleSelector />
-
-          <View style={styles.inputContainer}>
-            <Feather name="mail" size={20} color="#6B7280" style={styles.inputIcon} />
+          <Text style={styles.label}>Email</Text>
+          <View style={styles.input}>
+            <Feather name="mail" size={18} color="#64748B" />
             <TextInput
-              style={styles.input}
-              placeholder="Business Email"
-              placeholderTextColor="#9CA3AF"
+              style={styles.inputText}
+              placeholder="you@business.com"
+              placeholderTextColor="#94A3B8"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
+              accessibilityLabel="Email"
             />
           </View>
 
-          <View style={styles.inputContainer}>
-            <Feather name="lock" size={20} color="#6B7280" style={styles.inputIcon} />
+          <Text style={styles.label}>Password</Text>
+          <View style={styles.input}>
+            <Feather name="lock" size={18} color="#64748B" />
             <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#9CA3AF"
+              style={styles.inputText}
+              placeholder="Your password"
+              placeholderTextColor="#94A3B8"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
               autoComplete="password"
+              accessibilityLabel="Password"
+              onSubmitEditing={handleSupplierLogin}
             />
-            <TouchableOpacity style={styles.eyeButton} onPress={() => setShowPassword(!showPassword)}>
-              <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#6B7280" />
-            </TouchableOpacity>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+              onPress={() => setShowPassword(!showPassword)}
+              hitSlop={8}
+            >
+              <Feather name={showPassword ? 'eye-off' : 'eye'} size={18} color="#64748B" />
+            </Pressable>
           </View>
 
-          <TouchableOpacity style={styles.primaryButton} onPress={handleSupplierLogin}>
-            <Text style={styles.primaryButtonText}>Sign In</Text>
-          </TouchableOpacity>
+          <Pressable
+            accessibilityRole="button"
+            disabled={submitting}
+            onPress={handleSupplierLogin}
+            style={({ pressed }) => [styles.primary, (pressed || submitting) && { opacity: 0.85 }]}
+          >
+            {submitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.primaryText}>Sign in</Text>}
+          </Pressable>
 
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={() => router.push('/(auth)/supplier-signup')}>
-            <Text style={styles.secondaryButtonText}>Create a new Supplier Account</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Text style={styles.backButtonText}>Not a supplier? Go back</Text>
-          </TouchableOpacity>
+          <Pressable accessibilityRole="link" style={styles.link} onPress={() => router.push('/(auth)/supplier-signup')}>
+            <Text style={styles.linkText}>
+              New to Swasthya? <Text style={styles.linkStrong}>Register your business</Text>
+            </Text>
+          </Pressable>
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
+const ROLES: { id: Role; name: string; description: string; icon: React.ComponentProps<typeof Feather>['name'] }[] = [
+  { id: 'pharmacy', name: 'Pharmacy', description: 'Inventory, reorders and incoming deliveries', icon: 'home' },
+  { id: 'distributor', name: 'Distributor', description: 'Pharmacy orders, fulfilment and stock', icon: 'truck' },
+  { id: 'admin', name: 'Admin', description: 'Approvals, mappings and network health', icon: 'shield' },
+];
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F4F6',
+  container: { flex: 1, backgroundColor: Palette.canvas },
+  hero: {
+    paddingHorizontal: 22,
+    paddingBottom: 56,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
   },
-  gradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: height * 0.4,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.9)',
-    textAlign: 'center',
-    marginTop: 8,
-    paddingHorizontal: 20,
-  },
-  formContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 24,
-    elevation: 12,
-  },
-  roleSelectorLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4B5563',
-    marginBottom: 8,
-    marginLeft: 4,
-  },
-  roleSelectorContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#F3F4F6',
+  back: {
+    width: 38,
+    height: 38,
     borderRadius: 12,
-    padding: 4,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
   },
-  roleButton: {
-    flex: 1,
+  title: { fontFamily: Fonts.heading.extraBold, fontSize: 28, color: '#fff' },
+  subtitle: { fontFamily: Fonts.body.regular, fontSize: 14, color: 'rgba(255,255,255,0.78)', marginTop: 6 },
+  form: {
+    marginHorizontal: 16,
+    marginTop: -36,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 18,
+    ...Shadow,
+  },
+  label: { fontFamily: Fonts.label.semiBold, fontSize: 13, color: Palette.ink, marginBottom: 8, marginTop: 6 },
+  roles: { gap: 8, marginBottom: 12 },
+  role: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 10,
-    gap: 8,
-  },
-  roleButtonActive: {
-    backgroundColor: '#10B981',
-    shadowColor: '#059669',
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  roleButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4B5563',
-  },
-  roleButtonTextActive: {
-    color: '#fff',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12,
-    marginBottom: 16,
-    paddingHorizontal: 16,
+    gap: 12,
+    padding: 12,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#E7E3F1',
+    backgroundColor: '#fff',
   },
-  inputIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    height: 52,
-    fontSize: 16,
-    color: '#1F2937',
-  },
-  eyeButton: {
-    padding: 8,
-  },
-  primaryButton: {
-    backgroundColor: '#059669',
-    borderRadius: 12,
-    height: 52,
+  roleActive: { borderColor: Palette.lavenderText, backgroundColor: Palette.lavenderSoft },
+  roleIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    backgroundColor: Palette.lavenderSoft,
+    alignItems: 'center',
     justifyContent: 'center',
+  },
+  roleIconActive: { backgroundColor: Palette.lavenderText },
+  roleName: { fontFamily: Fonts.heading.bold, fontSize: 14, color: Palette.ink },
+  roleDesc: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#64748B', marginTop: 1 },
+  radio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#CBD5E1',
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioActive: { borderColor: Palette.lavenderText },
+  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Palette.lavenderText },
+  input: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: Palette.canvas,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E7E3F1',
+    paddingHorizontal: 14,
+    marginBottom: 12,
+  },
+  inputText: { fontFamily: Fonts.body.regular, flex: 1, height: 50, fontSize: 15, color: Palette.ink },
+  primary: {
     marginTop: 8,
-    shadowColor: '#059669',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  primaryButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  secondaryButton: {
-    marginTop: 20,
+    height: 52,
+    borderRadius: 14,
+    backgroundColor: Palette.lavenderText,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  secondaryButtonText: {
-    fontSize: 14,
-    color: '#059669',
-    fontWeight: '600',
-  },
-  backButton: {
-    marginTop: 16,
-    alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
+  primaryText: { fontFamily: Fonts.body.bold, fontSize: 16, color: '#fff' },
+  link: { alignItems: 'center', paddingTop: 16, paddingBottom: 4 },
+  linkText: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#64748B' },
+  linkStrong: { fontFamily: Fonts.body.semiBold, color: Palette.lavenderText },
 });

@@ -14,8 +14,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
+import { ML_API } from '@/services/swasthyaML';
 
-const ML_API = 'https://074hc0y3ta.execute-api.ap-south-1.amazonaws.com/default';
 
 function ResultBox({ title, status, data, duration }: {
   title: string;
@@ -23,7 +25,7 @@ function ResultBox({ title, status, data, duration }: {
   data: any;
   duration?: number;
 }) {
-  const colors = { idle: '#9CA3AF', loading: '#7C3AED', pass: '#10B981', fail: '#EF4444' };
+  const colors = { idle: '#9CA3AF', loading: Palette.lavenderText, pass: '#10B981', fail: '#EF4444' };
   const icons  = { idle: 'minus-circle', loading: 'loader', pass: 'check-circle', fail: 'x-circle' };
   return (
     <View style={[rS.box, { borderLeftColor: colors[status] }]}>
@@ -32,7 +34,7 @@ function ResultBox({ title, status, data, duration }: {
         <Text style={[rS.title, { color: colors[status] }]}>{title}</Text>
         {duration !== undefined && <Text style={rS.ms}>{duration}ms</Text>}
       </View>
-      {status === 'loading' && <ActivityIndicator size="small" color="#7C3AED" style={{ marginTop: 8 }} />}
+      {status === 'loading' && <ActivityIndicator size="small" color={Palette.lavenderText} style={{ marginTop: 8 }} />}
       {(status === 'pass' || status === 'fail') && data && (
         <View style={rS.rows}>
           {Object.entries(data).map(([k, v]) => (
@@ -232,7 +234,7 @@ export default function MLTestScreen() {
     <SafeAreaView style={s.container}>
       <View style={s.header}>
         <TouchableOpacity onPress={() => router.back()} style={s.back}>
-          <Feather name="arrow-left" size={20} color="#111827" />
+          <Feather name="arrow-left" size={20} color={Palette.ink} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <Text style={s.title}>ML Model Test</Text>
@@ -313,37 +315,37 @@ export default function MLTestScreen() {
 const rS = StyleSheet.create({
   box:    { backgroundColor: '#fff', borderRadius: 10, padding: 12, borderLeftWidth: 4, marginTop: 8 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title:  { fontSize: 13, fontWeight: '700', flex: 1 },
-  ms:     { fontSize: 11, color: '#9CA3AF' },
+  title:  { fontFamily: Fonts.heading.bold, fontSize: 13, flex: 1 },
+  ms:     { fontFamily: Fonts.body.regular, fontSize: 11, color: '#9CA3AF' },
   rows:   { marginTop: 10, gap: 4 },
   row:    { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' },
-  key:    { fontSize: 12, color: '#6B7280', flex: 1 },
-  val:    { fontSize: 12, fontWeight: '600', color: '#111827', flex: 1.2, textAlign: 'right' },
+  key:    { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', flex: 1 },
+  val:    { fontFamily: Fonts.body.semiBold, fontSize: 12, color: Palette.ink, flex: 1.2, textAlign: 'right' },
 });
 
 const s = StyleSheet.create({
-  container:   { flex: 1, backgroundColor: '#F8FAFC' },
+  container:   { flex: 1, backgroundColor: Palette.canvas },
   header:      { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, paddingTop: 50, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#E5E7EB' },
   back:        { padding: 8, backgroundColor: '#F3F4F6', borderRadius: 10 },
-  title:       { fontSize: 17, fontWeight: '800', color: '#111827' },
-  sub:         { fontSize: 12, color: '#6B7280' },
+  title:       { fontFamily: Fonts.heading.extraBold, fontSize: 17, color: Palette.ink },
+  sub:         { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280' },
   badge:       { borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6 },
-  badgeText:   { fontSize: 13, fontWeight: '800' },
+  badgeText:   { fontFamily: Fonts.label.extraBold, fontSize: 13 },
   scroll:      { padding: 16, gap: 14, paddingBottom: 50 },
-  idBox:       { backgroundColor: '#EFF6FF', borderRadius: 12, padding: 14, gap: 4 },
-  idTitle:     { fontSize: 13, fontWeight: '700', color: '#1D4ED8', marginBottom: 4 },
-  idText:      { fontSize: 13, color: '#1E40AF' },
-  idVal:       { fontWeight: '800' },
-  idNote:      { fontSize: 11, color: '#3730A3', marginTop: 6, fontStyle: 'italic' },
-  runAll:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#7C3AED', borderRadius: 14, paddingVertical: 16 },
-  runAllText:  { color: '#fff', fontWeight: '800', fontSize: 16 },
-  section:     { backgroundColor: '#F9FAFB', borderRadius: 14, padding: 14 },
+  idBox:       { backgroundColor: Palette.tealSoft, borderRadius: 12, padding: 14, gap: 4 },
+  idTitle:     { fontFamily: Fonts.heading.bold, fontSize: 13, color: Palette.tealText, marginBottom: 4 },
+  idText:      { fontFamily: Fonts.body.regular, fontSize: 13, color: Palette.tealDeep },
+  idVal:       { fontFamily: Fonts.body.extraBold },
+  idNote:      { fontFamily: Fonts.body.regular, fontSize: 11, color: Palette.lavenderDeep, marginTop: 6, fontStyle: 'italic' },
+  runAll:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: Palette.lavenderText, borderRadius: 14, paddingVertical: 16 },
+  runAllText:  { fontFamily: Fonts.body.extraBold, color: '#fff', fontSize: 16 },
+  section:     { backgroundColor: Palette.canvas, borderRadius: 14, padding: 14 },
   sectionTop:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
-  sectionTitle:{ fontSize: 14, fontWeight: '700', color: '#111827', flex: 1 },
-  desc:        { fontSize: 12, color: '#6B7280', marginBottom: 4 },
-  runBtn:      { backgroundColor: '#7C3AED', borderRadius: 8, paddingHorizontal: 14, paddingVertical: 6 },
-  runBtnText:  { color: '#fff', fontSize: 13, fontWeight: '700' },
+  sectionTitle:{ fontFamily: Fonts.heading.bold, fontSize: 14, color: Palette.ink, flex: 1 },
+  desc:        { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', marginBottom: 4 },
+  runBtn:      { backgroundColor: Palette.lavenderText, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 6 },
+  runBtnText:  { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 13 },
   summary:     { flexDirection: 'row', alignItems: 'flex-start', gap: 12, borderRadius: 14, padding: 16 },
-  sumTitle:    { fontSize: 15, fontWeight: '800', marginBottom: 4 },
-  sumDesc:     { fontSize: 13, color: '#374151' },
+  sumTitle:    { fontFamily: Fonts.heading.extraBold, fontSize: 15, marginBottom: 4 },
+  sumDesc:     { fontFamily: Fonts.body.regular, fontSize: 13, color: '#374151' },
 });

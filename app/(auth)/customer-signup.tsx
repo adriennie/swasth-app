@@ -15,6 +15,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 const { height } = Dimensions.get('window');
 
@@ -43,7 +45,7 @@ export default function CustomerSignupScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#3B82F6', '#1D4ED8']} style={styles.gradient} />
+      <LinearGradient colors={[Palette.lavenderText, Palette.lavender]} style={styles.gradient} />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -143,12 +145,13 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   title: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 36,
-    fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
   },
   subtitle: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     borderRadius: 12,
     marginBottom: 16,
     paddingHorizontal: 16,
@@ -179,39 +182,40 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   input: {
+    fontFamily: Fonts.body.regular,
     flex: 1,
     height: 52,
     fontSize: 16,
-    color: '#1F2937',
+    color: Palette.ink,
   },
   eyeButton: {
     padding: 8,
   },
   primaryButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: Palette.lavenderText,
     borderRadius: 12,
     height: 52,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 8,
-    shadowColor: '#2563EB',
+    shadowColor: Palette.lavenderText,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
   },
   primaryButtonText: {
+    fontFamily: Fonts.body.bold,
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
   },
   backButton: {
     marginTop: 20,
     alignItems: 'center',
   },
   backButtonText: {
+    fontFamily: Fonts.body.medium,
     fontSize: 14,
     color: '#6B7280',
-    fontWeight: '500',
   },
 });

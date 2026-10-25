@@ -3,6 +3,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Redirect } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function Index() {
   const [showSplash, setShowSplash] = useState(true);
@@ -29,7 +31,7 @@ export default function Index() {
     return (
       <SafeAreaView style={styles.container}>
         <LinearGradient
-          colors={['#2563EB', '#1E40AF']}
+          colors={[Palette.tealText, Palette.tealDeep]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.gradient}>
@@ -60,7 +62,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2563EB',
+    backgroundColor: Palette.tealText,
   },
   gradient: {
     flex: 1,
@@ -85,12 +87,13 @@ const styles = StyleSheet.create({
     height: 46,
   },
   title: {
+    fontFamily: Fonts.heading.extraBold,
     fontSize: 34,
-    fontWeight: '800',
     color: '#FFFFFF',
     textAlign: 'center',
   },
   subtitle: {
+    fontFamily: Fonts.body.regular,
     marginTop: 6,
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',

@@ -14,6 +14,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 const { width, height } = Dimensions.get('window');
 
@@ -49,7 +51,7 @@ const TOPICS: Topic[] = [
     title: 'Cycle Basics',
     description: 'Understanding your menstrual cycle',
     icon: 'calendar',
-    color: '#FF6B9D',
+    color: Palette.lavenderText,
     articleCount: 12,
   },
   {
@@ -65,7 +67,7 @@ const TOPICS: Topic[] = [
     title: 'Product Guides',
     description: 'How to use menstrual products',
     icon: 'cube',
-    color: '#FF8E53',
+    color: Palette.lavender,
     articleCount: 15,
   },
   {
@@ -73,7 +75,7 @@ const TOPICS: Topic[] = [
     title: 'Sexual Health',
     description: 'Safe practices & education',
     icon: 'heart',
-    color: '#A78BFA',
+    color: Palette.lavender,
     articleCount: 6,
   },
   {
@@ -288,7 +290,7 @@ export default function LearnScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#FF6B9D', '#FF8E53']}
+        colors={[Palette.lavenderText, Palette.lavender]}
         style={styles.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -398,7 +400,7 @@ export default function LearnScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: Palette.canvas,
   },
   header: {
     paddingTop: 20,
@@ -409,13 +411,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 28,
-    fontWeight: '700',
     color: '#fff',
     marginTop: 8,
     marginBottom: 4,
   },
   headerSubtitle: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
@@ -428,12 +431,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   sectionTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 22,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    color: Palette.ink,
     marginBottom: 8,
   },
   sectionSubtitle: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: '#666',
     marginBottom: 20,
@@ -469,20 +473,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topicTitle: {
+    fontFamily: Fonts.heading.semiBold,
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1A1A1A',
+    color: Palette.ink,
     marginBottom: 4,
   },
   topicDescription: {
+    fontFamily: Fonts.body.regular,
     fontSize: 14,
     color: '#666',
     marginBottom: 4,
   },
   topicCount: {
+    fontFamily: Fonts.body.medium,
     fontSize: 12,
     color: '#999',
-    fontWeight: '500',
   },
   articleCard: {
     backgroundColor: '#fff',
@@ -509,23 +514,25 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   articleCategory: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 12,
-    fontWeight: '600',
-    color: '#FF6B9D',
+    color: Palette.lavenderText,
     textTransform: 'uppercase',
   },
   articleReadTime: {
+    fontFamily: Fonts.body.regular,
     fontSize: 12,
     color: '#999',
   },
   articleTitle: {
+    fontFamily: Fonts.heading.semiBold,
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1A1A1A',
+    color: Palette.ink,
     marginBottom: 8,
     lineHeight: 24,
   },
   articleExcerpt: {
+    fontFamily: Fonts.body.regular,
     fontSize: 14,
     color: '#666',
     lineHeight: 20,
@@ -542,9 +549,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   articleTagText: {
+    fontFamily: Fonts.body.medium,
     fontSize: 12,
     color: '#475569',
-    fontWeight: '500',
   },
   mythFactCard: {
     backgroundColor: '#fff',
@@ -568,13 +575,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mythLabel: {
+    fontFamily: Fonts.body.bold,
     fontSize: 12,
-    fontWeight: '700',
     color: '#EF4444',
     marginLeft: 8,
     textTransform: 'uppercase',
   },
   mythText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 14,
     color: '#666',
     fontStyle: 'italic',
@@ -588,16 +596,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   factLabel: {
+    fontFamily: Fonts.body.bold,
     fontSize: 12,
-    fontWeight: '700',
     color: '#10B981',
     marginLeft: 8,
     textTransform: 'uppercase',
   },
   factText: {
+    fontFamily: Fonts.body.medium,
     fontSize: 14,
     color: '#333',
-    fontWeight: '500',
   },
   quizSection: {
     marginTop: 32,
@@ -611,13 +619,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quizTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 20,
-    fontWeight: '700',
     color: '#fff',
     marginTop: 12,
     marginBottom: 8,
   },
   quizSubtitle: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
@@ -633,8 +642,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   quizButtonText: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 16,
-    fontWeight: '600',
     color: '#fff',
   },
 }); 

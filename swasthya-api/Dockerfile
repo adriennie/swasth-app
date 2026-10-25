@@ -1,26 +1,26 @@
-# Use AWS Lambda base image
-FROM public.ecr.aws/lambda/python:3.11
+# HTTP server for the Swasthya ML API (FastAPI + uvicorn).
+# Runs locally with Docker and as a Hugging Face Docker Space.
+# The AWS Lambda image is built from Dockerfile.lambda instead.
+FROM python:3.11-slim
 
-# Install system dependency (for LightGBM)
-RUN yum install -y libgomp
+# LightGBM needs the OpenMP runtime.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip
-RUN pip install --upgrade pip
+# Hugging Face Spaces run containers as user 1000.
+RUN useradd -m -u 1000 user
+USER user
+ENV PATH="/home/user/.local/bin:$PATH"
+WORKDIR /home/user/app
 
-# Install Python libraries (prebuilt only)
-RUN pip install --only-binary=:all: \
-    numpy==1.26.4 \
-    pandas==2.2.2 \
-    scipy==1.11.4 \
-    scikit-learn==1.4.2 \
-    joblib==1.3.2 \
-    lightgbm==3.3.5
+COPY --chown=user requirements.txt .
+RUN pip install --no-cache-dir --only-binary=:all: -r requirements.txt
 
-# Copy your Lambda function
-COPY lambda_function.py .
+COPY --chown=user lambda_function.py server.py ./
+COPY --chown=user models/ ./models/
 
-# Copy models folder
-COPY models/ ./models/
-
-# Set Lambda handler
-CMD ["lambda_function.lambda_handler"]
+# Hugging Face Spaces expect port 7860.
+ENV PORT=7860
+EXPOSE 7860
+CMD ["sh", "-c", "uvicorn server:app --host 0.0.0.0 --port ${PORT}"]

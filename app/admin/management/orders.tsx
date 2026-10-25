@@ -19,6 +19,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Order {
   id: string;
@@ -113,7 +115,7 @@ export default function ManageOrdersScreen() {
     switch (status.toLowerCase()) {
       case 'pending':   return '#F59E0B';
       case 'approved':  return '#10B981';
-      case 'shipped':   return '#3B82F6';
+      case 'shipped':   return Palette.teal;
       case 'delivered': return '#6B7280';
       case 'cancelled': return '#EF4444';
       default:          return '#6B7280';
@@ -155,7 +157,7 @@ export default function ManageOrdersScreen() {
 
           {/* Loading spinner while checking */}
           {item.status === 'pending' && !item.anomalyChecked && (
-            <ActivityIndicator size="small" color="#7C3AED" style={{ marginLeft: 8 }} />
+            <ActivityIndicator size="small" color={Palette.lavenderText} style={{ marginLeft: 8 }} />
           )}
         </View>
 
@@ -179,20 +181,20 @@ export default function ManageOrdersScreen() {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Manage Orders</Text>
         <TouchableOpacity onPress={fetchOrders} style={styles.refreshBtn}>
-          <Feather name="refresh-cw" size={18} color="#7C3AED" />
+          <Feather name="refresh-cw" size={18} color={Palette.lavenderText} />
         </TouchableOpacity>
       </View>
 
       {/* Anomaly legend */}
       <View style={styles.legend}>
-        <Feather name="cpu" size={13} color="#7C3AED" />
+        <Feather name="cpu" size={13} color={Palette.lavenderText} />
         <Text style={styles.legendText}>
           AI is checking pending orders for suspicious patterns
         </Text>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#7C3AED" style={{ marginTop: 40 }} />
+        <ActivityIndicator size="large" color={Palette.lavenderText} style={{ marginTop: 40 }} />
       ) : (
         <FlatList
           data={orders}
@@ -219,7 +221,7 @@ export default function ManageOrdersScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Order Details</Text>
               <TouchableOpacity onPress={() => setSelected(null)}>
-                <Feather name="x" size={24} color="#111827" />
+                <Feather name="x" size={24} color={Palette.ink} />
               </TouchableOpacity>
             </View>
 
@@ -331,36 +333,36 @@ export default function ManageOrdersScreen() {
 const styles = StyleSheet.create({
   container:      { flex: 1, backgroundColor: '#F3F4F6' },
   header:         { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#E5E7EB' },
-  headerTitle:    { fontSize: 22, fontWeight: '800', color: '#1F2937' },
-  refreshBtn:     { padding: 8, backgroundColor: '#F5F3FF', borderRadius: 10 },
-  legend:         { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 16, paddingVertical: 8, backgroundColor: '#F5F3FF' },
-  legendText:     { fontSize: 12, color: '#7C3AED' },
+  headerTitle:    { fontFamily: Fonts.heading.extraBold, fontSize: 22, color: Palette.ink },
+  refreshBtn:     { padding: 8, backgroundColor: Palette.lavenderSoft, borderRadius: 10 },
+  legend:         { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 16, paddingVertical: 8, backgroundColor: Palette.lavenderSoft },
+  legendText:     { fontFamily: Fonts.body.regular, fontSize: 12, color: Palette.lavenderText },
   list:           { padding: 16, gap: 10 },
   emptyText:      { textAlign: 'center', color: '#6B7280', marginTop: 40 },
   card:           { backgroundColor: '#fff', borderRadius: 14, padding: 14, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 },
   cardTop:        { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  orderId:        { fontSize: 14, fontWeight: '800', color: '#111827' },
-  pharmName:      { fontSize: 12, color: '#6B7280', marginTop: 2 },
+  orderId:        { fontFamily: Fonts.body.extraBold, fontSize: 14, color: Palette.ink },
+  pharmName:      { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', marginTop: 2 },
   anomalyBadge:   { flexDirection: 'row', alignItems: 'center', gap: 4, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 },
-  anomalyBadgeText:{ fontSize: 11, fontWeight: '700' },
+  anomalyBadgeText:{ fontFamily: Fonts.label.bold, fontSize: 11 },
   cardBottom:     { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  amount:         { fontSize: 15, fontWeight: '800', color: '#111827', flex: 1 },
+  amount:         { fontFamily: Fonts.label.extraBold, fontSize: 15, color: Palette.ink, flex: 1 },
   statusBadge:    { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 },
-  statusText:     { fontSize: 12, fontWeight: '700' },
-  date:           { fontSize: 12, color: '#9CA3AF' },
+  statusText:     { fontFamily: Fonts.label.bold, fontSize: 12 },
+  date:           { fontFamily: Fonts.body.regular, fontSize: 12, color: '#9CA3AF' },
   modalOverlay:   { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalCard:      { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
   modalHeader:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
-  modalTitle:     { fontSize: 20, fontWeight: '800', color: '#111827' },
+  modalTitle:     { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
   detailRow:      { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' },
-  detailLabel:    { fontSize: 14, color: '#6B7280' },
-  detailValue:    { fontSize: 14, fontWeight: '600', color: '#111827' },
+  detailLabel:    { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280' },
+  detailValue:    { fontFamily: Fonts.label.semiBold, fontSize: 14, color: Palette.ink },
   anomalyBox:     { marginTop: 16, borderWidth: 1.5, borderRadius: 12, padding: 14, gap: 6 },
   anomalyBoxHeader:{ flexDirection: 'row', alignItems: 'center', gap: 8 },
-  anomalyBoxTitle: { fontSize: 14, fontWeight: '700' },
-  anomalyDetail:  { fontSize: 13, color: '#374151' },
-  anomalyAlert:   { fontSize: 13, color: '#111827', fontStyle: 'italic', marginTop: 4 },
+  anomalyBoxTitle: { fontFamily: Fonts.heading.bold, fontSize: 14 },
+  anomalyDetail:  { fontFamily: Fonts.body.regular, fontSize: 13, color: '#374151' },
+  anomalyAlert:   { fontFamily: Fonts.body.regular, fontSize: 13, color: Palette.ink, fontStyle: 'italic', marginTop: 4 },
   modalActions:   { flexDirection: 'row', gap: 10, marginTop: 20 },
   actionBtn:      { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 14, borderRadius: 12 },
-  actionText:     { color: '#fff', fontWeight: '700', fontSize: 14 },
+  actionText:     { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 14 },
 });

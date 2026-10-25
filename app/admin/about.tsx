@@ -9,6 +9,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface TeamMember {
   name: string;
@@ -46,7 +48,7 @@ export default function AboutScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Feather name="arrow-left" size={24} color="#111827" />
+          <Feather name="arrow-left" size={24} color={Palette.ink} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>About Swasthya</Text>
         <View style={styles.spacer} />
@@ -146,23 +148,23 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827', flex: 1, textAlign: 'center' },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink, flex: 1, textAlign: 'center' },
   spacer: { width: 38 },
   scroll: { paddingHorizontal: 16, paddingVertical: 16, gap: 24, paddingBottom: 40 },
   section: { gap: 12 },
-  sectionTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
-  sectionText: { fontSize: 15, color: '#374151', lineHeight: 22 },
+  sectionTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
+  sectionText: { fontFamily: Fonts.body.regular, fontSize: 15, color: '#374151', lineHeight: 22 },
   featureList: { gap: 10 },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
-  featureText: { fontSize: 14, color: '#374151', flex: 1 },
+  featureText: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#374151', flex: 1 },
   teamCard: {
     backgroundColor: '#fff',
     borderRadius: 14,
@@ -176,18 +178,18 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#3B82F6',
+    backgroundColor: Palette.teal,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { fontSize: 20, fontWeight: '800', color: '#fff' },
+  avatarText: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: '#fff' },
   teamInfo: { flex: 1 },
-  teamName: { fontSize: 14, fontWeight: '700', color: '#111827' },
-  teamRole: { fontSize: 12, color: '#6B7280', marginTop: 2 },
+  teamName: { fontFamily: Fonts.body.bold, fontSize: 14, color: Palette.ink },
+  teamRole: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', marginTop: 2 },
   teamResponsibilities: { gap: 6 },
   respItem: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  respDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#3B82F6' },
-  respText: { fontSize: 13, color: '#6B7280' },
-  versionText: { fontSize: 14, fontWeight: '700', color: '#111827' },
-  versionSubtext: { fontSize: 12, color: '#6B7280', marginTop: 4 },
+  respDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: Palette.teal },
+  respText: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280' },
+  versionText: { fontFamily: Fonts.body.bold, fontSize: 14, color: Palette.ink },
+  versionSubtext: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', marginTop: 4 },
 });

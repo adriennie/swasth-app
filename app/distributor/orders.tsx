@@ -17,6 +17,8 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Order {
     id: string;
@@ -226,8 +228,8 @@ export default function DistributorOrders() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'pending': return '#F59E0B';
-            case 'confirmed': return '#3B82F6';
-            case 'shipped': return '#8B5CF6';
+            case 'confirmed': return Palette.teal;
+            case 'shipped': return Palette.lavender;
             case 'delivered': return '#10B981';
             case 'cancelled': return '#EF4444';
             default: return '#6B7280';
@@ -238,14 +240,14 @@ export default function DistributorOrders() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => router.back()}>
-                    <Feather name="chevron-left" size={24} color="#111827" />
+                    <Feather name="chevron-left" size={24} color={Palette.ink} />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Pharmacy Orders</Text>
                 <View style={{ width: 24 }} />
             </View>
 
             {loading ? (
-                <ActivityIndicator size="large" color="#7C3AED" style={{ marginTop: 20 }} />
+                <ActivityIndicator size="large" color={Palette.lavenderText} style={{ marginTop: 20 }} />
             ) : (
                 <FlatList
                     data={orders}
@@ -343,7 +345,7 @@ export default function DistributorOrders() {
                 </View>
 
                 {loadingDetails ? (
-                    <ActivityIndicator size="large" color="#7C3AED" style={{ marginTop: 40 }} />
+                    <ActivityIndicator size="large" color={Palette.lavenderText} style={{ marginTop: 40 }} />
                 ) : (
                     <>
                         <FlatList
@@ -462,7 +464,7 @@ export default function DistributorOrders() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F8FAFC' },
+    container: { flex: 1, backgroundColor: Palette.canvas },
     header: {
         paddingTop: 50,
         paddingBottom: 16,
@@ -474,7 +476,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E5E7EB',
     },
-    headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+    headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
     list: { padding: 16, gap: 16 },
     card: {
         backgroundColor: '#fff',
@@ -486,55 +488,55 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },
-    orderId: { fontSize: 16, fontWeight: '700', color: '#111827' },
-    date: { fontSize: 13, color: '#6B7280', marginTop: 2 },
+    orderId: { fontFamily: Fonts.body.bold, fontSize: 16, color: Palette.ink },
+    date: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginTop: 2 },
     badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
-    badgeText: { fontSize: 11, fontWeight: '800' },
+    badgeText: { fontFamily: Fonts.label.extraBold, fontSize: 11 },
     divider: { height: 1, backgroundColor: '#F3F4F6', marginBottom: 12 },
     infoRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
-    infoText: { fontSize: 14, color: '#4B5563', flex: 1 },
+    infoText: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#4B5563', flex: 1 },
     footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#F3F4F6' },
-    totalLabel: { fontSize: 14, color: '#6B7280' },
-    totalValue: { fontSize: 18, fontWeight: '800', color: '#7C3AED' },
+    totalLabel: { fontFamily: Fonts.label.regular, fontSize: 14, color: '#6B7280' },
+    totalValue: { fontFamily: Fonts.label.extraBold, fontSize: 18, color: Palette.lavenderText },
     emptyState: { alignItems: 'center', justifyContent: 'center', marginTop: 60, gap: 16 },
-    emptyText: { fontSize: 16, color: '#9CA3AF' },
+    emptyText: { fontFamily: Fonts.body.regular, fontSize: 16, color: '#9CA3AF' },
 
     // Modal
     modalHeader: { padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 1, borderColor: '#eee', paddingTop: 20 },
-    modalTitle: { fontSize: 18, fontWeight: 'bold' },
-    detailSummary: { marginBottom: 20, padding: 16, backgroundColor: '#F9FAFB', borderRadius: 12, gap: 8 },
+    modalTitle: { fontFamily: Fonts.heading.bold, fontSize: 18 },
+    detailSummary: { marginBottom: 20, padding: 16, backgroundColor: Palette.canvas, borderRadius: 12, gap: 8 },
     summaryRow: { flexDirection: 'row', justifyContent: 'space-between' },
-    summaryLabel: { color: '#64748B', fontWeight: '500' },
-    summaryValue: { color: '#1E293B', fontWeight: '700' },
+    summaryLabel: { fontFamily: Fonts.body.medium, color: '#64748B' },
+    summaryValue: { fontFamily: Fonts.label.bold, color: Palette.ink },
     itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderColor: '#F3F4F6' },
     itemInfo: { flex: 1 },
-    itemName: { fontSize: 16, fontWeight: '600', color: '#1F2937' },
-    itemSub: { fontSize: 14, color: '#6B7280', marginTop: 2 },
-    itemPrice: { fontSize: 16, fontWeight: 'bold', color: '#1F2937' },
+    itemName: { fontFamily: Fonts.body.semiBold, fontSize: 16, color: Palette.ink },
+    itemSub: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', marginTop: 2 },
+    itemPrice: { fontFamily: Fonts.label.bold, fontSize: 16, color: Palette.ink },
 
     // Quick Actions
     quickActions: { flexDirection: 'row', gap: 12, marginTop: 16 },
     actionButton: { flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
     declineButton: { borderColor: '#EF4444', backgroundColor: '#FEF2F2' },
     acceptButton: { borderColor: '#10B981', backgroundColor: '#ECFDF5' },
-    declineText: { color: '#EF4444', fontWeight: '700', fontSize: 14 },
-    acceptText: { color: '#10B981', fontWeight: '700', fontSize: 14 },
+    declineText: { fontFamily: Fonts.body.bold, color: '#EF4444', fontSize: 14 },
+    acceptText: { fontFamily: Fonts.body.bold, color: '#10B981', fontSize: 14 },
 
     // Modal Footer
     modalFooter: { padding: 20, borderTopWidth: 1, borderTopColor: '#E5E7EB', backgroundColor: '#fff' },
     modalActions: { flexDirection: 'row', gap: 12 },
     modalBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-    deliverButton: { backgroundColor: '#3B82F6' },
-    deliverText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+    deliverButton: { backgroundColor: Palette.teal },
+    deliverText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
 
     // OTP Modal
     otpModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', padding: 20 },
     otpModalContent: { backgroundColor: '#fff', width: '100%', maxWidth: 340, borderRadius: 20, padding: 24, alignItems: 'center' },
     otpHeader: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-    otpTitle: { fontSize: 20, fontWeight: 'bold', color: '#111827' },
-    otpInstruction: { fontSize: 14, color: '#6B7280', textAlign: 'center', marginBottom: 24 },
-    otpInput: { width: '100%', height: 50, borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 12, fontSize: 24, fontWeight: 'bold', color: '#1F2937', marginBottom: 24, letterSpacing: 8 },
+    otpTitle: { fontFamily: Fonts.heading.bold, fontSize: 20, color: Palette.ink },
+    otpInstruction: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', textAlign: 'center', marginBottom: 24 },
+    otpInput: { fontFamily: Fonts.heading.bold, width: '100%', height: 50, borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 12, fontSize: 24, color: Palette.ink, marginBottom: 24, letterSpacing: 8 },
     verifyButton: { width: '100%', height: 48, backgroundColor: '#10B981', borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
     disabledButton: { opacity: 0.5 },
-    verifyButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' }
+    verifyButtonText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 }
 });

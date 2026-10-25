@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function PrivacyPolicyScreen() {
   const router = useRouter();
@@ -17,7 +19,7 @@ export default function PrivacyPolicyScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Feather name="arrow-left" size={24} color="#111827" />
+          <Feather name="arrow-left" size={24} color={Palette.ink} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Privacy Policy</Text>
         <View style={styles.spacer} />
@@ -182,23 +184,23 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827', flex: 1, textAlign: 'center' },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink, flex: 1, textAlign: 'center' },
   spacer: { width: 38 },
   scroll: { paddingHorizontal: 16, paddingVertical: 16, gap: 16, paddingBottom: 40 },
-  lastUpdated: { fontSize: 12, color: '#9CA3AF', fontStyle: 'italic' },
+  lastUpdated: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#9CA3AF', fontStyle: 'italic' },
   section: { gap: 10 },
-  sectionTitle: { fontSize: 16, fontWeight: '800', color: '#111827' },
-  subsectionTitle: { fontSize: 14, fontWeight: '700', color: '#374151' },
-  bodyText: { fontSize: 14, color: '#374151', lineHeight: 21 },
+  sectionTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 16, color: Palette.ink },
+  subsectionTitle: { fontFamily: Fonts.heading.bold, fontSize: 14, color: '#374151' },
+  bodyText: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#374151', lineHeight: 21 },
   bulletList: { gap: 8, marginTop: 8 },
   bulletItem: { flexDirection: 'row', gap: 10 },
-  bulletDot: { fontSize: 14, color: '#6B7280', fontWeight: 'bold' },
-  bulletText: { fontSize: 14, color: '#374151', flex: 1, lineHeight: 20 },
+  bulletDot: { fontFamily: Fonts.body.bold, fontSize: 14, color: '#6B7280' },
+  bulletText: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#374151', flex: 1, lineHeight: 20 },
   contactInfo: { marginTop: 10, gap: 6 },
-  contactLabel: { fontSize: 13, fontWeight: '700', color: '#111827' },
-  contactValue: { fontSize: 13, color: '#3B82F6' },
+  contactLabel: { fontFamily: Fonts.body.bold, fontSize: 13, color: Palette.ink },
+  contactValue: { fontFamily: Fonts.label.regular, fontSize: 13, color: Palette.teal },
 });

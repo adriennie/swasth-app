@@ -21,6 +21,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface AdminOrder {
     id: string;
@@ -308,8 +310,8 @@ export default function OrdersTab() {
         switch (status.toLowerCase()) {
             case 'pending': return '#F59E0B';
             case 'processing':
-            case 'confirmed': return '#3B82F6';
-            case 'shipped': return '#8B5CF6';
+            case 'confirmed': return Palette.teal;
+            case 'shipped': return Palette.lavender;
             case 'completed':
             case 'delivered':
             case 'fulfilled': return '#10B981';
@@ -330,7 +332,7 @@ export default function OrdersTab() {
         <SafeAreaView style={styles.container}>
             {/* Header */}
             <LinearGradient
-                colors={['#3B82F6', '#2563EB']}
+                colors={[Palette.teal, Palette.tealText]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}>
@@ -367,7 +369,7 @@ export default function OrdersTab() {
             <ScrollView
                 style={styles.scrollView}
                 refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#4F46E5" />
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Palette.lavenderText} />
                 }>
 
                 {/* Filter Chips */}
@@ -402,7 +404,7 @@ export default function OrdersTab() {
                 {/* Orders List */}
                 <View style={styles.listContainer}>
                     {loading ? (
-                        <ActivityIndicator size="large" color="#4F46E5" style={{ marginTop: 40 }} />
+                        <ActivityIndicator size="large" color={Palette.lavenderText} style={{ marginTop: 40 }} />
                     ) : filteredOrders.length === 0 ? (
                         <View style={styles.emptyState}>
                             <Feather name="shopping-bag" size={48} color="#D1D5DB" />
@@ -469,7 +471,7 @@ export default function OrdersTab() {
 
                                     {(order.status.toLowerCase() === 'confirmed' || order.status.toLowerCase() === 'processing') && (
                                         <TouchableOpacity
-                                            style={[styles.actionBtn, { backgroundColor: '#3B82F6', marginRight: 4 }]}
+                                            style={[styles.actionBtn, { backgroundColor: Palette.teal, marginRight: 4 }]}
                                             onPress={() => initiateDelivery(order)}>
                                             <Text style={styles.actionBtnText}>Deliver</Text>
                                         </TouchableOpacity>
@@ -492,7 +494,7 @@ export default function OrdersTab() {
                     <View style={styles.modalHeader}>
                         <Text style={styles.modalTitle}>Order Details</Text>
                         <TouchableOpacity onPress={() => setSelectedOrder(null)} style={styles.closeBtn}>
-                            <Feather name="x" size={24} color="#111827" />
+                            <Feather name="x" size={24} color={Palette.ink} />
                         </TouchableOpacity>
                     </View>
 
@@ -508,7 +510,7 @@ export default function OrdersTab() {
                             </View>
                             <View style={styles.detailRow}>
                                 <Text style={styles.detailLabel}>Status:</Text>
-                                <Text style={[styles.detailValue, { color: getStatusColor(selectedOrder.status), fontWeight: '700' }]}>
+                                <Text style={[styles.detailValue, { fontFamily: Fonts.body.bold, color: getStatusColor(selectedOrder.status) }]}>
                                     {selectedOrder.status.toUpperCase()}
                                 </Text>
                             </View>
@@ -637,7 +639,7 @@ export default function OrdersTab() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: Palette.canvas,
     },
     header: {
         paddingTop: 60,
@@ -645,21 +647,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
     },
     headerTitle: {
+        fontFamily: Fonts.heading.extraBold,
         fontSize: 28,
-        fontWeight: '800',
         color: '#fff',
         marginBottom: 4,
     },
     headerSubtitle: {
+        fontFamily: Fonts.body.semiBold,
         fontSize: 14,
         color: 'rgba(255,255,255,0.9)',
-        fontWeight: '600',
     },
     segmentContainer: { flexDirection: 'row', backgroundColor: '#fff', marginHorizontal: 20, marginTop: -20, borderRadius: 12, padding: 4, elevation: 4 },
     segmentBtn: { flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10 },
-    segmentBtnActive: { backgroundColor: '#EFF6FF' },
-    segmentText: { fontWeight: '600', color: '#6B7280' },
-    segmentTextActive: { color: '#3B82F6' },
+    segmentBtnActive: { backgroundColor: Palette.tealSoft },
+    segmentText: { fontFamily: Fonts.body.semiBold, color: '#6B7280' },
+    segmentTextActive: { color: Palette.teal },
     scrollView: {
         flex: 1,
         marginTop: 10
@@ -679,12 +681,12 @@ const styles = StyleSheet.create({
         borderColor: '#E5E7EB',
     },
     filterChipActive: {
-        backgroundColor: '#4F46E5',
-        borderColor: '#4F46E5',
+        backgroundColor: Palette.lavenderText,
+        borderColor: Palette.lavenderText,
     },
     filterChipText: {
+        fontFamily: Fonts.body.semiBold,
         fontSize: 13,
-        fontWeight: '600',
         color: '#6B7280',
     },
     filterChipTextActive: {
@@ -710,9 +712,10 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     searchInput: {
+        fontFamily: Fonts.body.regular,
         flex: 1,
         fontSize: 16,
-        color: '#111827',
+        color: Palette.ink,
     },
     listContainer: {
         paddingHorizontal: 20,
@@ -739,11 +742,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     orderId: {
+        fontFamily: Fonts.body.bold,
         fontSize: 15,
-        fontWeight: '700',
-        color: '#111827',
+        color: Palette.ink,
     },
     distributorName: {
+        fontFamily: Fonts.body.regular,
         fontSize: 13,
         color: '#6B7280',
         marginTop: 2,
@@ -754,8 +758,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     statusText: {
+        fontFamily: Fonts.label.extraBold,
         fontSize: 10,
-        fontWeight: '800',
         textTransform: 'uppercase',
     },
     cardDetails: {
@@ -773,13 +777,14 @@ const styles = StyleSheet.create({
         gap: 6,
     },
     detailText: {
+        fontFamily: Fonts.body.regular,
         fontSize: 13,
         color: '#6B7280',
     },
     amountText: {
+        fontFamily: Fonts.label.bold,
         fontSize: 15,
-        fontWeight: '700',
-        color: '#4F46E5',
+        color: Palette.lavenderText,
     },
     actionsRow: {
         flexDirection: 'row',
@@ -793,9 +798,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     actionBtnText: {
+        fontFamily: Fonts.body.bold,
         color: '#fff',
         fontSize: 13,
-        fontWeight: '700',
     },
     detailsBtn: {
         flex: 1,
@@ -807,9 +812,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     detailsBtnText: {
+        fontFamily: Fonts.body.semiBold,
         color: '#4B5563',
         fontSize: 13,
-        fontWeight: '600',
     },
     emptyState: {
         alignItems: 'center',
@@ -817,13 +822,14 @@ const styles = StyleSheet.create({
         paddingVertical: 60,
     },
     emptyText: {
+        fontFamily: Fonts.body.regular,
         marginTop: 16,
         fontSize: 16,
         color: '#9CA3AF',
     },
 
     // Modal Styles
-    modalContainer: { flex: 1, backgroundColor: '#F8FAFC' },
+    modalContainer: { flex: 1, backgroundColor: Palette.canvas },
     modalHeader: {
         padding: 20,
         backgroundColor: '#fff',
@@ -833,12 +839,12 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E5E7EB',
     },
-    modalTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+    modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
     closeBtn: { padding: 4 },
     orderDetails: { padding: 20, backgroundColor: '#fff' },
     detailRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-    detailLabel: { fontSize: 14, color: '#6B7280' },
-    detailValue: { fontSize: 14, color: '#111827', fontWeight: '500' },
+    detailLabel: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280' },
+    detailValue: { fontFamily: Fonts.label.medium, fontSize: 14, color: Palette.ink },
     divider: { height: 1, backgroundColor: '#E5E7EB' },
     itemsList: { padding: 16, gap: 12 },
     itemCard: {
@@ -861,12 +867,12 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     itemInfo: { flex: 1 },
-    itemName: { fontSize: 14, fontWeight: '600', color: '#111827' },
-    itemSku: { fontSize: 12, color: '#6B7280', marginTop: 2 },
+    itemName: { fontFamily: Fonts.body.semiBold, fontSize: 14, color: Palette.ink },
+    itemSku: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#6B7280', marginTop: 2 },
     itemMeta: { flexDirection: 'row', gap: 8, marginTop: 4 },
-    itemQty: { fontSize: 12, fontWeight: '600', color: '#4B5563' },
-    itemPrice: { fontSize: 12, color: '#6B7280' },
-    itemTotal: { fontSize: 14, fontWeight: '700', color: '#111827' },
+    itemQty: { fontFamily: Fonts.label.semiBold, fontSize: 12, color: '#4B5563' },
+    itemPrice: { fontFamily: Fonts.label.regular, fontSize: 12, color: '#6B7280' },
+    itemTotal: { fontFamily: Fonts.label.bold, fontSize: 14, color: Palette.ink },
     footer: {
         padding: 20,
         backgroundColor: '#fff',
@@ -875,8 +881,8 @@ const styles = StyleSheet.create({
         paddingBottom: 40,
     },
     totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    totalLabel: { fontSize: 16, fontWeight: '600', color: '#111827' },
-    totalValue: { fontSize: 20, fontWeight: '800', color: '#059669' },
+    totalLabel: { fontFamily: Fonts.label.semiBold, fontSize: 16, color: Palette.ink },
+    totalValue: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: '#059669' },
 
     // Modal Actions
     modalFooter: { padding: 20, borderTopWidth: 1, borderTopColor: '#E5E7EB', backgroundColor: '#fff' },
@@ -884,26 +890,26 @@ const styles = StyleSheet.create({
     modalBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
     declineButton: { borderColor: '#EF4444', backgroundColor: '#FEF2F2' },
     acceptButton: { borderColor: '#10B981', backgroundColor: '#ECFDF5' },
-    declineText: { color: '#EF4444', fontWeight: '700', fontSize: 14 },
-    acceptText: { color: '#10B981', fontWeight: '700', fontSize: 14 },
-    deliverButton: { backgroundColor: '#3B82F6', borderWidth: 0 },
-    deliverText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+    declineText: { fontFamily: Fonts.body.bold, color: '#EF4444', fontSize: 14 },
+    acceptText: { fontFamily: Fonts.body.bold, color: '#10B981', fontSize: 14 },
+    deliverButton: { backgroundColor: Palette.teal, borderWidth: 0 },
+    deliverText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
 
     // OTP Modal
     otpModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', padding: 20 },
     otpModalContent: { backgroundColor: '#fff', width: '100%', maxWidth: 340, borderRadius: 20, padding: 24, alignItems: 'center' },
     otpHeader: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-    otpTitle: { fontSize: 20, fontWeight: 'bold', color: '#111827' },
-    otpInstruction: { fontSize: 14, color: '#6B7280', textAlign: 'center', marginBottom: 24 },
-    otpInput: { width: '100%', height: 50, borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 12, fontSize: 24, fontWeight: 'bold', color: '#1F2937', marginBottom: 24, letterSpacing: 8 },
+    otpTitle: { fontFamily: Fonts.heading.bold, fontSize: 20, color: Palette.ink },
+    otpInstruction: { fontFamily: Fonts.body.regular, fontSize: 14, color: '#6B7280', textAlign: 'center', marginBottom: 24 },
+    otpInput: { fontFamily: Fonts.heading.bold, width: '100%', height: 50, borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 12, fontSize: 24, color: Palette.ink, marginBottom: 24, letterSpacing: 8 },
     verifyButton: { width: '100%', height: 48, backgroundColor: '#10B981', borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
     disabledButton: { opacity: 0.5 },
-    verifyButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+    verifyButtonText: { fontFamily: Fonts.body.bold, color: '#fff', fontSize: 16 },
 
     // ML Anomaly styles
     anomalyBadge:     { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, marginTop: 8, alignSelf: 'flex-start' },
-    anomalyBadgeText: { fontSize: 11, fontWeight: '700' },
+    anomalyBadgeText: { fontFamily: Fonts.label.bold, fontSize: 11 },
     anomalyBox:       { marginTop: 12, borderWidth: 1.5, borderRadius: 10, padding: 12, gap: 6 },
-    anomalyBoxTitle:  { fontSize: 13, fontWeight: '700' },
-    anomalyDetail:    { fontSize: 12, color: '#374151' },
+    anomalyBoxTitle:  { fontFamily: Fonts.heading.bold, fontSize: 13 },
+    anomalyDetail:    { fontFamily: Fonts.body.regular, fontSize: 12, color: '#374151' },
 });

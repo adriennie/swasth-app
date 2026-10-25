@@ -1,6 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function TabLayout() {
   return (
@@ -18,11 +20,11 @@ export default function TabLayout() {
           paddingBottom: Platform.OS === 'ios' ? 25 : 10,
           paddingTop: 10,
         },
-        tabBarActiveTintColor: '#3B82F6',
+        tabBarActiveTintColor: Palette.lavender,
         tabBarInactiveTintColor: '#6B7280',
         tabBarLabelStyle: {
+          fontFamily: Fonts.body.semiBold,
           fontSize: 11,
-          fontWeight: '600',
         },
       }}>
       <Tabs.Screen
@@ -30,7 +32,7 @@ export default function TabLayout() {
         options={{
           title: 'Shop',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="shopping-bag" size={focused ? 24 : 22} color={color} />
+            <Feather name="shopping-bag" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -39,7 +41,7 @@ export default function TabLayout() {
         options={{
           title: 'Learn',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="book-open" size={focused ? 24 : 22} color={color} />
+            <Feather name="book-open" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -48,7 +50,7 @@ export default function TabLayout() {
         options={{
           title: 'Tracker',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="calendar" size={focused ? 24 : 22} color={color} />
+            <Feather name="calendar" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -57,7 +59,7 @@ export default function TabLayout() {
         options={{
           title: 'FlowBot',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="message-circle" size={focused ? 24 : 22} color={color} />
+            <Feather name="message-circle" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />
@@ -66,7 +68,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="user" size={focused ? 24 : 22} color={color} />
+            <Feather name="user" size={focused ? 24 : 22} color={color as string} />
           ),
         }}
       />

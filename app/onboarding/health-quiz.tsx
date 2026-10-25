@@ -2,6 +2,8 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 const quizData = [
   {
@@ -67,10 +69,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
+    fontFamily: Fonts.heading.bold,
     fontSize: 24,
-    fontWeight: 'bold',
   },
   headerSubtitle: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
     color: '#6B7280',
     marginTop: 8,
@@ -81,8 +84,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   question: {
+    fontFamily: Fonts.body.semiBold,
     fontSize: 18,
-    fontWeight: '600',
     marginBottom: 20,
   },
   optionsContainer: {
@@ -94,10 +97,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   optionText: {
+    fontFamily: Fonts.body.regular,
     fontSize: 16,
   },
   primaryButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: Palette.lavenderText,
     borderRadius: 12,
     height: 52,
     justifyContent: 'center',
@@ -105,8 +109,8 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   primaryButtonText: {
+    fontFamily: Fonts.body.semiBold,
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
   },
 });

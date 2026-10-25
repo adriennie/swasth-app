@@ -15,6 +15,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Palette } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface Pharmacy {
   id: string;
@@ -169,7 +171,7 @@ export default function ManagePharmaciesScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Feather name="chevron-left" size={24} color="#1F2937" />
+          <Feather name="chevron-left" size={24} color={Palette.ink} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Manage Pharmacies</Text>
         <View style={{ width: 40 }} />
@@ -381,7 +383,7 @@ export default function ManagePharmaciesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: Palette.canvas },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -400,7 +402,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#F3F4F6',
   },
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111827' },
+  headerTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 18, color: Palette.ink },
   searchContainer: { padding: 16, backgroundColor: '#fff' },
   searchRow: {
     flexDirection: 'row',
@@ -410,9 +412,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 48,
   },
-  searchInput: { flex: 1, marginLeft: 8, fontSize: 15, color: '#1F2937' },
+  searchInput: { fontFamily: Fonts.body.regular, flex: 1, marginLeft: 8, fontSize: 15, color: Palette.ink },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { marginTop: 12, color: '#6B7280', fontWeight: '600' },
+  loadingText: { fontFamily: Fonts.body.semiBold, marginTop: 12, color: '#6B7280' },
   list: { padding: 16, paddingBottom: 40 },
   card: {
     backgroundColor: '#fff',
@@ -434,17 +436,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { fontSize: 18, fontWeight: '800' },
+  avatarText: { fontFamily: Fonts.body.extraBold, fontSize: 18 },
   infoContainer: { flex: 1 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
-  name: { fontSize: 16, fontWeight: '700', color: '#111827', flex: 1 },
-  email: { fontSize: 13, color: '#6B7280', marginBottom: 4 },
+  name: { fontFamily: Fonts.body.bold, fontSize: 16, color: Palette.ink, flex: 1 },
+  email: { fontFamily: Fonts.body.regular, fontSize: 13, color: '#6B7280', marginBottom: 4 },
   statusBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 },
-  statusText: { fontSize: 10, fontWeight: '800' },
+  statusText: { fontFamily: Fonts.label.extraBold, fontSize: 10 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  metaText: { fontSize: 12, color: '#9CA3AF' },
+  metaText: { fontFamily: Fonts.body.regular, fontSize: 12, color: '#9CA3AF' },
   emptyState: { alignItems: 'center', justifyContent: 'center', marginTop: 60 },
-  emptyText: { marginTop: 12, color: '#9CA3AF', fontSize: 16 },
+  emptyText: { fontFamily: Fonts.body.regular, marginTop: 12, color: '#9CA3AF', fontSize: 16 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, height: '90%' },
   modalHeader: {
@@ -455,27 +457,28 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6'
   },
-  modalTitle: { fontSize: 20, fontWeight: '800', color: '#111827' },
+  modalTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 20, color: Palette.ink },
   modalBody: { padding: 24 },
   section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 14, fontWeight: '800', color: '#10B981', textTransform: 'uppercase', marginBottom: 16, letterSpacing: 0.5 },
+  sectionTitle: { fontFamily: Fonts.heading.extraBold, fontSize: 14, color: '#10B981', textTransform: 'uppercase', marginBottom: 16, letterSpacing: 0.5 },
   inputGroup: { marginBottom: 16 },
-  inputLabel: { fontSize: 13, fontWeight: '700', color: '#374151', marginBottom: 8 },
+  inputLabel: { fontFamily: Fonts.body.bold, fontSize: 13, color: '#374151', marginBottom: 8 },
   input: {
+    fontFamily: Fonts.body.regular,
     height: 52,
     borderWidth: 1,
     borderColor: '#E5E7EB',
     borderRadius: 12,
     paddingHorizontal: 16,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: Palette.canvas,
     fontSize: 15,
-    color: '#111827',
+    color: Palette.ink,
   },
   row: { flexDirection: 'row', gap: 12 },
   statusRow: { flexDirection: 'row', gap: 8 },
   statusBtn: { flex: 1, height: 44, borderRadius: 10, backgroundColor: '#F3F4F6', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#E5E7EB' },
   statusBtnActive: { backgroundColor: '#10B981', borderColor: '#10B981' },
-  statusBtnText: { fontSize: 12, fontWeight: '700', color: '#6B7280' },
+  statusBtnText: { fontFamily: Fonts.label.bold, fontSize: 12, color: '#6B7280' },
   statusBtnTextActive: { color: '#fff' },
   removeBtn: {
     flexDirection: 'row',
@@ -489,7 +492,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEF2F2',
     marginTop: 8,
   },
-  removeBtnText: { color: '#EF4444', fontWeight: '700', fontSize: 15 },
+  removeBtnText: { fontFamily: Fonts.body.bold, color: '#EF4444', fontSize: 15 },
   modalFooter: {
     flexDirection: 'row',
     padding: 24,
@@ -506,7 +509,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB'
   },
-  cancelBtnText: { fontSize: 16, fontWeight: '600', color: '#6B7280' },
+  cancelBtnText: { fontFamily: Fonts.body.semiBold, fontSize: 16, color: '#6B7280' },
   saveBtn: {
     flex: 2,
     height: 52,
@@ -515,5 +518,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  saveBtnText: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  saveBtnText: { fontFamily: Fonts.body.bold, fontSize: 16, color: '#fff' },
 });
